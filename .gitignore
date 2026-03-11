@@ -1,18 +1,6 @@
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
-*.nar
-*.zip
-*.tar.gz
-*.rar
-
-#################################
-# ===== JAVA / MAVEN =====
-#################################
+# ===================================
+# JAVA / MAVEN / SPRING BOOT
+# ===================================
 target/
 *.class
 *.jar
@@ -22,45 +10,69 @@ target/
 hs_err_pid*
 replay_pid*
 
-#################################
-# ===== SPRING BOOT =====
-#################################
-application-local.properties
-application-dev.properties
+# Spring Boot environment files
+application-*.properties
 
-#################################
-# ===== INTELLIJ IDEA =====
-#################################
+# ===================================
+# IDEs
+# ===================================
+
+## IntelliJ IDEA
 .idea/
 *.iml
 out/
 
-#################################
-# ===== NODE / ANGULAR =====
-#################################
+## Eclipse / STS
+.classpath
+.project
+.settings/
+.springBeans/
+.apt_generated/
+.factorypath
+.sts4-cache/
+
+## NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+## VS Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+
+# ===================================
+# NODE / ANGULAR / FRONTEND
+# ===================================
 node_modules/
 dist/
 coverage/
 .angular/
 *.tsbuildinfo
 
-#################################
-# ===== VSCODE =====
-#################################
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
-!.vscode/launch.json
-
-#################################
-# ===== ENV FILES =====
-#################################
+# ===================================
+# ENV files
+# ===================================
 .env
 .env.local
 .env.*.local
 
-#################################
-# ===== OS =====
-#################################
+# ===================================
+# OS files
+# ===================================
 .DS_Store
 Thumbs.db
+
+# ===================================
+# BlueJ / Mobile Tools for Java
+# ===================================
+*.ctxt
+.mtj.tmp/
+
+# ===================================
+# Misc / temporary
+# ===================================
+build/
