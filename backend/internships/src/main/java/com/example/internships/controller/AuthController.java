@@ -1,0 +1,62 @@
+package com.example.internships.controller;
+
+import com.example.internships.dto.auth.LoginRequest;
+import com.example.internships.dto.auth.LoginResponse;
+import com.example.internships.security.UserPrincipal;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/auth")
+@RequiredArgsConstructor
+public class AuthController {
+
+    private final AuthenticationManager authenticationManager;
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.getEmail(),
+                        request.getPassword()
+                )
+        );
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+        if (principal == null || principal.getUser() == null) {
+            throw new RuntimeException("Authenticated principal is null");
+        }
+
+        LoginResponse response = new LoginResponse(
+                principal.getUser().getId(),
+                principal.getUser().getEmail(),
+                principal.getUser().getRole()
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        request.getSession().invalidate();
+
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/me")
+    public LoginResponse me(@AuthenticationPrincipal UserPrincipal principal) {
+        return new LoginResponse(
+                principal.getUser().getId(),
+                principal.getUser().getEmail(),
+                principal.getUser().getRole()
+        );
+    }
+}

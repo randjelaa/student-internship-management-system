@@ -11,6 +11,7 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -68,12 +69,22 @@ public class Internship {
             joinColumns = @JoinColumn(name = "internship_id"),
             inverseJoinColumns = @JoinColumn(name = "technology_id")
     )
-    private Set<Technology> technologies = new LinkedHashSet<>();
+    private Set<Technology> technologies = new HashSet<>();
 
     @OneToMany(mappedBy = "internship")
     private Set<Recommendation> recommendations = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "internship")
     private Set<WorkLog> workLogs = new LinkedHashSet<>();
+
+    public void addTechnology(Technology technology) {
+        technologies.add(technology);
+        technology.getInternships().add(this);
+    }
+
+    public void removeTechnology(Technology technology) {
+        technologies.remove(technology);
+        technology.getInternships().remove(this);
+    }
 
 }
