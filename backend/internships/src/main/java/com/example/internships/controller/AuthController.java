@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,24 +21,27 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest request,
-            HttpServletRequest httpRequest
-    ) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+            HttpServletRequest httpRequest) {
+
+        Authentication authentication =
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(
+                                request.getEmail(),
+                                request.getPassword()
+                        )
+                );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        httpRequest.getSession(true);
+        httpRequest.getSession(true)
+                .setAttribute(
+                        "SPRING_SECURITY_CONTEXT",
+                        SecurityContextHolder.getContext()
+                );
 
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-        if (principal == null || principal.getUser() == null) {
-            throw new RuntimeException("Authenticated principal is null");
-        }
 
+        assert principal != null;
         LoginResponse response = new LoginResponse(
                 principal.getUser().getId(),
                 principal.getUser().getEmail(),
@@ -57,7 +59,11 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    public LoginResponse me(@AuthenticationPrincipal UserPrincipal principal) {
+    public LoginResponse me(Authentication authentication) {
+
+        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
+
+        assert principal != null;
         return new LoginResponse(
                 principal.getUser().getId(),
                 principal.getUser().getEmail(),
