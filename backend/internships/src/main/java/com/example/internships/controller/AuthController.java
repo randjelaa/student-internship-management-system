@@ -20,7 +20,10 @@ public class AuthController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(
+            @RequestBody LoginRequest request,
+            HttpServletRequest httpRequest
+    ) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -29,6 +32,8 @@ public class AuthController {
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        httpRequest.getSession(true);
 
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
         if (principal == null || principal.getUser() == null) {
