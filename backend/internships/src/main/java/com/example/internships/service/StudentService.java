@@ -7,6 +7,7 @@ import com.example.internships.mapper.StudentMapper;
 import com.example.internships.repository.StudentRepository;
 import com.example.internships.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
     private final StudentMapper studentMapper;
+    private final PasswordEncoder passwordEncoder;
 
     public List<StudentSummaryDTO> getAllStudents() {
 
@@ -36,11 +38,16 @@ public class StudentService {
     }
 
     public StudentResponseDTO createStudent(CreateStudentRequest request) {
-        User user = userRepository.findById(request.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole("ROLE_STUDENT");
+        user.setActive(true);
 
+        User savedUser = userRepository.save(user);
         Student student = studentMapper.toEntity(request);
-        student.setUser(user);
+
+        student.setUser(savedUser);
         Student saved = studentRepository.save(student);
 
         return studentMapper.toResponse(saved);
@@ -49,6 +56,22 @@ public class StudentService {
     public StudentResponseDTO updateStudent(Long id, UpdateStudentRequest request) {
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        User user = student.getUser();
+
+        if (request.getEmail() != null) {
+            userRepository.findByEmail(request.getEmail())
+                    .filter(existing -> !existing.getId().equals(user.getId()))
+                    .ifPresent(u -> {
+                        throw new RuntimeException("Email already exists");
+                    });
+
+            user.setEmail(request.getEmail());
+        }
+
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
 
         studentMapper.updateStudentFromDto(request, student);
         Student updated = studentRepository.save(student);

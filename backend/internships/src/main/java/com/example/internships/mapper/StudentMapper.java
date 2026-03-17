@@ -13,7 +13,6 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface StudentMapper {
 
-    // CREATE
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "applications", ignore = true)
@@ -23,14 +22,13 @@ public interface StudentMapper {
     @Mapping(target = "workLogs", ignore = true)
     Student toEntity(CreateStudentRequest request);
 
-    // UPDATE 🔥
     void updateStudentFromDto(
             UpdateStudentRequest dto,
             @MappingTarget Student entity
     );
 
-    // RESPONSE
-    @Mapping(source = "user.id", target = "userId")
+    @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "email", source = "user.email")
     StudentResponseDTO toResponse(Student student);
 
     StudentSummaryDTO toSummary(Student student);
