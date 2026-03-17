@@ -2,13 +2,9 @@ package com.example.internships.mapper;
 
 import com.example.internships.dto.internship.*;
 import com.example.internships.entity.Internship;
-import com.example.internships.entity.Technology;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring")
 public interface InternshipMapper {
