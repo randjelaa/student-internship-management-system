@@ -1,7 +1,11 @@
 package com.example.internships.service;
 
+import com.example.internships.dto.internship.*;
+import com.example.internships.entity.Company;
 import com.example.internships.entity.Internship;
 import com.example.internships.entity.Technology;
+import com.example.internships.mapper.InternshipMapper;
+import com.example.internships.repository.CompanyRepository;
 import com.example.internships.repository.InternshipRepository;
 import com.example.internships.repository.TechnologyRepository;
 import jakarta.transaction.Transactional;
@@ -19,45 +23,79 @@ import java.util.stream.Collectors;
 public class InternshipService {
 
     private final InternshipRepository internshipRepository;
+    private final CompanyRepository companyRepository;
     private final TechnologyRepository technologyRepository;
+    private final InternshipMapper internshipMapper;
 
-    public List<Internship> getAllInternships() {
-        return internshipRepository.findAll();
+    public List<InternshipSummaryDTO> getAllInternships() {
+        return internshipRepository.findAll()
+                .stream()
+                .map(internshipMapper::toSummary)
+                .collect(Collectors.toList());
     }
 
-    public Internship getInternshipById(Long id) {
-        return internshipRepository.findById(id)
+    public InternshipResponseDTO getInternshipById(Long id) {
+        Internship internship = internshipRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Internship not found"));
+        return internshipMapper.toResponse(internship);
     }
 
-    public Internship createInternship(Internship internship) {
-        return internshipRepository.save(internship);
+    public InternshipResponseDTO createInternship(CreateInternshipRequest request) {
+        Company company = companyRepository.findById(request.getCompanyId())
+                .orElseThrow(() -> new RuntimeException("Company not found"));
+
+        Internship internship = internshipMapper.toEntity(request);
+        internship.setCompany(company);
+
+        if (request.getTechnologyIds() != null) {
+            Set<Technology> technologies = new HashSet<>(technologyRepository.findAllById(request.getTechnologyIds()));
+            internship.setTechnologies(technologies);
+        }
+
+        Internship saved = internshipRepository.save(internship);
+        return internshipMapper.toResponse(saved);
     }
 
-    public Internship updateInternship(Long id, Internship updatedInternship) {
-        Internship existing = getInternshipById(id);
+    public InternshipResponseDTO updateInternship(Long id, UpdateInternshipRequest request) {
+        Internship internship = internshipRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Internship not found"));
 
-        existing.setTitle(updatedInternship.getTitle());
-        existing.setDescription(updatedInternship.getDescription());
-        existing.setLocation(updatedInternship.getLocation());
-        existing.setStartDate(updatedInternship.getStartDate());
-        existing.setEndDate(updatedInternship.getEndDate());
-        existing.setRequirements(updatedInternship.getRequirements());
+        if (request.getCompanyId() != null) {
+            Company company = companyRepository.findById(request.getCompanyId())
+                    .orElseThrow(() -> new RuntimeException("Company not found"));
+            internship.setCompany(company);
+        }
 
-        return internshipRepository.save(existing);
+        internshipMapper.updateFromDto(request, internship);
+
+        if (request.getTechnologyIds() != null) {
+            Set<Technology> technologies = new HashSet<>(technologyRepository.findAllById(request.getTechnologyIds()));
+            internship.setTechnologies(technologies);
+        }
+
+        Internship updated = internshipRepository.save(internship);
+        return internshipMapper.toResponse(updated);
     }
 
     public void deleteInternship(Long id) {
-        Internship internship = getInternshipById(id);
+        Internship internship = internshipRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Internship not found"));
         internshipRepository.delete(internship);
     }
 
-    public Internship addTechnologies(Long internshipId, Set<Long> technologyIds) {
-        Internship internship = getInternshipById(internshipId);
+    public List<InternshipSummaryDTO> filterByCompany(Long companyId) {
+        return internshipRepository.findAll()
+                .stream()
+                .filter(i -> i.getCompany().getId().equals(companyId))
+                .map(internshipMapper::toSummary)
+                .collect(Collectors.toList());
+    }
 
-        Set<Technology> technologies = new HashSet<>(technologyRepository.findAllById(technologyIds));
-        internship.getTechnologies().addAll(technologies);
-
-        return internshipRepository.save(internship);
+    public List<InternshipSummaryDTO> filterByTechnology(Long technologyId) {
+        return internshipRepository.findAll()
+                .stream()
+                .filter(i -> i.getTechnologies().stream().anyMatch(t -> t.getId().equals(technologyId)))
+                .map(internshipMapper::toSummary)
+                .collect(Collectors.toList());
     }
 }
