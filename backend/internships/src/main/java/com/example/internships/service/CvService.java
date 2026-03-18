@@ -12,6 +12,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.example.internships.entity.Cv;
+import com.example.internships.repository.CvRepository;
+import com.itextpdf.io.source.ByteArrayOutputStream;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+
 @Service
 @RequiredArgsConstructor
 public class CvService {
@@ -345,5 +353,75 @@ public class CvService {
         cv.getInterests().clear();
 
         cvRepository.delete(cv);
+    }
+
+    public byte[] generateCvPdf(Long studentId) {
+
+        Cv cv = cvRepository.findFirstByStudentId(studentId)
+                .orElseThrow(() -> new RuntimeException("CV not found"));
+
+        try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+            PdfWriter writer = new PdfWriter(baos);
+            PdfDocument pdfDoc = new PdfDocument(writer);
+            Document document = new Document(pdfDoc);
+
+            // =========================
+            // Dodaj osnovne informacije
+            // =========================
+            document.add(new Paragraph("CV for: " + cv.getStudent().getFirstName() + " " + cv.getStudent().getLastName()));
+            document.add(new Paragraph("Email: " + cv.getStudent().getUser().getEmail()));
+            document.add(new Paragraph("Summary: " + cv.getSummary()));
+            document.add(new Paragraph("\n"));
+
+            // =========================
+            // Education
+            // =========================
+            document.add(new Paragraph("=== Education ==="));
+            cv.getEducations().forEach(e -> {
+                document.add(new Paragraph(e.getDegree() + " in " + e.getFieldOfStudy() +
+                        " from " + e.getInstitution() +
+                        " (" + e.getStartYear() + " - " + e.getEndYear() + ")"));
+            });
+
+            // =========================
+            // Experiences
+            // =========================
+            document.add(new Paragraph("\n=== Experiences ==="));
+            cv.getExperiences().forEach(exp -> {
+                document.add(new Paragraph(exp.getPosition() + " at " + exp.getCompanyName() +
+                        " (" + exp.getStartDate() + " - " + exp.getEndDate() + ")\n" +
+                        exp.getDescription()));
+            });
+
+            // =========================
+            // Skills
+            // =========================
+            document.add(new Paragraph("\n=== Skills ==="));
+            cv.getSkills().forEach(s -> {
+                document.add(new Paragraph(s.getSkillName() + " - " + s.getSkillLevel()));
+            });
+
+            // =========================
+            // Languages
+            // =========================
+            document.add(new Paragraph("\n=== Languages ==="));
+            cv.getLanguages().forEach(l -> {
+                document.add(new Paragraph(l.getLanguageName() + " - " + l.getLevel()));
+            });
+
+            // =========================
+            // Interests
+            // =========================
+            document.add(new Paragraph("\n=== Interests ==="));
+            cv.getInterests().forEach(i -> {
+                document.add(new Paragraph(i.getInterestName()));
+            });
+
+            document.close();
+            return baos.toByteArray();
+
+        } catch (Exception ex) {
+            throw new RuntimeException("Failed to generate PDF", ex);
+        }
     }
 }
