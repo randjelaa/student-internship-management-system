@@ -40,8 +40,8 @@ public class User {
     @Column(name = "active")
     private Boolean active;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at")
+    @org.hibernate.annotations.CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private Instant createdAt;
 
     @OneToMany(mappedBy = "user")

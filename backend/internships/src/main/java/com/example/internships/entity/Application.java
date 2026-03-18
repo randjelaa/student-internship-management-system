@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -37,8 +37,8 @@ public class Application {
     @Column(name = "status", length = 50)
     private String status;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "applied_at")
+    @CreationTimestamp
+    @Column(name = "applied_at", updatable = false)
     private Instant appliedAt;
 
 }
