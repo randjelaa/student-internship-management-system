@@ -1,5 +1,6 @@
 package com.example.internships.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -8,11 +9,14 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @Entity
-@Table(name = "cv_education", schema = "internship_system")
-public class CvEducation {
+@Table(name = "education", schema = "internship_system")
+public class Education {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -20,9 +24,8 @@ public class CvEducation {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "cv_id", nullable = false)
-    private Cv cv;
+    @JoinColumn(name = "student_id", nullable = false)
+    private Student student;
 
     @Size(max = 255)
     @Column(name = "institution")
@@ -41,5 +44,21 @@ public class CvEducation {
 
     @Column(name = "end_year")
     private Integer endYear;
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "educations")
+    private Set<Cv> cvs = new LinkedHashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Education)) return false;
+        return id != null && id.equals(((Education) o).id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 
 }

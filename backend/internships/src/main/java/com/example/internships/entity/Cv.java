@@ -5,9 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.*;
 
 import java.time.Instant;
 import java.util.LinkedHashSet;
@@ -37,27 +35,42 @@ public class Cv {
     @Column(name = "summary")
     private String summary;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at")
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private Instant createdAt;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @OneToMany(mappedBy = "cv")
-    private Set<CvEducation> cvEducations = new LinkedHashSet<>();
+    @ManyToMany
+    @JoinTable(name = "cv_education_map",
+            joinColumns = @JoinColumn(name = "cv_id"),
+            inverseJoinColumns = @JoinColumn(name = "education_id"))
+    private Set<Education> educations = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "cv")
-    private Set<CvExperience> cvExperiences = new LinkedHashSet<>();
+    @ManyToMany
+    @JoinTable(name = "cv_experience_map",
+            joinColumns = @JoinColumn(name = "cv_id"),
+            inverseJoinColumns = @JoinColumn(name = "experience_id"))
+    private Set<Experience> experiences = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "cv")
-    private Set<CvInterest> cvInterests = new LinkedHashSet<>();
+    @ManyToMany
+    @JoinTable(name = "cv_interests_map",
+            joinColumns = @JoinColumn(name = "cv_id"),
+            inverseJoinColumns = @JoinColumn(name = "interest_id"))
+    private Set<Interest> interests = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "cv")
-    private Set<CvLanguage> cvLanguages = new LinkedHashSet<>();
+    @ManyToMany
+    @JoinTable(name = "cv_languages_map",
+            joinColumns = @JoinColumn(name = "cv_id"),
+            inverseJoinColumns = @JoinColumn(name = "language_id"))
+    private Set<Language> languages = new LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "cv")
-    private Set<CvSkill> cvSkills = new LinkedHashSet<>();
+    @ManyToMany
+    @JoinTable(name = "cv_skills_map",
+            joinColumns = @JoinColumn(name = "cv_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id"))
+    private Set<Skill> skills = new LinkedHashSet<>();
 
 }
