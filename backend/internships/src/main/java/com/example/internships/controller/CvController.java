@@ -2,7 +2,6 @@ package com.example.internships.controller;
 
 import com.example.internships.dto.cv.CreateCvRequest;
 import com.example.internships.dto.cv.CvResponseDTO;
-import com.example.internships.entity.Cv;
 import com.example.internships.service.CvService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
