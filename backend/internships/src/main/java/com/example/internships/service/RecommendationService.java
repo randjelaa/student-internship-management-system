@@ -138,7 +138,8 @@ public class RecommendationService {
 
             return mapper.readValue(
                     cleaned,
-                    new TypeReference<List<RecommendationItemDTO>>() {}
+                    new TypeReference<>() {
+                    }
             );
 
         } catch (Exception e) {
