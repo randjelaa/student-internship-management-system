@@ -377,45 +377,35 @@ public class CvService {
             // Education
             // =========================
             document.add(new Paragraph("=== Education ==="));
-            cv.getEducations().forEach(e -> {
-                document.add(new Paragraph(e.getDegree() + " in " + e.getFieldOfStudy() +
-                        " from " + e.getInstitution() +
-                        " (" + e.getStartYear() + " - " + e.getEndYear() + ")"));
-            });
+            cv.getEducations().forEach(e -> document.add(new Paragraph(e.getDegree() + " in " + e.getFieldOfStudy() +
+                    " from " + e.getInstitution() +
+                    " (" + e.getStartYear() + " - " + e.getEndYear() + ")")));
 
             // =========================
             // Experiences
             // =========================
             document.add(new Paragraph("\n=== Experiences ==="));
-            cv.getExperiences().forEach(exp -> {
-                document.add(new Paragraph(exp.getPosition() + " at " + exp.getCompanyName() +
-                        " (" + exp.getStartDate() + " - " + exp.getEndDate() + ")\n" +
-                        exp.getDescription()));
-            });
+            cv.getExperiences().forEach(exp -> document.add(new Paragraph(exp.getPosition() + " at " + exp.getCompanyName() +
+                    " (" + exp.getStartDate() + " - " + exp.getEndDate() + ")\n" +
+                    exp.getDescription())));
 
             // =========================
             // Skills
             // =========================
             document.add(new Paragraph("\n=== Skills ==="));
-            cv.getSkills().forEach(s -> {
-                document.add(new Paragraph(s.getSkillName() + " - " + s.getSkillLevel()));
-            });
+            cv.getSkills().forEach(s -> document.add(new Paragraph(s.getSkillName() + " - " + s.getSkillLevel())));
 
             // =========================
             // Languages
             // =========================
             document.add(new Paragraph("\n=== Languages ==="));
-            cv.getLanguages().forEach(l -> {
-                document.add(new Paragraph(l.getLanguageName() + " - " + l.getLevel()));
-            });
+            cv.getLanguages().forEach(l -> document.add(new Paragraph(l.getLanguageName() + " - " + l.getLevel())));
 
             // =========================
             // Interests
             // =========================
             document.add(new Paragraph("\n=== Interests ==="));
-            cv.getInterests().forEach(i -> {
-                document.add(new Paragraph(i.getInterestName()));
-            });
+            cv.getInterests().forEach(i -> document.add(new Paragraph(i.getInterestName())));
 
             document.close();
             return baos.toByteArray();
