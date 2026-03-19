@@ -1,0 +1,17 @@
+<mat-toolbar color="primary">
+
+  <span style="font-weight: bold;">Internship System</span>
+
+  <span style="flex: 1 1 auto;"></span>
+
+  @if (user()) {
+    <span style="margin-right: 16px;">
+      {{ user()?.email }}
+    </span>
+
+    <button mat-button (click)="logout()">
+      Logout
+    </button>
+  }
+
+</mat-toolbar>
