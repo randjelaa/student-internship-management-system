@@ -2,6 +2,8 @@ export interface CvResponse {
   id: number;
   photoUrl: string;
   summary: string;
+  createdAt: string;
+  updatedAt: string;
 
   educations: Education[];
   experiences: Experience[];
@@ -11,6 +13,7 @@ export interface CvResponse {
 }
 
 export interface Education {
+  id: number;
   institution: string;
   degree: string;
   fieldOfStudy: string;
@@ -19,23 +22,27 @@ export interface Education {
 }
 
 export interface Experience {
+  id: number;
   companyName: string;
   position: string;
   description: string;
-  startDate: string;
+  startDate: string; // LocalDate → string
   endDate: string;
 }
 
 export interface Skill {
+  id: number;
   skillName: string;
   skillLevel: string;
 }
 
 export interface Language {
+  id: number;
   languageName: string;
   level: string;
 }
 
 export interface Interest {
+  id: number;
   interestName: string;
 }

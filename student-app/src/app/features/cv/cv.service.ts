@@ -22,9 +22,21 @@ export class CvService {
     return this.http.put(`${this.baseUrl}/${studentId}/cv`, body);
   }
 
+  deleteCv(studentId: number) {
+    return this.http.delete(`${this.baseUrl}/${studentId}/cv`);
+  }
+
   downloadPdf(studentId: number) {
     return this.http.get(`${this.baseUrl}/${studentId}/cv/pdf`, {
       responseType: 'blob'
     });
+  }
+
+  uploadImage(studentId: number, formData: FormData) {
+    return this.http.post(
+        `${this.baseUrl}/${studentId}/cv/upload-image`,
+        formData,
+        { responseType: 'text' }
+    );
   }
 }

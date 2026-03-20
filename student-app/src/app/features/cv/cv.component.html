@@ -2,20 +2,48 @@
 
   <h2>My CV</h2>
 
-  <!-- PHOTO & SUMMARY -->
-  <mat-form-field appearance="outline" class="full-width">
-    <input matInput placeholder="Photo URL" formControlName="photoUrl">
-  </mat-form-field>
+  <!-- PHOTO -->
+<h3>Photo</h3>
 
+  <div class="block">
+
+    <!-- Image / placeholder -->
+    <div class="image-wrapper">
+      @if (imagePreview || form.value.photoUrl) {
+        <img [src]="imagePreview || form.value.photoUrl" alt="Preview">
+      } @else {
+        <div class="placeholder">No photo</div>
+      }
+    </div>
+
+    <!-- Buttons -->
+    <div class="photo-buttons">
+      <button mat-button color="primary" type="button" (click)="fileInput.click()">
+        Upload
+      </button>
+      <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" hidden>
+
+      @if (imagePreview || form.value.photoUrl) {
+        <button mat-button color="warn" type="button" (click)="removePhoto()">
+          Remove
+        </button>
+      }
+    </div>
+
+  </div>
+
+  <!-- SUMMARY -->
+   <h3>Summary</h3>
   <mat-form-field appearance="outline" class="full-width">
     <textarea matInput placeholder="Summary" formControlName="summary"></textarea>
   </mat-form-field>
 
-  <!-- EDUCATIONS -->
+  <!-- EDUCATION -->
   <h3>Education</h3>
 
-  @for (edu of educations.controls; track edu) {
+  @for (edu of educations.controls; track edu; let i = $index) {
     <div [formGroup]="edu" class="block">
+
       <mat-form-field appearance="outline">
         <input matInput placeholder="Institution" formControlName="institution">
       </mat-form-field>
@@ -23,18 +51,24 @@
       <mat-form-field appearance="outline">
         <input matInput placeholder="Degree" formControlName="degree">
       </mat-form-field>
+
+      <button mat-button color="warn" type="button" (click)="removeEducation(i)">
+        Remove
+      </button>
+
     </div>
   } @empty {
     <p>No education added yet.</p>
   }
 
-  <button mat-button type="button" (click)="addEducation()">Add education</button>
+  <button mat-button type="button" color="primary" (click)="addEducation()">Add education</button>
 
-  <!-- EXPERIENCES -->
+  <!-- EXPERIENCE -->
   <h3>Experience</h3>
 
-  @for (exp of experiences.controls; track exp) {
+  @for (exp of experiences.controls; track exp; let i = $index) {
     <div [formGroup]="exp" class="block">
+
       <mat-form-field appearance="outline">
         <input matInput placeholder="Company" formControlName="companyName">
       </mat-form-field>
@@ -42,32 +76,54 @@
       <mat-form-field appearance="outline">
         <input matInput placeholder="Position" formControlName="position">
       </mat-form-field>
+
+      <button mat-button color="warn" type="button" (click)="removeExperience(i)">
+        Remove
+      </button>
+
     </div>
   } @empty {
     <p>No experience added yet.</p>
   }
 
-  <button mat-button type="button" (click)="addExperience()">Add experience</button>
+  <button mat-button type="button" color="primary" (click)="addExperience()">Add experience</button>
 
   <!-- SKILLS -->
   <h3>Skills</h3>
 
-  @for (skill of skills.controls; track skill) {
+  @for (skill of skills.controls; track skill; let i = $index) {
     <div [formGroup]="skill" class="block">
+
       <mat-form-field appearance="outline">
         <input matInput placeholder="Skill" formControlName="skillName">
       </mat-form-field>
+
+      <button mat-button color="warn" type="button" (click)="removeSkill(i)">
+        Remove
+      </button>
+
     </div>
   } @empty {
     <p>No skills added yet.</p>
   }
 
-  <button mat-button type="button" (click)="addSkill()">Add skill</button>
+  <button mat-button type="button" color="primary" (click)="addSkill()">Add skill</button>
 
   <br><br>
 
-  <!-- ACTION BUTTONS -->
-  <button mat-raised-button color="primary" type="button" (click)="save()">Save CV</button>
-  <button mat-raised-button type="button" (click)="downloadPdf()">Download PDF</button>
+  <!-- ACTIONS -->
+  <button mat-raised-button color="primary" type="button" (click)="save()">
+    {{ hasCv ? 'Update CV' : 'Create CV' }}
+  </button>
+
+  @if (hasCv) {
+    <button mat-raised-button color="warn" type="button" (click)="deleteCv()">
+      Delete CV
+    </button>
+  }
+
+  <button mat-raised-button type="button" (click)="downloadPdf()">
+    Download PDF
+  </button>
 
 </form>

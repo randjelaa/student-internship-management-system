@@ -16,6 +16,8 @@ import { Router } from '@angular/router';
 export class CvComponent implements OnInit {
 
   studentId!: number;
+  hasCv = false;
+  imagePreview: string | null = null;
 
   form = this.fb.group({
     photoUrl: [''],
@@ -60,34 +62,45 @@ export class CvComponent implements OnInit {
   loadCv() {
     this.cvService.getCv(this.studentId).subscribe({
       next: (cv) => {
+        this.imagePreview = cv?.photoUrl || null;
         this.clearArrays();
 
-        if (!cv || cv.educations.length === 0) {
+        this.hasCv = !!cv;
+
+        if (!cv) {
           this.addEducation();
           this.addExperience();
           this.addSkill();
-        } else {
-          this.form.patchValue({
-            photoUrl: cv.photoUrl,
-            summary: cv.summary
-          });
-
-          cv.educations.forEach(e => this.educations.push(this.fb.group({
-            institution: [e.institution],
-            degree: [e.degree]
-          }) as FormGroup));
-
-          cv.experiences.forEach(e => this.experiences.push(this.fb.group({
-            companyName: [e.companyName],
-            position: [e.position]
-          }) as FormGroup));
-
-          cv.skills.forEach(s => this.skills.push(this.fb.group({
-            skillName: [s.skillName]
-          }) as FormGroup));
+          return;
         }
+
+        this.form.patchValue({
+          photoUrl: cv.photoUrl,
+          summary: cv.summary
+        });
+
+        // EDUCATION
+        cv.educations.forEach(e => this.educations.push(this.fb.group({
+          id: [e.id],
+          institution: [e.institution],
+          degree: [e.degree]
+        }) as FormGroup));
+
+        // EXPERIENCE
+        cv.experiences.forEach(e => this.experiences.push(this.fb.group({
+          id: [e.id],
+          companyName: [e.companyName],
+          position: [e.position]
+        }) as FormGroup));
+
+        // SKILLS
+        cv.skills.forEach(s => this.skills.push(this.fb.group({
+          id: [s.id],
+          skillName: [s.skillName]
+        }) as FormGroup));
       },
       error: () => {
+        this.hasCv = false;
         this.addEducation();
         this.addExperience();
         this.addSkill();
@@ -104,6 +117,7 @@ export class CvComponent implements OnInit {
   // ===== ADD METHODS =====
   addEducation() {
     this.educations.push(this.fb.group({
+      id: [null],
       institution: [''],
       degree: ['']
     }) as FormGroup);
@@ -111,6 +125,7 @@ export class CvComponent implements OnInit {
 
   addExperience() {
     this.experiences.push(this.fb.group({
+      id: [null],
       companyName: [''],
       position: ['']
     }) as FormGroup);
@@ -118,23 +133,94 @@ export class CvComponent implements OnInit {
 
   addSkill() {
     this.skills.push(this.fb.group({
+      id: [null],
       skillName: ['']
     }) as FormGroup);
   }
 
-  // ===== SAVE =====
+  removeEducation(i: number) {
+    this.educations.removeAt(i);
+  }
+
+  removeExperience(i: number) {
+    this.experiences.removeAt(i);
+  }
+
+  removeSkill(i: number) {
+    this.skills.removeAt(i);
+  }
+
+  // ===== SAVE (CREATE + UPDATE) =====
   save() {
+
+    const formValue = this.form.value;
+
     const body = {
-      photoUrl: this.form.value.photoUrl,
-      summary: this.form.value.summary,
-      newEducations: this.form.value.educations,
-      newExperiences: this.form.value.experiences,
-      newSkills: this.form.value.skills
+      photoUrl: formValue.photoUrl,
+      summary: formValue.summary,
+
+      // postojeći
+      educationIds: formValue.educations
+        ?.filter(e => e.id)
+        .map(e => e.id),
+
+      experienceIds: formValue.experiences
+        ?.filter(e => e.id)
+        .map(e => e.id),
+
+      skillIds: formValue.skills
+        ?.filter(s => s.id)
+        .map(s => s.id),
+
+      // novi
+      newEducations: formValue.educations
+        ?.filter(e => !e.id)
+        .map(e => ({
+          institution: e.institution,
+          degree: e.degree
+        })),
+
+      newExperiences: formValue.experiences
+        ?.filter(e => !e.id)
+        .map(e => ({
+          companyName: e.companyName,
+          position: e.position
+        })),
+
+      newSkills: formValue.skills
+        ?.filter(s => !s.id)
+        .map(s => ({
+          skillName: s.skillName
+        }))
     };
 
-    this.cvService.createCv(this.studentId, body).subscribe({
-      next: () => alert('Saved!'),
+    const request = this.hasCv
+      ? this.cvService.updateCv(this.studentId, body)
+      : this.cvService.createCv(this.studentId, body);
+
+    request.subscribe({
+      next: () => {
+        alert(this.hasCv ? 'Updated!' : 'Created!');
+        this.loadCv();
+      },
       error: () => alert('Error saving CV')
+    });
+  }
+
+  // ===== DELETE =====
+  deleteCv() {
+    this.cvService.deleteCv(this.studentId).subscribe({
+      next: () => {
+        alert('Deleted!');
+        this.hasCv = false;
+        this.form.reset();
+        this.clearArrays();
+        this.imagePreview = null; // 👈 DODAJ OVO
+        this.addEducation();
+        this.addExperience();
+        this.addSkill();
+      },
+      error: () => alert('Error deleting CV')
     });
   }
 
@@ -145,4 +231,37 @@ export class CvComponent implements OnInit {
       window.open(url);
     });
   }
+
+  onFileSelected(event: any) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  // preview (da odmah vidi sliku)
+  const reader = new FileReader();
+  reader.onload = () => {
+    this.imagePreview = reader.result as string;
+  };
+  reader.readAsDataURL(file);
+
+  // upload na backend
+  const formData = new FormData();
+  formData.append('file', file);
+
+  this.cvService.uploadImage(this.studentId, formData)
+    .subscribe({
+      next: (url: string) => {
+        this.form.patchValue({
+          photoUrl: url
+        });
+      },
+      error: () => alert('Upload failed')
+    });
+}
+
+removePhoto() {
+  this.imagePreview = null;
+  this.form.patchValue({
+    photoUrl: null
+  });
+}
 }

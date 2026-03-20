@@ -8,6 +8,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/students/{studentId}/cv")
@@ -46,5 +52,28 @@ public class CvController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=cv_" + studentId + ".pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfBytes);
+    }
+
+    @PostMapping("/upload-image")
+    public ResponseEntity<String> uploadImage(
+            @PathVariable Long studentId,
+            @RequestParam("file") MultipartFile file
+    ) {
+        try {
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+            Path uploadPath = Paths.get("uploads/");
+            Files.createDirectories(uploadPath);
+
+            Path filePath = uploadPath.resolve(fileName);
+            Files.write(filePath, file.getBytes());
+
+            String fileUrl = "http://localhost:8080/uploads/" + fileName;
+
+            return ResponseEntity.ok(fileUrl);
+
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body("Upload failed");
+        }
     }
 }
