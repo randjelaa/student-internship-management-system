@@ -1,1 +1,73 @@
-<p>cv works!</p>
+<form [formGroup]="form" class="cv-container">
+
+  <h2>My CV</h2>
+
+  <!-- PHOTO & SUMMARY -->
+  <mat-form-field appearance="outline" class="full-width">
+    <input matInput placeholder="Photo URL" formControlName="photoUrl">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="full-width">
+    <textarea matInput placeholder="Summary" formControlName="summary"></textarea>
+  </mat-form-field>
+
+  <!-- EDUCATIONS -->
+  <h3>Education</h3>
+
+  @for (edu of educations.controls; track edu) {
+    <div [formGroup]="edu" class="block">
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="Institution" formControlName="institution">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="Degree" formControlName="degree">
+      </mat-form-field>
+    </div>
+  } @empty {
+    <p>No education added yet.</p>
+  }
+
+  <button mat-button type="button" (click)="addEducation()">Add education</button>
+
+  <!-- EXPERIENCES -->
+  <h3>Experience</h3>
+
+  @for (exp of experiences.controls; track exp) {
+    <div [formGroup]="exp" class="block">
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="Company" formControlName="companyName">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="Position" formControlName="position">
+      </mat-form-field>
+    </div>
+  } @empty {
+    <p>No experience added yet.</p>
+  }
+
+  <button mat-button type="button" (click)="addExperience()">Add experience</button>
+
+  <!-- SKILLS -->
+  <h3>Skills</h3>
+
+  @for (skill of skills.controls; track skill) {
+    <div [formGroup]="skill" class="block">
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="Skill" formControlName="skillName">
+      </mat-form-field>
+    </div>
+  } @empty {
+    <p>No skills added yet.</p>
+  }
+
+  <button mat-button type="button" (click)="addSkill()">Add skill</button>
+
+  <br><br>
+
+  <!-- ACTION BUTTONS -->
+  <button mat-raised-button color="primary" type="button" (click)="save()">Save CV</button>
+  <button mat-raised-button type="button" (click)="downloadPdf()">Download PDF</button>
+
+</form>
