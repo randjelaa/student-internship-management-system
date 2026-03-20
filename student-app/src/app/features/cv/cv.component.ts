@@ -25,7 +25,9 @@ export class CvComponent implements OnInit {
 
     educations: this.fb.array<FormGroup>([]),
     experiences: this.fb.array<FormGroup>([]),
-    skills: this.fb.array<FormGroup>([])
+    skills: this.fb.array<FormGroup>([]),
+    languages: this.fb.array<FormGroup>([]),
+  interests: this.fb.array<FormGroup>([])
   });
 
   constructor(
@@ -58,6 +60,14 @@ export class CvComponent implements OnInit {
     return this.form.get('skills') as FormArray<FormGroup>;
   }
 
+  get languages(): FormArray<FormGroup> {
+  return this.form.get('languages') as FormArray<FormGroup>;
+}
+
+get interests(): FormArray<FormGroup> {
+  return this.form.get('interests') as FormArray<FormGroup>;
+}
+
   // ===== LOAD CV =====
   loadCv() {
     this.cvService.getCv(this.studentId).subscribe({
@@ -80,24 +90,43 @@ export class CvComponent implements OnInit {
         });
 
         // EDUCATION
+        // EDUCATION
         cv.educations.forEach(e => this.educations.push(this.fb.group({
           id: [e.id],
           institution: [e.institution],
-          degree: [e.degree]
+          degree: [e.degree],
+          fieldOfStudy: [e.fieldOfStudy],
+          startYear: [e.startYear],
+          endYear: [e.endYear]
         }) as FormGroup));
 
         // EXPERIENCE
         cv.experiences.forEach(e => this.experiences.push(this.fb.group({
           id: [e.id],
           companyName: [e.companyName],
-          position: [e.position]
+          position: [e.position],
+          description: [e.description],
+          startDate: [e.startDate],
+          endDate: [e.endDate]
         }) as FormGroup));
 
         // SKILLS
         cv.skills.forEach(s => this.skills.push(this.fb.group({
           id: [s.id],
-          skillName: [s.skillName]
+          skillName: [s.skillName],
+          skillLevel: [s.skillLevel]
         }) as FormGroup));
+
+        cv.languages.forEach(l => this.languages.push(this.fb.group({
+  id: [l.id],
+  languageName: [l.languageName],
+  level: [l.level]
+}) as FormGroup));
+
+cv.interests.forEach(i => this.interests.push(this.fb.group({
+  id: [i.id],
+  interestName: [i.interestName]
+}) as FormGroup));
       },
       error: () => {
         this.hasCv = false;
@@ -116,27 +145,34 @@ export class CvComponent implements OnInit {
 
   // ===== ADD METHODS =====
   addEducation() {
-    this.educations.push(this.fb.group({
-      id: [null],
-      institution: [''],
-      degree: ['']
-    }) as FormGroup);
-  }
+  this.educations.push(this.fb.group({
+    id: [null],
+    institution: [''],
+    degree: [''],
+    fieldOfStudy: [''],
+    startYear: [''],
+    endYear: ['']
+  }) as FormGroup);
+}
 
   addExperience() {
-    this.experiences.push(this.fb.group({
-      id: [null],
-      companyName: [''],
-      position: ['']
-    }) as FormGroup);
-  }
+  this.experiences.push(this.fb.group({
+    id: [null],
+    companyName: [''],
+    position: [''],
+    description: [''],
+    startDate: [''],
+    endDate: ['']
+  }) as FormGroup);
+}
 
   addSkill() {
-    this.skills.push(this.fb.group({
-      id: [null],
-      skillName: ['']
-    }) as FormGroup);
-  }
+  this.skills.push(this.fb.group({
+    id: [null],
+    skillName: [''],
+    skillLevel: ['']
+  }) as FormGroup);
+}
 
   removeEducation(i: number) {
     this.educations.removeAt(i);
@@ -150,62 +186,88 @@ export class CvComponent implements OnInit {
     this.skills.removeAt(i);
   }
 
+  addLanguage() {
+  this.languages.push(this.fb.group({
+    id: [null],
+    languageName: [''],
+    level: ['']
+  }) as FormGroup);
+}
+
+removeLanguage(i: number) {
+  this.languages.removeAt(i);
+}
+
+addInterest() {
+  this.interests.push(this.fb.group({
+    id: [null],
+    interestName: ['']
+  }) as FormGroup);
+}
+
+removeInterest(i: number) {
+  this.interests.removeAt(i);
+}
+
   // ===== SAVE (CREATE + UPDATE) =====
   save() {
+  const formValue = this.form.value;
 
-    const formValue = this.form.value;
+  const body = {
+    photoUrl: formValue.photoUrl,
+    summary: formValue.summary,
 
-    const body = {
-      photoUrl: formValue.photoUrl,
-      summary: formValue.summary,
+    // SAMO ID-evi postojećih stavki
+    educationIds: formValue.educations?.filter(e => e.id).map(e => e.id),
+    experienceIds: formValue.experiences?.filter(e => e.id).map(e => e.id),
+    skillIds: formValue.skills?.filter(s => s.id).map(s => s.id),
+    languageIds: formValue.languages?.filter(l => l.id).map(l => l.id),
+    interestIds: formValue.interests?.filter(i => i.id).map(i => i.id),
 
-      // postojeći
-      educationIds: formValue.educations
-        ?.filter(e => e.id)
-        .map(e => e.id),
+    // NOVI objekti sa detaljima
+    newEducations: formValue.educations?.filter(e => !e.id).map(e => ({
+      institution: e.institution,
+      degree: e.degree,
+      fieldOfStudy: e.fieldOfStudy,
+      startYear: e.startYear,
+      endYear: e.endYear
+    })),
 
-      experienceIds: formValue.experiences
-        ?.filter(e => e.id)
-        .map(e => e.id),
+    newExperiences: formValue.experiences?.filter(e => !e.id).map(e => ({
+      companyName: e.companyName,
+      position: e.position,
+      description: e.description,
+      startDate: e.startDate,
+      endDate: e.endDate
+    })),
 
-      skillIds: formValue.skills
-        ?.filter(s => s.id)
-        .map(s => s.id),
+    newSkills: formValue.skills?.filter(s => !s.id).map(s => ({
+      skillName: s.skillName,
+      skillLevel: s.skillLevel
+    })),
 
-      // novi
-      newEducations: formValue.educations
-        ?.filter(e => !e.id)
-        .map(e => ({
-          institution: e.institution,
-          degree: e.degree
-        })),
+    newLanguages: formValue.languages?.filter(l => !l.id).map(l => ({
+      languageName: l.languageName,
+      level: l.level
+    })),
 
-      newExperiences: formValue.experiences
-        ?.filter(e => !e.id)
-        .map(e => ({
-          companyName: e.companyName,
-          position: e.position
-        })),
+    newInterests: formValue.interests?.filter(i => !i.id).map(i => ({
+      interestName: i.interestName
+    }))
+  };
 
-      newSkills: formValue.skills
-        ?.filter(s => !s.id)
-        .map(s => ({
-          skillName: s.skillName
-        }))
-    };
+  const request = this.hasCv
+    ? this.cvService.updateCv(this.studentId, body)
+    : this.cvService.createCv(this.studentId, body);
 
-    const request = this.hasCv
-      ? this.cvService.updateCv(this.studentId, body)
-      : this.cvService.createCv(this.studentId, body);
-
-    request.subscribe({
-      next: () => {
-        alert(this.hasCv ? 'Updated!' : 'Created!');
-        this.loadCv();
-      },
-      error: () => alert('Error saving CV')
-    });
-  }
+  request.subscribe({
+    next: () => {
+      alert(this.hasCv ? 'Updated!' : 'Created!');
+      this.loadCv();
+    },
+    error: () => alert('Error saving CV')
+  });
+}
 
   // ===== DELETE =====
   deleteCv() {

@@ -20,6 +20,11 @@ public interface CvMapper {
     @Mapping(target = "interests", ignore = true)
     Cv toEntity(CreateCvRequest request);
 
+    @Mapping(target = "educations", source = "educations")
+    @Mapping(target = "experiences", source = "experiences")
+    @Mapping(target = "skills", source = "skills")
+    @Mapping(target = "languages", source = "languages")
+    @Mapping(target = "interests", source = "interests")
     CvResponseDTO toDto(Cv cv);
 
     List<EducationDTO> toEducationDtos(Set<Education> educations);

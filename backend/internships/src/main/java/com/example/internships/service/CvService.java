@@ -36,8 +36,8 @@ public class CvService {
     @Transactional
     public CvResponseDTO createCv(Long studentId, CreateCvRequest request) {
 
-        Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
+        Student student = studentRepository.findByUserId(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found for user id " + studentId));
 
         Cv cv = cvMapper.toEntity(request);
         cv.setStudent(student);

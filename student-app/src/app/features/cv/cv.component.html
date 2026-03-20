@@ -3,11 +3,9 @@
   <h2>My CV</h2>
 
   <!-- PHOTO -->
-<h3>Photo</h3>
+  <h3>Photo</h3>
 
   <div class="block">
-
-    <!-- Image / placeholder -->
     <div class="image-wrapper">
       @if (imagePreview || form.value.photoUrl) {
         <img [src]="imagePreview || form.value.photoUrl" alt="Preview">
@@ -16,7 +14,6 @@
       }
     </div>
 
-    <!-- Buttons -->
     <div class="photo-buttons">
       <button mat-button color="primary" type="button" (click)="fileInput.click()">
         Upload
@@ -29,13 +26,13 @@
         </button>
       }
     </div>
-
   </div>
 
   <!-- SUMMARY -->
-   <h3>Summary</h3>
+  <h3>Summary</h3>
   <mat-form-field appearance="outline" class="full-width">
-    <textarea matInput placeholder="Summary" formControlName="summary"></textarea>
+    <mat-label>Summary</mat-label>
+    <textarea matInput formControlName="summary"></textarea>
   </mat-form-field>
 
   <!-- EDUCATION -->
@@ -45,11 +42,28 @@
     <div [formGroup]="edu" class="block">
 
       <mat-form-field appearance="outline">
-        <input matInput placeholder="Institution" formControlName="institution">
+        <mat-label>Institution</mat-label>
+        <input matInput formControlName="institution">
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <input matInput placeholder="Degree" formControlName="degree">
+        <mat-label>Degree</mat-label>
+        <input matInput formControlName="degree">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Field of Study</mat-label>
+        <input matInput formControlName="fieldOfStudy">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Start Year</mat-label>
+        <input matInput type="number" formControlName="startYear">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>End Year</mat-label>
+        <input matInput type="number" formControlName="endYear">
       </mat-form-field>
 
       <button mat-button color="warn" type="button" (click)="removeEducation(i)">
@@ -61,7 +75,7 @@
     <p>No education added yet.</p>
   }
 
-  <button mat-button type="button" color="primary" (click)="addEducation()">Add education</button>
+  <button mat-button color="primary" type="button" (click)="addEducation()">Add education</button>
 
   <!-- EXPERIENCE -->
   <h3>Experience</h3>
@@ -70,11 +84,28 @@
     <div [formGroup]="exp" class="block">
 
       <mat-form-field appearance="outline">
-        <input matInput placeholder="Company" formControlName="companyName">
+        <mat-label>Company</mat-label>
+        <input matInput formControlName="companyName">
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <input matInput placeholder="Position" formControlName="position">
+        <mat-label>Position</mat-label>
+        <input matInput formControlName="position">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Start Date</mat-label>
+        <input matInput type="date" formControlName="startDate">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>End Date</mat-label>
+        <input matInput type="date" formControlName="endDate">
       </mat-form-field>
 
       <button mat-button color="warn" type="button" (click)="removeExperience(i)">
@@ -86,7 +117,7 @@
     <p>No experience added yet.</p>
   }
 
-  <button mat-button type="button" color="primary" (click)="addExperience()">Add experience</button>
+  <button mat-button color="primary" type="button" (click)="addExperience()">Add experience</button>
 
   <!-- SKILLS -->
   <h3>Skills</h3>
@@ -95,7 +126,13 @@
     <div [formGroup]="skill" class="block">
 
       <mat-form-field appearance="outline">
-        <input matInput placeholder="Skill" formControlName="skillName">
+        <mat-label>Skill</mat-label>
+        <input matInput formControlName="skillName">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Skill Level</mat-label>
+        <input matInput formControlName="skillLevel">
       </mat-form-field>
 
       <button mat-button color="warn" type="button" (click)="removeSkill(i)">
@@ -107,7 +144,56 @@
     <p>No skills added yet.</p>
   }
 
-  <button mat-button type="button" color="primary" (click)="addSkill()">Add skill</button>
+  <button mat-button color="primary" type="button" (click)="addSkill()">Add skill</button>
+
+  <!-- LANGUAGES -->
+  <h3>Languages</h3>
+
+  @for (lang of languages.controls; track lang; let i = $index) {
+    <div [formGroup]="lang" class="block">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Language</mat-label>
+        <input matInput formControlName="languageName">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Level</mat-label>
+        <input matInput formControlName="level">
+      </mat-form-field>
+
+      <button mat-button color="warn" type="button" (click)="removeLanguage(i)">
+        Remove
+      </button>
+
+    </div>
+  } @empty {
+    <p>No languages added yet.</p>
+  }
+
+  <button mat-button color="primary" type="button" (click)="addLanguage()">Add language</button>
+
+  <!-- INTERESTS -->
+  <h3>Interests</h3>
+
+  @for (int of interests.controls; track int; let i = $index) {
+    <div [formGroup]="int" class="block">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Interest</mat-label>
+        <input matInput formControlName="interestName">
+      </mat-form-field>
+
+      <button mat-button color="warn" type="button" (click)="removeInterest(i)">
+        Remove
+      </button>
+
+    </div>
+  } @empty {
+    <p>No interests added yet.</p>
+  }
+
+  <button mat-button color="primary" type="button" (click)="addInterest()">Add interest</button>
 
   <br><br>
 
