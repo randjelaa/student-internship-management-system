@@ -76,3 +76,7 @@ Thumbs.db
 # Misc / temporary
 # ===================================
 build/
+
+
+# Project uploads
+uploads/
