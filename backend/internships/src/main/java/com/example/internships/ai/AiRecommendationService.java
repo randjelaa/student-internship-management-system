@@ -2,6 +2,7 @@ package com.example.internships.ai;
 
 import com.google.genai.Client;
 import com.google.genai.types.GenerateContentResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -9,14 +10,16 @@ public class AiRecommendationService {
 
     private final Client client;
 
+    @Value("${ai.gemini.model}")
+    private String model;
+
     public AiRecommendationService() {
         this.client = new Client();
     }
 
     public String callGemini(String prompt) {
-
         GenerateContentResponse response = client.models.generateContent(
-                "gemini-3-flash-preview",
+                model,
                 prompt,
                 null
         );
@@ -25,7 +28,6 @@ public class AiRecommendationService {
     }
 
     public String buildPrompt(String cvText, String internshipsText) {
-
         return """
         You are an AI that recommends internships.
 

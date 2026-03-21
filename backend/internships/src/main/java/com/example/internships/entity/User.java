@@ -1,5 +1,6 @@
 package com.example.internships.entity;
 
+import com.example.internships.dto.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -31,10 +32,10 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @Size(max = 50)
     @NotNull
     @Column(name = "role", nullable = false, length = 50)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @ColumnDefault("1")
     @Column(name = "active")

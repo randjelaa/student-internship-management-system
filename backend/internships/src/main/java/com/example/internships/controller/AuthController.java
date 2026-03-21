@@ -41,11 +41,14 @@ public class AuthController {
 
         UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
 
-        assert principal != null;
+        if (principal == null) {
+            throw new RuntimeException("Authentication failed");
+        }
+
         LoginResponse response = new LoginResponse(
                 principal.getUser().getId(),
                 principal.getUser().getEmail(),
-                principal.getUser().getRole()
+                principal.getUser().getRole().name()
         );
 
         return ResponseEntity.ok(response);
@@ -67,7 +70,7 @@ public class AuthController {
         return new LoginResponse(
                 principal.getUser().getId(),
                 principal.getUser().getEmail(),
-                principal.getUser().getRole()
+                principal.getUser().getRole().name()
         );
     }
 }

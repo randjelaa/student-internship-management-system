@@ -1,8 +1,8 @@
 package com.example.internships.entity;
 
+import com.example.internships.dto.enums.ApplicationStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -33,9 +33,9 @@ public class Application {
     @JoinColumn(name = "internship_id", nullable = false)
     private Internship internship;
 
-    @Size(max = 50)
     @Column(name = "status", length = 50)
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ApplicationStatus status;
 
     @CreationTimestamp
     @Column(name = "applied_at", updatable = false)

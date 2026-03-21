@@ -1,5 +1,6 @@
 package com.example.internships.service;
 
+import com.example.internships.dto.enums.Role;
 import com.example.internships.entity.User;
 import com.example.internships.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +34,11 @@ public class UserService {
         User existing = getUserById(id);
 
         existing.setEmail(updatedUser.getEmail());
-        existing.setPassword(updatedUser.getPassword());
+
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isBlank()) {
+            existing.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        }
+
         existing.setRole(updatedUser.getRole());
         existing.setActive(updatedUser.getActive());
 
@@ -44,5 +49,27 @@ public class UserService {
         User user = getUserById(id);
 
         userRepository.delete(user);
+    }
+
+    public User createUser(String email, String password, Role role) {
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(passwordEncoder.encode(password));
+        user.setRole(role);
+        user.setActive(true);
+
+        return userRepository.save(user);
+    }
+
+    public void validateEmailUnique(String email, Long currentUserId) {
+        userRepository.findByEmail(email)
+                .filter(u -> !u.getId().equals(currentUserId))
+                .ifPresent(u -> {
+                    throw new RuntimeException("Email already exists");
+                });
+    }
+
+    public void updatePassword(User user, String rawPassword) {
+        user.setPassword(passwordEncoder.encode(rawPassword));
     }
 }

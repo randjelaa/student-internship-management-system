@@ -1,5 +1,6 @@
 package com.example.internships.service;
 
+import com.example.internships.dto.enums.ApplicationStatus;
 import com.example.internships.entity.Application;
 import com.example.internships.entity.Internship;
 import com.example.internships.entity.Student;
@@ -38,20 +39,20 @@ public class ApplicationService {
         Application application = new Application();
         application.setStudent(student);
         application.setInternship(internship);
-        application.setStatus("PENDING");
+        application.setStatus(ApplicationStatus.PENDING);
 
         return applicationRepository.save(application);
     }
 
     public Application acceptApplication(Long id) {
         Application application = getApplicationById(id);
-        application.setStatus("ACCEPTED");
+        application.setStatus(ApplicationStatus.ACCEPTED);
         return applicationRepository.save(application);
     }
 
     public Application rejectApplication(Long id) {
         Application application = getApplicationById(id);
-        application.setStatus("REJECTED");
+        application.setStatus(ApplicationStatus.REJECTED);
         return applicationRepository.save(application);
     }
 

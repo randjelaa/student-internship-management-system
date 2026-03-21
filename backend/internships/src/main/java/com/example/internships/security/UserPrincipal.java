@@ -23,7 +23,7 @@ public class UserPrincipal implements UserDetails {
     @NonNull
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(
-                new SimpleGrantedAuthority(user.getRole())
+                new SimpleGrantedAuthority(user.getRole().name())
         );
     }
 
