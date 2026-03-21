@@ -80,44 +80,47 @@
   <!-- EXPERIENCE -->
   <h3>Experience</h3>
 
-  @for (exp of experiences.controls; track exp; let i = $index) {
-    <div [formGroup]="exp" class="block">
+@for (exp of experiences.controls; track exp; let i = $index) {
+  <div [formGroup]="exp" class="block">
 
-      <mat-form-field appearance="outline">
-        <mat-label>Company</mat-label>
-        <input matInput formControlName="companyName">
-      </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Company</mat-label>
+      <input matInput formControlName="companyName">
+    </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Position</mat-label>
-        <input matInput formControlName="position">
-      </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Position</mat-label>
+      <input matInput formControlName="position">
+    </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Description</mat-label>
-        <textarea matInput formControlName="description"></textarea>
-      </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description"></textarea>
+    </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Start Date</mat-label>
-        <input matInput type="date" formControlName="startDate">
-      </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Start Date</mat-label>
+      <input matInput [matDatepicker]="startPicker" formControlName="startDate">
+      <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
 
-      <mat-form-field appearance="outline">
-        <mat-label>End Date</mat-label>
-        <input matInput type="date" formControlName="endDate">
-      </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>End Date</mat-label>
+      <input matInput [matDatepicker]="endPicker" formControlName="endDate">
+      <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
 
-      <button mat-button color="warn" type="button" (click)="removeExperience(i)">
-        Remove
-      </button>
+    <button mat-button color="warn" type="button" (click)="removeExperience(i)">
+      Remove
+    </button>
+  </div>
+} @empty {
+  <p>No experience added yet.</p>
+}
 
-    </div>
-  } @empty {
-    <p>No experience added yet.</p>
-  }
-
-  <button mat-button color="primary" type="button" (click)="addExperience()">Add experience</button>
+<button mat-button color="primary" type="button" (click)="addExperience()">Add experience</button>
 
   <!-- SKILLS -->
   <h3>Skills</h3>
@@ -208,8 +211,10 @@
     </button>
   }
 
-  <button mat-raised-button type="button" (click)="downloadPdf()">
-    Download PDF
-  </button>
+  @if (hasCv) {
+    <button mat-raised-button type="button" (click)="downloadPdf()">
+      Download PDF
+    </button>
+  }
 
 </form>

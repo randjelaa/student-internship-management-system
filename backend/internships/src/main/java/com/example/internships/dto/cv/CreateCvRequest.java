@@ -10,17 +10,10 @@ public class CreateCvRequest {
     private String photoUrl;
     private String summary;
 
-    // postojeći ID-evi
-    private Set<Long> educationIds;
-    private Set<Long> experienceIds;
-    private Set<Long> skillIds;
-    private Set<Long> languageIds;
-    private Set<Long> interestIds;
-
-    // novi objekti
-    private Set<CreateEducationRequest> newEducations;
-    private Set<CreateExperienceRequest> newExperiences;
-    private Set<CreateSkillRequest> newSkills;
-    private Set<CreateLanguageRequest> newLanguages;
-    private Set<CreateInterestRequest> newInterests;
+    // Koristimo DTO-ove koji mogu imati ID (za update) ili biti bez njega (za create)
+    private Set<EducationDTO> educations;
+    private Set<ExperienceDTO> experiences;
+    private Set<SkillDTO> skills;
+    private Set<LanguageDTO> languages;
+    private Set<InterestDTO> interests;
 }

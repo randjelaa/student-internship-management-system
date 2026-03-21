@@ -8,8 +8,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.itextpdf.io.source.ByteArrayOutputStream;
@@ -17,6 +18,9 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
+
+import com.itextpdf.layout.element.Image;
+import com.itextpdf.io.image.ImageDataFactory;
 
 @Service
 @RequiredArgsConstructor
@@ -96,6 +100,31 @@ public class CvService {
             PdfWriter writer = new PdfWriter(baos);
             PdfDocument pdfDoc = new PdfDocument(writer);
             Document document = new Document(pdfDoc);
+
+            if (cv.getPhotoUrl() != null && !cv.getPhotoUrl().isEmpty()) {
+                try {
+                    String filename = null;
+
+                    if (cv.getPhotoUrl() != null && cv.getPhotoUrl().contains("/")) {
+                        filename = cv.getPhotoUrl().substring(cv.getPhotoUrl().lastIndexOf("/") + 1);
+                    }
+
+                    if (filename != null) {
+                        try {
+                            byte[] imageBytes = Files.readAllBytes(Paths.get("uploads/" + filename));
+                            Image img = new Image(ImageDataFactory.create(imageBytes));
+                            img.setWidth(100);
+                            img.setHeight(100);
+                            document.add(img);
+                        } catch (Exception e) {
+                            System.out.println("Image load failed: " + e.getMessage());
+                        }
+                    }
+                } catch (Exception e) {
+                    // ako slika ne može da se učita, ignoriši
+                    System.out.println("Image load failed: " + e.getMessage());
+                }
+            }
 
             document.add(new Paragraph("CV for: " +
                     cv.getStudent().getFirstName() + " " +
@@ -178,27 +207,29 @@ public class CvService {
     private Set<Education> handleEducations(CreateCvRequest request, Student student, Long studentId) {
         Set<Education> result = new HashSet<>();
 
-        if (request.getEducationIds() != null) {
-            List<Education> existing = educationRepository.findAllById(request.getEducationIds());
-            existing.forEach(e -> {
-                if (!e.getStudent().getId().equals(studentId)) {
-                    throw new RuntimeException("Education ne pripada studentu");
+        if (request.getEducations() != null) {
+            for (EducationDTO dto : request.getEducations()) {
+                Education edu;
+
+                if (dto.getId() != null) {
+                    edu = educationRepository.findById(dto.getId())
+                            .orElseThrow(() -> new RuntimeException("Education not found: " + dto.getId()));
+
+                    if (!edu.getStudent().getId().equals(studentId)) {
+                        throw new RuntimeException("Niste vlasnik ovog zapisa");
+                    }
+                } else {
+                    edu = new Education();
+                    edu.setStudent(student);
                 }
-            });
-            result.addAll(existing);
-        }
 
-        if (request.getNewEducations() != null) {
-            for (CreateEducationRequest eReq : request.getNewEducations()) {
-                Education e = new Education();
-                e.setStudent(student);
-                e.setInstitution(eReq.getInstitution());
-                e.setDegree(eReq.getDegree());
-                e.setFieldOfStudy(eReq.getFieldOfStudy());
-                e.setStartYear(eReq.getStartYear());
-                e.setEndYear(eReq.getEndYear());
+                edu.setInstitution(dto.getInstitution());
+                edu.setDegree(dto.getDegree());
+                edu.setFieldOfStudy(dto.getFieldOfStudy());
+                edu.setStartYear(dto.getStartYear());
+                edu.setEndYear(dto.getEndYear());
 
-                result.add(educationRepository.save(e));
+                result.add(educationRepository.save(edu));
             }
         }
 
@@ -208,54 +239,60 @@ public class CvService {
     private Set<Experience> handleExperiences(CreateCvRequest request, Student student, Long studentId) {
         Set<Experience> result = new HashSet<>();
 
-        if (request.getExperienceIds() != null) {
-            List<Experience> existing = experienceRepository.findAllById(request.getExperienceIds());
-            existing.forEach(e -> {
-                if (!e.getStudent().getId().equals(studentId)) {
-                    throw new RuntimeException("Experience ne pripada studentu");
+        if (request.getExperiences() != null) {
+            for (ExperienceDTO dto : request.getExperiences()) {
+                Experience experience;
+
+                if (dto.getId() != null) {
+                    // UPDATE POSTOJEĆEG
+                    experience = experienceRepository.findById(dto.getId())
+                            .orElseThrow(() -> new RuntimeException("Experience not found: " + dto.getId()));
+
+                    if (!experience.getStudent().getId().equals(studentId)) {
+                        throw new RuntimeException("Niste vlasnik ovog zapisa");
+                    }
+                } else {
+                    // KREIRANJE NOVOG
+                    experience = new Experience();
+                    experience.setStudent(student);
                 }
-            });
-            result.addAll(existing);
-        }
 
-        if (request.getNewExperiences() != null) {
-            for (CreateExperienceRequest exReq : request.getNewExperiences()) {
-                Experience e = new Experience();
-                e.setStudent(student);
-                e.setCompanyName(exReq.getCompanyName());
-                e.setPosition(exReq.getPosition());
-                e.setDescription(exReq.getDescription());
-                e.setStartDate(exReq.getStartDate());
-                e.setEndDate(exReq.getEndDate());
+                // Mapiranje polja (možeš koristiti i MapStruct ovdje ako želiš)
+                experience.setCompanyName(dto.getCompanyName());
+                experience.setPosition(dto.getPosition());
+                experience.setDescription(dto.getDescription());
+                experience.setStartDate(dto.getStartDate());
+                experience.setEndDate(dto.getEndDate());
 
-                result.add(experienceRepository.save(e));
+                result.add(experienceRepository.save(experience));
             }
         }
-
         return result;
     }
 
     private Set<Skill> handleSkills(CreateCvRequest request, Student student, Long studentId) {
         Set<Skill> result = new HashSet<>();
 
-        if (request.getSkillIds() != null) {
-            List<Skill> existing = skillRepository.findAllById(request.getSkillIds());
-            existing.forEach(s -> {
-                if (!s.getStudent().getId().equals(studentId)) {
-                    throw new RuntimeException("Skill ne pripada studentu");
+        if (request.getSkills() != null) {
+            for (SkillDTO dto : request.getSkills()) {
+                Skill skill;
+
+                if (dto.getId() != null) {
+                    skill = skillRepository.findById(dto.getId())
+                            .orElseThrow(() -> new RuntimeException("Skill not found: " + dto.getId()));
+
+                    if (!skill.getStudent().getId().equals(studentId)) {
+                        throw new RuntimeException("Niste vlasnik ovog zapisa");
+                    }
+                } else {
+                    skill = new Skill();
+                    skill.setStudent(student);
                 }
-            });
-            result.addAll(existing);
-        }
 
-        if (request.getNewSkills() != null) {
-            for (CreateSkillRequest sReq : request.getNewSkills()) {
-                Skill s = new Skill();
-                s.setStudent(student);
-                s.setSkillName(sReq.getSkillName());
-                s.setSkillLevel(sReq.getSkillLevel());
+                skill.setSkillName(dto.getSkillName());
+                skill.setSkillLevel(dto.getSkillLevel());
 
-                result.add(skillRepository.save(s));
+                result.add(skillRepository.save(skill));
             }
         }
 
@@ -265,24 +302,26 @@ public class CvService {
     private Set<Language> handleLanguages(CreateCvRequest request, Student student, Long studentId) {
         Set<Language> result = new HashSet<>();
 
-        if (request.getLanguageIds() != null) {
-            List<Language> existing = languageRepository.findAllById(request.getLanguageIds());
-            existing.forEach(l -> {
-                if (!l.getStudent().getId().equals(studentId)) {
-                    throw new RuntimeException("Language ne pripada studentu");
+        if (request.getLanguages() != null) {
+            for (LanguageDTO dto : request.getLanguages()) {
+                Language lang;
+
+                if (dto.getId() != null) {
+                    lang = languageRepository.findById(dto.getId())
+                            .orElseThrow(() -> new RuntimeException("Language not found: " + dto.getId()));
+
+                    if (!lang.getStudent().getId().equals(studentId)) {
+                        throw new RuntimeException("Niste vlasnik ovog zapisa");
+                    }
+                } else {
+                    lang = new Language();
+                    lang.setStudent(student);
                 }
-            });
-            result.addAll(existing);
-        }
 
-        if (request.getNewLanguages() != null) {
-            for (CreateLanguageRequest lReq : request.getNewLanguages()) {
-                Language l = new Language();
-                l.setStudent(student);
-                l.setLanguageName(lReq.getLanguageName());
-                l.setLevel(lReq.getLevel());
+                lang.setLanguageName(dto.getLanguageName());
+                lang.setLevel(dto.getLevel());
 
-                result.add(languageRepository.save(l));
+                result.add(languageRepository.save(lang));
             }
         }
 
@@ -292,23 +331,25 @@ public class CvService {
     private Set<Interest> handleInterests(CreateCvRequest request, Student student, Long studentId) {
         Set<Interest> result = new HashSet<>();
 
-        if (request.getInterestIds() != null) {
-            List<Interest> existing = interestRepository.findAllById(request.getInterestIds());
-            existing.forEach(i -> {
-                if (!i.getStudent().getId().equals(studentId)) {
-                    throw new RuntimeException("Interest ne pripada studentu");
+        if (request.getInterests() != null) {
+            for (InterestDTO dto : request.getInterests()) {
+                Interest interest;
+
+                if (dto.getId() != null) {
+                    interest = interestRepository.findById(dto.getId())
+                            .orElseThrow(() -> new RuntimeException("Interest not found: " + dto.getId()));
+
+                    if (!interest.getStudent().getId().equals(studentId)) {
+                        throw new RuntimeException("Niste vlasnik ovog zapisa");
+                    }
+                } else {
+                    interest = new Interest();
+                    interest.setStudent(student);
                 }
-            });
-            result.addAll(existing);
-        }
 
-        if (request.getNewInterests() != null) {
-            for (CreateInterestRequest iReq : request.getNewInterests()) {
-                Interest i = new Interest();
-                i.setStudent(student);
-                i.setInterestName(iReq.getInterestName());
+                interest.setInterestName(dto.getInterestName());
 
-                result.add(interestRepository.save(i));
+                result.add(interestRepository.save(interest));
             }
         }
 
