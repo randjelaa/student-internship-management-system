@@ -4,6 +4,7 @@ import { User } from '../models/user.model';
 import { tap } from 'rxjs';
 import { switchMap } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { catchError, of, Observable } from 'rxjs'; 
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +13,29 @@ export class AuthService {
 
   private userSignal = signal<User | null>(null);
   private api = environment.apiUrl;
+  private isAuthenticating = signal<boolean>(true);
 
   constructor(private http: HttpClient) {}
+
+  checkAuth(): Observable<User | null> {
+  return this.http.get<User>(`${this.api}/auth/me`).pipe(
+    tap({
+      next: (user) => {
+        this.userSignal.set(user);
+        this.isAuthenticating.set(false);
+      },
+      error: () => {
+        this.userSignal.set(null);
+        this.isAuthenticating.set(false);
+      }
+    }),
+    catchError(() => {
+      this.userSignal.set(null);
+      this.isAuthenticating.set(false);
+      return of(null); 
+    })
+  );
+}
 
   login(email: string, password: string) {
     return this.http.post(`${this.api}/auth/login`, {
