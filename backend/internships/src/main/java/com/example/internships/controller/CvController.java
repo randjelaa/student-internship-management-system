@@ -16,47 +16,47 @@ import java.nio.file.Paths;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/students/{studentId}/cv")
+@RequestMapping("/api/students/{userId}/cv")
 @RequiredArgsConstructor
 public class CvController {
 
     private final CvService cvService;
 
     @GetMapping
-    public CvResponseDTO getCv(@PathVariable Long studentId) {
-        return cvService.getCvByStudentId(studentId);
+    public CvResponseDTO getCv(@PathVariable Long userId) {
+        return cvService.getCvByUserId(userId);
     }
 
     @PostMapping
-    public CvResponseDTO createCv(@PathVariable Long studentId,
-                       @RequestBody CreateCvRequest request) {
-        return cvService.createCv(studentId, request);
+    public CvResponseDTO createCv(@PathVariable Long userId,
+                                  @RequestBody CreateCvRequest request) {
+        return cvService.createCv(userId, request);
     }
 
     @PutMapping
-    public CvResponseDTO updateCv(@PathVariable Long studentId,
-                       @RequestBody CreateCvRequest request) {
-        return cvService.updateCv(studentId, request);
+    public CvResponseDTO updateCv(@PathVariable Long userId,
+                                  @RequestBody CreateCvRequest request) {
+        return cvService.updateCv(userId, request);
     }
 
     @DeleteMapping
-    public void deleteCv(@PathVariable Long studentId) {
-        cvService.deleteCv(studentId);
+    public void deleteCv(@PathVariable Long userId) {
+        cvService.deleteCv(userId);
     }
 
     @GetMapping("/pdf")
-    public ResponseEntity<byte[]> downloadCvPdf(@PathVariable Long studentId) {
-        byte[] pdfBytes = cvService.generateCvPdf(studentId);
+    public ResponseEntity<byte[]> downloadCvPdf(@PathVariable Long userId) {
+        byte[] pdfBytes = cvService.generateCvPdf(userId);
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=cv_" + studentId + ".pdf")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=cv_" + userId + ".pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfBytes);
     }
 
     @PostMapping("/upload-image")
     public ResponseEntity<String> uploadImage(
-            @PathVariable Long studentId,
+            @PathVariable Long userId,
             @RequestParam("file") MultipartFile file
     ) {
         try {
