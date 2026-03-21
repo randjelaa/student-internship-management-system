@@ -1,0 +1,17 @@
+@if (internship) {
+  <h2>{{ internship.title }}</h2>
+
+  <p><b>Company:</b> {{ internship.companyName }}</p>
+  <p><b>Location:</b> {{ internship.location }}</p>
+
+  <p>{{ internship.description }}</p>
+
+  <h4>Technologies</h4>
+  <ul>
+    @for (t of internship.technologies; track t) {
+      <li>{{ t }}</li>
+    }
+  </ul>
+
+  <button (click)="apply()">Apply</button>
+}

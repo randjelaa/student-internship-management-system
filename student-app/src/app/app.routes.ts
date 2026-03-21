@@ -32,6 +32,12 @@ export const routes: Routes = [
             .then(m => m.InternshipsComponent)
       },
       {
+        path: 'internship-details/:id',
+        loadComponent: () =>
+          import('./features/internships/internship-details.component')
+            .then(m => m.InternshipDetailsComponent)
+      },
+      {
         path: 'recommendations',
         loadComponent: () =>
           import('./features/recommendations/recommendations.component')

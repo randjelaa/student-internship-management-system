@@ -1,1 +1,23 @@
-<p>internships works!</p>
+<h2>Internships</h2>
+
+<input
+  [(ngModel)]="search"
+  (input)="filter()"
+  placeholder="Search by title"
+/>
+
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Company</th>
+    <th>Location</th>
+  </tr>
+
+  @for (i of filtered; track i.id) {
+    <tr (click)="openDetails(i.id)" style="cursor:pointer">
+      <td>{{ i.title }}</td>
+      <td>{{ i.companyName }}</td>
+      <td>{{ i.location }}</td>
+    </tr>
+  }
+</table>
