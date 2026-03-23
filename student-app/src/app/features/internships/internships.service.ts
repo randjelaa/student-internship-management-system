@@ -36,4 +36,13 @@ getCompanies() {
 getTechnologies() {
   return this.http.get<string[]>('http://localhost:8080/api/technologies');
 }
+
+generateRecommendations() {
+  // Šaljemo prazan body jer backend koristi ulogovanog korisnika
+  return this.http.post<any[]>('http://localhost:8080/api/recommendations/generate', {});
+}
+
+getRecommendations() {
+  return this.http.get<any[]>('http://localhost:8080/api/recommendations');
+}
 }

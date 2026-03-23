@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { forkJoin } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-internships',
@@ -19,7 +20,8 @@ import { CommonModule } from '@angular/common';
   MatButtonModule,
   MatInputModule,
   MatSelectModule,
-  CommonModule
+  CommonModule,
+  MatCardModule
 ],
   templateUrl: './internships.component.html',
   styleUrl: './internships.component.css'
@@ -47,6 +49,9 @@ displayedColumns: string[] = [
 companies: string[] = [];
 technologies: string[] = [];
 
+recommendations: any[] = [];
+loadingRecommendations = false;
+
   constructor(
     private service: InternshipsService,
     private router: Router
@@ -72,6 +77,10 @@ technologies: string[] = [];
     this.applicationsMap[a.internshipId] = a;
   });
 });
+this.service.getRecommendations().subscribe({
+    next: (res) => this.recommendations = res,
+    error: (err) => console.error('Greška pri dobavljanju preporuka', err)
+  });
 }
 
   filter() {
@@ -121,5 +130,32 @@ resetFilters() {
   this.companyFilter = '';
   this.technologyFilter = '';
   this.filtered = this.internships;
+}
+
+generateAI() {
+  this.loadingRecommendations = true;
+  this.service.generateRecommendations().subscribe({
+    next: (res) => {
+      this.recommendations = res;
+      this.loadingRecommendations = false;
+    },
+    error: (err) => {
+      console.error('AI Error', err);
+      this.loadingRecommendations = false;
+    }
+  });
+}
+
+// Score 0.85 -> 8.5
+getFormattedScore(score: number): string {
+  return (score * 10).toFixed(1);
+}
+
+// Boja na osnovu ocene
+getScoreColor(score: number): string {
+  const val = score * 10;
+  if (val >= 8) return '#2e7d32'; // Zelena
+  if (val >= 5) return '#f9a825'; // Žuta/Narandžasta
+  return '#d32f2f'; // Crvena
 }
 }

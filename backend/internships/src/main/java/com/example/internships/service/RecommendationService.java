@@ -30,9 +30,9 @@ public class RecommendationService {
     private final RecommendationRepository recommendationRepository;
     private final AiRecommendationService aiService;
 
-    public List<RecommendationResponseDTO> generate(Long studentId) {
+    public List<RecommendationResponseDTO> generate(Long userId) {
 
-        Student student = studentRepository.findById(studentId)
+        Student student = studentRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
         // 1️⃣ CV
@@ -101,9 +101,11 @@ public class RecommendationService {
     }
 
     // ✅ GET endpoint
-    public List<RecommendationResponseDTO> getByStudent(Long studentId) {
+    public List<RecommendationResponseDTO> getByStudent(Long userId) {
+        Student student = studentRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        return recommendationRepository.findByStudentId(studentId)
+        return recommendationRepository.findByStudentId(student.getId())
                 .stream()
                 .sorted(Comparator.comparing(Recommendation::getScore).reversed())
                 .map(r -> {

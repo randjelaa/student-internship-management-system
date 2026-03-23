@@ -86,3 +86,46 @@
   ></tr>
 
 </table>
+
+<div class="recommendations-container" style="margin-top: 40px; padding: 20px; background: #fafafa; border-radius: 8px;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2 style="margin: 0;">AI Match Recommendations</h2>
+    <button mat-raised-button color="accent" (click)="generateAI()" [disabled]="loadingRecommendations">
+      <span *ngIf="!loadingRecommendations">Generate New Suggestions</span>
+      <span *ngIf="loadingRecommendations">Analyzing CV...</span>
+    </button>
+  </div>
+
+  <div *ngIf="loadingRecommendations" style="text-align: center; padding: 20px;">
+    <p>Our AI is comparing your skills with available internships...</p>
+  </div>
+
+  <div *ngIf="recommendations.length > 0; else noRecs" 
+       style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+    
+    <mat-card *ngFor="let rec of recommendations" class="mat-elevation-z3">
+      <mat-card-header>
+        <div mat-card-avatar [style.backgroundColor]="getScoreColor(rec.score)" 
+             style="color: white; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold;">
+          {{ getFormattedScore(rec.score) }}
+        </div>
+        <mat-card-title>{{ rec.internshipTitle }}</mat-card-title>
+        <mat-card-subtitle>Match Rating: {{ getFormattedScore(rec.score) }} / 10</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content style="margin-top: 12px;">
+        <p style="font-style: italic; color: #666;">"{{ rec.explanation }}"</p>
+      </mat-card-content>
+
+      <mat-card-actions align="end">
+        <button mat-button color="primary" (click)="openDetails(rec.internshipId)">VIEW INTERNSHIP</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <ng-template #noRecs>
+    <div *ngIf="!loadingRecommendations" style="text-align: center; color: #888; padding: 40px;">
+      <p>Click the button above to get personalized internship recommendations based on your profile.</p>
+    </div>
+  </ng-template>
+</div>
