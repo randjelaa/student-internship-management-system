@@ -4,11 +4,14 @@ import com.example.internships.dto.application.ApplicationResponseDTO;
 import com.example.internships.dto.application.CreateApplicationRequest;
 import com.example.internships.mapper.ApplicationMapper;
 import com.example.internships.entity.Application;
+import com.example.internships.security.UserPrincipal;
 import com.example.internships.service.ApplicationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController
@@ -33,8 +36,11 @@ public class ApplicationController {
     }
 
     @PostMapping
-    public ApplicationResponseDTO createApplication(@RequestBody CreateApplicationRequest request) {
-        Application application = applicationService.createApplication(request.getStudentId(), request.getInternshipId());
+    public ApplicationResponseDTO createApplication(
+            @RequestBody CreateApplicationRequest request,
+            Authentication authentication) {
+        Long userId = ((UserPrincipal) Objects.requireNonNull(authentication.getPrincipal())).getUser().getId();
+        Application application = applicationService.createApplication(userId, request.getInternshipId());
         return applicationMapper.toResponse(application);
     }
 
@@ -51,5 +57,14 @@ public class ApplicationController {
     @DeleteMapping("/{id}")
     public void deleteApplication(@PathVariable Long id) {
         applicationService.deleteApplication(id);
+    }
+
+    @GetMapping("/my")
+    public List<ApplicationResponseDTO> getMyApplications(Authentication authentication) {
+        Long userId = ((UserPrincipal) Objects.requireNonNull(authentication.getPrincipal())).getUser().getId();
+        return applicationService.getApplicationsByUserId(userId)
+                .stream()
+                .map(applicationMapper::toResponse)
+                .collect(Collectors.toList());
     }
 }

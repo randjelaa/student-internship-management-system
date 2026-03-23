@@ -34,7 +34,7 @@ export class InternshipDetailsComponent implements OnInit {
     return;
   }
 
-  this.service.apply(this.internship.id, user.id)
+  this.service.apply(this.internship.id)
     .subscribe({
       next: () => alert('Applied!'),
       error: () => alert('Already applied or error')

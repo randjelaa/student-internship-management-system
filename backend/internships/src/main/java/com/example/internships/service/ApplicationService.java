@@ -29,8 +29,8 @@ public class ApplicationService {
                 .orElseThrow(() -> new RuntimeException("Application not found"));
     }
 
-    public Application createApplication(Long studentId, Long internshipId) {
-        Student student = studentRepository.findById(studentId)
+    public Application createApplication(Long userId, Long internshipId) {
+        Student student = studentRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
         Internship internship = internshipRepository.findById(internshipId)
@@ -59,5 +59,10 @@ public class ApplicationService {
     public void deleteApplication(Long id) {
         Application application = getApplicationById(id);
         applicationRepository.delete(application);
+    }
+
+    public List<Application> getApplicationsByUserId(Long userId) {
+        Long studentId = studentRepository.findByUserId(userId).orElseThrow().getId();
+        return applicationRepository.findByStudentId(studentId);
     }
 }
