@@ -43,7 +43,8 @@ displayedColumns: string[] = [
   'company',
   'location',
   'status',
-  'actions'
+  'actions',
+  'workLog'
 ];
 
 companies: string[] = [];
@@ -157,5 +158,11 @@ getScoreColor(score: number): string {
   if (val >= 8) return '#2e7d32'; // Zelena
   if (val >= 5) return '#f9a825'; // Žuta/Narandžasta
   return '#d32f2f'; // Crvena
+}
+
+// Dodaj 'workLog' u displayedColumns niz
+// U InternshipsComponent.ts
+goToWorkLogs(internshipId: number) {
+  this.router.navigate(['/worklog', internshipId]);
 }
 }

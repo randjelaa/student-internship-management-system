@@ -1,12 +1,15 @@
 package com.example.internships.controller;
 
 import com.example.internships.dto.worklog.*;
+import com.example.internships.security.UserPrincipal;
 import com.example.internships.service.WorkLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/worklogs")
@@ -28,8 +31,12 @@ public class WorkLogController {
     }
 
     @PostMapping
-    public ResponseEntity<WorkLogResponseDTO> createWorkLog(@RequestBody CreateWorkLogRequest request) {
-        WorkLogResponseDTO created = workLogService.createWorkLog(request);
+    public ResponseEntity<WorkLogResponseDTO> createWorkLog(
+            @RequestBody CreateWorkLogRequest request,
+            Authentication authentication
+    ) {
+        Long userId = ((UserPrincipal) Objects.requireNonNull(authentication.getPrincipal())).getUser().getId();
+        WorkLogResponseDTO created = workLogService.createWorkLog(request, userId);
         return ResponseEntity.ok(created);
     }
 
@@ -46,5 +53,11 @@ public class WorkLogController {
     public ResponseEntity<Void> deleteWorkLog(@PathVariable Long id) {
         workLogService.deleteWorkLog(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/my")
+    public List<WorkLogResponseDTO> getMyWorkLogs(Authentication authentication) {
+        Long userId = ((UserPrincipal) Objects.requireNonNull(authentication.getPrincipal())).getUser().getId();
+        return workLogService.getMyWorkLogs(userId);
     }
 }

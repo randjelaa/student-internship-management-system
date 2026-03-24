@@ -2,10 +2,12 @@ package com.example.internships.dto.worklog;
 
 import lombok.Data;
 
+import java.time.LocalDate;
+
 @Data
 public class CreateWorkLogRequest {
-    private Long studentId;
     private Long internshipId;
-    private Integer weekNumber;
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String description;
 }

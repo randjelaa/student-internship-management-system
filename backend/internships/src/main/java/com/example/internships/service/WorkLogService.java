@@ -35,8 +35,8 @@ public class WorkLogService {
         return workLogMapper.toResponse(workLog);
     }
 
-    public WorkLogResponseDTO createWorkLog(CreateWorkLogRequest request) {
-        Student student = studentRepository.findById(request.getStudentId())
+    public WorkLogResponseDTO createWorkLog(CreateWorkLogRequest request, Long userId) {
+        Student student = studentRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
         Internship internship = internshipRepository.findById(request.getInternshipId())
@@ -64,5 +64,15 @@ public class WorkLogService {
             throw new RuntimeException("WorkLog not found");
         }
         workLogRepository.deleteById(id);
+    }
+
+    public List<WorkLogResponseDTO> getMyWorkLogs(Long userId) {
+        Student student = studentRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        return workLogRepository.findByStudentId(student.getId())
+                .stream()
+                .map(workLogMapper::toResponse)
+                .toList();
     }
 }

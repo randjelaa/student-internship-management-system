@@ -240,7 +240,8 @@ CREATE TABLE work_logs (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     student_id BIGINT NOT NULL,
     internship_id BIGINT NOT NULL,
-    week_number INT,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
     description TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 

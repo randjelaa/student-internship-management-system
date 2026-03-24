@@ -44,11 +44,17 @@ export const routes: Routes = [
             .then(m => m.RecommendationsComponent)
       },
       {
-        path: 'worklog',
-        loadComponent: () =>
-          import('./features/worklog/worklog.component')
-            .then(m => m.WorklogComponent)
-      },
+  path: 'worklog', // Ovo će sada biti lista svih prihvaćenih praksi
+  loadComponent: () =>
+    import('./features/worklog/worklog-list.component') // Nova komponenta sa karticama
+      .then(m => m.WorkLogListComponent)
+},
+{
+  path: 'worklog/:id', // Ovo je stranica gde se zapravo kuca dnevnik za određenu praksu
+  loadComponent: () =>
+    import('./features/worklog/worklog.component') // Postojeća komponenta sa formom i listom logova
+      .then(m => m.WorkLogComponent)
+},
       {
         path: '',
         redirectTo: 'dashboard',

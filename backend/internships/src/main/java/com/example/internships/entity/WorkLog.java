@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -32,8 +33,11 @@ public class WorkLog {
     @JoinColumn(name = "internship_id", nullable = false)
     private Internship internship;
 
-    @Column(name = "week_number")
-    private Integer weekNumber;
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    @Column(name = "end_date")
+    private LocalDate endDate;
 
     @Lob
     @Column(name = "description")
