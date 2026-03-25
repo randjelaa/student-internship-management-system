@@ -10,6 +10,8 @@ import com.example.internships.repository.InternshipRepository;
 import com.example.internships.repository.TechnologyRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -26,13 +28,6 @@ public class InternshipService {
     private final CompanyRepository companyRepository;
     private final TechnologyRepository technologyRepository;
     private final InternshipMapper internshipMapper;
-
-    public List<InternshipSummaryDTO> getAllInternships() {
-        return internshipRepository.findAll()
-                .stream()
-                .map(internshipMapper::toSummary)
-                .collect(Collectors.toList());
-    }
 
     public InternshipResponseDTO getInternshipById(Long id) {
         Internship internship = internshipRepository.findById(id)
@@ -86,19 +81,16 @@ public class InternshipService {
         internshipRepository.delete(internship);
     }
 
-    public List<InternshipSummaryDTO> filterByCompany(Long companyId) {
-        return internshipRepository.findAll()
-                .stream()
-                .filter(i -> i.getCompany().getId().equals(companyId))
-                .map(internshipMapper::toSummary)
-                .collect(Collectors.toList());
-    }
-
-    public List<InternshipSummaryDTO> filterByTechnology(Long technologyId) {
-        return internshipRepository.findAll()
-                .stream()
-                .filter(i -> i.getTechnologies().stream().anyMatch(t -> t.getId().equals(technologyId)))
-                .map(internshipMapper::toSummary)
-                .collect(Collectors.toList());
+    public Page<InternshipSummaryDTO> getInternships(String title, Long companyId, Long techId, Pageable pageable) {
+        if (companyId != null) {
+            return internshipRepository.findByTitleContainingIgnoreCaseAndCompanyId(title, companyId, pageable)
+                    .map(internshipMapper::toSummary);
+        }
+        if (techId != null) {
+            return internshipRepository.findByTitleContainingIgnoreCaseAndTechnologiesId(title, techId, pageable)
+                    .map(internshipMapper::toSummary);
+        }
+        return internshipRepository.findByTitleContainingIgnoreCase(title, pageable)
+                .map(internshipMapper::toSummary);
     }
 }

@@ -10,6 +10,10 @@ import com.example.internships.repository.WorkLogRepository;
 import com.example.internships.repository.InternshipRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,6 +40,12 @@ public class WorkLogService {
         return workLogMapper.toResponse(workLog);
     }
 
+    public Page<WorkLogResponseDTO> getWorkLogsByInternship(Long internshipId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("startDate").descending());
+        return workLogRepository.findByInternshipId(internshipId, pageable)
+                .map(workLogMapper::toResponse);
+    }
+
     @Transactional
     public WorkLogResponseDTO createWorkLog(CreateWorkLogRequest request, Long userId) {
         Student student = studentRepository.findByUserId(userId)
@@ -48,8 +58,7 @@ public class WorkLogService {
         workLog.setStudent(student);
         workLog.setInternship(internship);
 
-        WorkLog saved = workLogRepository.save(workLog);
-        return workLogMapper.toResponse(saved);
+        return workLogMapper.toResponse(workLogRepository.save(workLog));
     }
 
     @Transactional
@@ -70,13 +79,13 @@ public class WorkLogService {
         workLogRepository.deleteById(id);
     }
 
-    public List<WorkLogResponseDTO> getMyWorkLogs(Long userId) {
-        Student student = studentRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
-
-        return workLogRepository.findByStudentId(student.getId())
-                .stream()
-                .map(workLogMapper::toResponse)
-                .toList();
-    }
+//    public List<WorkLogResponseDTO> getMyWorkLogs(Long userId) {
+//        Student student = studentRepository.findByUserId(userId)
+//                .orElseThrow(() -> new RuntimeException("Student not found"));
+//
+//        return workLogRepository.findByStudentId(student.getId())
+//                .stream()
+//                .map(workLogMapper::toResponse)
+//                .toList();
+//    }
 }

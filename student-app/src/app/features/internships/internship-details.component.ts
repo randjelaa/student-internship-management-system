@@ -1,22 +1,35 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+import { forkJoin } from 'rxjs';
+
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { ActivatedRoute } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
+
 import { InternshipsService } from './internships.service';
 import { AuthService } from '../../core/auth/auth.service';
-import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-internship-details',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatButtonModule],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatChipsModule,
+    MatDividerModule,
+    RouterModule,
+  ],
   templateUrl: './internship-details.component.html',
+  styleUrl: './internship-details.component.css',
 })
-
 export class InternshipDetailsComponent implements OnInit {
   internship: any;
-  applicationsMap: { [key: number]: any } = {}; 
+  applicationsMap: { [key: number]: any } = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -32,7 +45,6 @@ export class InternshipDetailsComponent implements OnInit {
       applications: this.service.getMyApplications(),
     }).subscribe(({ internship, applications }) => {
       this.internship = internship;
-      this.applicationsMap = {};
       applications.forEach((a) => {
         this.applicationsMap[a.internshipId] = a;
       });
@@ -44,8 +56,7 @@ export class InternshipDetailsComponent implements OnInit {
   }
 
   apply() {
-    const user = this.auth.getUser();
-    if (!user) {
+    if (!this.auth.isLoggedIn()) {
       alert('You must be logged in');
       return;
     }
@@ -53,9 +64,8 @@ export class InternshipDetailsComponent implements OnInit {
     this.service.apply(this.internship.id).subscribe({
       next: (app: any) => {
         this.applicationsMap[this.internship.id] = app;
-        alert('Applied!');
       },
-      error: () => alert('Already applied or error'),
+      error: () => alert('Error during application'),
     });
   }
 }

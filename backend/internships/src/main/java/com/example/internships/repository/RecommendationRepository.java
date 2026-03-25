@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface RecommendationRepository extends JpaRepository<Recommendation, Long> {
     List<Recommendation> findByStudentId(Long studentId);
+    void deleteByStudentId(Long studentId);
 }

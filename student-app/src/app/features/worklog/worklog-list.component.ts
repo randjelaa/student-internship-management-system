@@ -32,16 +32,18 @@ export class WorkLogListComponent implements OnInit {
     this.loading = true;
 
     forkJoin({
-      allInternships: this.internshipService.getAllInternships(),
+      allInternships: this.internshipService.getAllInternships(0, 100),
       myApplications: this.internshipService.getMyApplications(),
     }).subscribe({
       next: ({ allInternships, myApplications }) => {
+        const internshipsData = allInternships.content || [];
+
         const acceptedIds = myApplications
           .filter((app: any) => app.status === 'ACCEPTED')
           .map((app: any) => app.internshipId);
 
-        this.acceptedInternships = allInternships.filter((internship) =>
-          acceptedIds.includes(internship.id),
+        this.acceptedInternships = internshipsData.filter(
+          (internship: Internship) => acceptedIds.includes(internship.id),
         );
 
         this.loading = false;

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Internship } from '../../core/models/internship.model';
 import { environment } from '../../../environments/environment';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable({ providedIn: 'root' })
 export class InternshipsService {
@@ -14,8 +14,22 @@ export class InternshipsService {
 
   constructor(private http: HttpClient) {}
 
-  getAllInternships(): Observable<Internship[]> {
-    return this.http.get<Internship[]>(this.baseUrlInternships);
+  getAllInternships(
+    page: number,
+    size: number,
+    search: string = '',
+    companyId?: number,
+    techId?: number,
+  ): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('search', search);
+
+    if (companyId) params = params.set('company', companyId.toString());
+    if (techId) params = params.set('technology', techId.toString());
+
+    return this.http.get<any>(this.baseUrlInternships, { params });
   }
 
   getInternshipById(id: number): Observable<Internship> {
@@ -41,10 +55,7 @@ export class InternshipsService {
   }
 
   generateRecommendations() {
-    return this.http.post<any[]>(
-      `${this.baseUrlRecommendations}/generate`,
-      {},
-    );
+    return this.http.post<any[]>(`${this.baseUrlRecommendations}/generate`, {});
   }
 
   getRecommendations() {

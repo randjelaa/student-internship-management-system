@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { WorkLogService } from './worklog.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
-
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { InternshipsService } from '../internships/internships.service';
 
 @Component({
@@ -28,16 +28,22 @@ import { InternshipsService } from '../internships/internships.service';
     MatNativeDateModule,
     MatExpansionModule,
     MatIconModule,
+    MatPaginatorModule,
+    RouterModule
   ],
   templateUrl: './worklog.component.html',
 })
 export class WorkLogComponent implements OnInit {
   internshipId!: number;
   internship: any = null;
-
   logs: any[] = [];
+  loading = false;
 
-  newLog = {
+  totalElements = 0;
+  page = 0;
+  size = 5;
+
+  newLog: any = {
     startDate: null,
     endDate: null,
     description: '',
@@ -49,15 +55,36 @@ export class WorkLogComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private service: WorkLogService,
-    private internshipService: InternshipsService
+    private internshipService: InternshipsService,
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe((params) => {
-      this.internshipId = +this.route.snapshot.paramMap.get('id')!;
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.internshipId = +id;
       this.loadInternshipDetails();
       this.loadLogs();
-    });
+    }
+  }
+
+  loadLogs() {
+    this.loading = true;
+    this.service
+      .getWorkLogsByInternship(this.internshipId, this.page, this.size)
+      .subscribe({
+        next: (response) => {
+          this.logs = response.content;
+          this.totalElements = response.totalElements;
+          this.loading = false;
+        },
+        error: () => (this.loading = false),
+      });
+  }
+
+  onPageChange(event: PageEvent) {
+    this.page = event.pageIndex;
+    this.size = event.pageSize;
+    this.loadLogs();
   }
 
   loadInternshipDetails() {
@@ -66,12 +93,6 @@ export class WorkLogComponent implements OnInit {
       .subscribe((data) => {
         this.internship = data;
       });
-  }
-
-  loadLogs() {
-    this.service.getMyWorkLogs().subscribe((allLogs) => {
-      this.logs = allLogs.filter((l) => l.internshipId === this.internshipId);
-    });
   }
 
   onStartDateChange() {

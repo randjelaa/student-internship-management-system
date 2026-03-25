@@ -1,151 +1,138 @@
 <div class="page-container">
+  <div class="navigation-header">
+    <button mat-button routerLink="/worklogs" class="back-btn">
+      <mat-icon>arrow_back</mat-icon> Back to Internships
+    </button>
+  </div>
+
   @if (internship) {
     <div class="header">
-      <h2 class="header-title">Work Log for {{ internship.title }}</h2>
+      <h2>Work Log: {{ internship.title }}</h2>
       <p class="header-subtitle">
         Company: <b>{{ internship.companyName }}</b>
       </p>
     </div>
   }
 
-  <mat-card class="mat-elevation-z3 card">
-    <mat-card-title>Add Weekly Entry</mat-card-title>
-
+  <mat-card class="mat-elevation-z2 add-card">
+    <mat-card-header>
+      <mat-card-title>New Weekly Entry</mat-card-title>
+    </mat-card-header>
     <mat-card-content class="card-content">
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>Start Date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="startPicker"
-          [(ngModel)]="newLog.startDate"
-          (dateChange)="onStartDateChange()"
-        />
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="startPicker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #startPicker></mat-datepicker>
-      </mat-form-field>
+      <div class="row">
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>From</mat-label>
+          <input
+            matInput
+            [matDatepicker]="startPicker"
+            [(ngModel)]="newLog.startDate"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="startPicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
 
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>End Date</mat-label>
-        <input
-          matInput
-          [matDatepicker]="endPicker"
-          [(ngModel)]="newLog.endDate"
-          [min]="newLog.startDate"
-          [disabled]="!newLog.startDate"
-        />
-        <mat-datepicker-toggle
-          matIconSuffix
-          [for]="endPicker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #endPicker></mat-datepicker>
-
-        @if (!newLog.startDate) {
-          <mat-hint>Select start date first</mat-hint>
-        }
-      </mat-form-field>
+        <mat-form-field appearance="outline" class="flex-1">
+          <mat-label>To</mat-label>
+          <input
+            matInput
+            [matDatepicker]="endPicker"
+            [(ngModel)]="newLog.endDate"
+            [min]="newLog.startDate"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="endPicker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+      </div>
 
       <mat-form-field appearance="outline">
-        <mat-label>Activities</mat-label>
-        <textarea matInput [(ngModel)]="newLog.description" rows="4"></textarea>
+        <mat-label>Activities & Tasks</mat-label>
+        <textarea
+          matInput
+          [(ngModel)]="newLog.description"
+          rows="3"
+          placeholder="What did you work on this week?"
+        ></textarea>
       </mat-form-field>
     </mat-card-content>
-
     <mat-card-actions align="end">
-      <button mat-raised-button color="primary" (click)="saveLog()">
-        Save Weekly Log
+      <button mat-flat-button color="primary" (click)="saveLog()">
+        Save Log
       </button>
     </mat-card-actions>
   </mat-card>
 
-  <hr />
+  <div class="history-section">
+    <h3>Previous Entries</h3>
 
-  <h3>Previous Entries</h3>
+    @if (loading) {
+      <p>Loading logs...</p>
+    } @else if (logs.length > 0) {
+      <mat-accordion>
+        @for (log of logs; track log.id) {
+          <mat-expansion-panel [expanded]="editingLogId === log.id">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Week: {{ log.startDate | date: "dd.MM.yyyy" }} -
+                {{ log.endDate | date: "dd.MM.yyyy" }}
+              </mat-panel-title>
+            </mat-expansion-panel-header>
 
-  @if (logs.length > 0) {
-    <mat-accordion>
-      @for (log of logs; track log.id) {
-        <mat-expansion-panel [expanded]="editingLogId === log.id">
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Week: {{ log.startDate | date: "dd.MM.yyyy" }} -
-              {{ log.endDate | date: "dd.MM.yyyy" }}
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-
-          @if (editingLogId !== log.id) {
-            <div>
+            @if (editingLogId !== log.id) {
               <p class="pre-wrap">{{ log.description }}</p>
 
-              <mat-action-row>
-                <button mat-button color="primary" (click)="startEdit(log)">
-                  Edit
-                </button>
-                <button mat-button color="warn" (click)="deleteLog(log.id)">
-                  Delete
-                </button>
-              </mat-action-row>
-            </div>
-          } @else {
-            <div class="column">
-              <div class="row">
-                <mat-form-field appearance="fill" class="flex-1">
-                  <mat-label>Start Date</mat-label>
-                  <input
+              <ng-container matExtraContent>
+                <mat-action-row>
+                  <button mat-button color="primary" (click)="startEdit(log)">
+                    Edit
+                  </button>
+                  <button mat-button color="warn" (click)="deleteLog(log.id)">
+                    Delete
+                  </button>
+                </mat-action-row>
+              </ng-container>
+            } @else {
+              <div class="column">
+                <mat-form-field appearance="outline">
+                  <mat-label>Edit Description</mat-label>
+                  <textarea
                     matInput
-                    [matDatepicker]="editStartPicker"
-                    [(ngModel)]="editLogData.startDate"
-                  />
-                  <mat-datepicker-toggle
-                    matIconSuffix
-                    [for]="editStartPicker"
-                  ></mat-datepicker-toggle>
-                  <mat-datepicker #editStartPicker></mat-datepicker>
+                    [(ngModel)]="editLogData.description"
+                    rows="3"
+                  ></textarea>
                 </mat-form-field>
 
-                <mat-form-field appearance="fill" class="flex-1">
-                  <mat-label>End Date</mat-label>
-                  <input
-                    matInput
-                    [matDatepicker]="editEndPicker"
-                    [(ngModel)]="editLogData.endDate"
-                    [min]="editLogData.startDate"
-                  />
-                  <mat-datepicker-toggle
-                    matIconSuffix
-                    [for]="editEndPicker"
-                  ></mat-datepicker-toggle>
-                  <mat-datepicker #editEndPicker></mat-datepicker>
-                </mat-form-field>
+                <mat-action-row>
+                  <button mat-button (click)="cancelEdit()">Cancel</button>
+                  <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="saveUpdate()"
+                  >
+                    Save Changes
+                  </button>
+                </mat-action-row>
               </div>
+            }
+          </mat-expansion-panel>
+        }
+      </mat-accordion>
 
-              <mat-form-field appearance="fill">
-                <mat-label>Description</mat-label>
-                <textarea
-                  matInput
-                  [(ngModel)]="editLogData.description"
-                  rows="3"
-                ></textarea>
-              </mat-form-field>
-
-              <mat-action-row>
-                <button mat-button (click)="cancelEdit()">Cancel</button>
-                <button
-                  mat-raised-button
-                  color="primary"
-                  (click)="saveUpdate()"
-                >
-                  Save Changes
-                </button>
-              </mat-action-row>
-            </div>
-          }
-        </mat-expansion-panel>
-      }
-    </mat-accordion>
-  } @else {
-    <p>No work logs recorded for this internship yet.</p>
-  }
+      <mat-paginator
+        [length]="totalElements"
+        [pageSize]="size"
+        [pageSizeOptions]="[5, 10, 20]"
+        (page)="onPageChange($event)"
+        class="paginator"
+      >
+      </mat-paginator>
+    } @else {
+      <div class="empty-state">No logs found for this internship.</div>
+    }
+  </div>
 </div>

@@ -1,47 +1,63 @@
-import { Component, OnInit } from '@angular/core';
-import { InternshipsService } from './internships.service';
-import { Internship } from '../../core/models/internship.model';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { forkJoin, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { forkJoin } from 'rxjs';
-import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
+import {
+  MatPaginator,
+  MatPaginatorModule,
+  PageEvent,
+} from '@angular/material/paginator';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+
+import { InternshipsService } from './internships.service';
+import { Internship } from '../../core/models/internship.model';
+import { RecommendationResponse } from '../../core/models/recommendation.model';
 
 @Component({
   selector: 'app-internships',
   standalone: true,
   imports: [
+    CommonModule,
     FormsModule,
     MatTableModule,
     MatButtonModule,
     MatInputModule,
     MatSelectModule,
-    CommonModule,
     MatCardModule,
+    MatPaginatorModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
   ],
   templateUrl: './internships.component.html',
   styleUrl: './internships.component.css',
 })
 export class InternshipsComponent implements OnInit {
   internships: Internship[] = [];
-  companies: string[] = [];
-  technologies: string[] = [];
-  recommendations: any[] = [];
+  companies: any[] = [];
+  technologies: any[] = [];
+  recommendations: RecommendationResponse[] = [];
 
-  filtered: Internship[] = [];
-  loadingRecommendations = false;
-
+  totalElements = 0;
+  pageSize = 5;
+  currentPage = 0;
   search = '';
   companyFilter = '';
   technologyFilter = '';
 
+  loadingRecommendations = false;
   applicationsMap: { [key: number]: any } = {};
-
-  displayedColumns: string[] = [
+  displayedColumns = [
     'title',
     'company',
     'location',
@@ -50,54 +66,96 @@ export class InternshipsComponent implements OnInit {
     'workLog',
   ];
 
+  private searchSubject = new Subject<string>();
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
   constructor(
     private service: InternshipsService,
     private router: Router,
-  ) {}
+  ) {
+    this.searchSubject
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe(() => {
+        this.filter();
+      });
+  }
 
   ngOnInit() {
+    this.loadInitialData();
+  }
+
+  loadInitialData() {
     forkJoin({
-      internships: this.service.getAllInternships(),
       companies: this.service.getAllCompanies(),
       technologies: this.service.getAllTechnologies(),
       applications: this.service.getMyApplications(),
-    }).subscribe(({ internships, companies, technologies, applications }) => {
-      this.internships = internships;
-      this.filtered = internships;
-      this.companies = companies.map((c: any) => c.name);
-      this.technologies = technologies.map((t: any) => t.name);
+      recs: this.service.getRecommendations(),
+    }).subscribe(({ companies, technologies, applications, recs }) => {
+      this.companies = companies;
+      this.technologies = technologies;
+      this.recommendations = recs;
 
-      this.applicationsMap = {};
-      applications.forEach((a) => {
-        this.applicationsMap[a.internshipId] = a;
+      applications.forEach((a) => (this.applicationsMap[a.internshipId] = a));
+      this.loadData();
+    });
+  }
+
+  loadData() {
+    const companyId = this.companyFilter ? +this.companyFilter : undefined;
+    const techId = this.technologyFilter ? +this.technologyFilter : undefined;
+
+    this.service
+      .getAllInternships(
+        this.currentPage,
+        this.pageSize,
+        this.search,
+        companyId,
+        techId,
+      )
+      .subscribe((res) => {
+        this.internships = res.content;
+        this.totalElements = res.totalElements;
       });
-    });
-    this.service.getRecommendations().subscribe({
-      next: (res) => (this.recommendations = res),
-      error: (err) => console.error('Greška pri dobavljanju preporuka', err),
-    });
+  }
+
+  onSearchInput() {
+    this.searchSubject.next(this.search);
+  }
+
+  onPageChange(event: PageEvent) {
+    this.currentPage = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadData();
   }
 
   filter() {
-    this.filtered = this.internships.filter((i) => {
-      const matchesSearch = i.title
-        .toLowerCase()
-        .includes(this.search.toLowerCase());
+    this.currentPage = 0;
+    if (this.paginator) {
+      this.paginator.pageIndex = 0;
+    }
+    this.loadData();
+  }
 
-      const matchesCompany =
-        !this.companyFilter || i.companyName === this.companyFilter;
-
-      const matchesTechnology =
-        !this.technologyFilter ||
-        i.technologies?.includes(this.technologyFilter);
-
-      return matchesSearch && matchesCompany && matchesTechnology;
+  generateAI() {
+    this.loadingRecommendations = true;
+    this.service.generateRecommendations().subscribe({
+      next: (res) => {
+        this.recommendations = res;
+        this.loadingRecommendations = false;
+      },
+      error: () => (this.loadingRecommendations = false),
     });
   }
 
+  resetFilters() {
+    this.search = '';
+    this.companyFilter = '';
+    this.technologyFilter = '';
+    this.filter();
+  }
+
   openDetails(id: number) {
-    console.log('klik', id);
-    this.router.navigate(['/internships', id]);
     this.router.navigate(['/internships', id]);
   }
 
@@ -114,30 +172,7 @@ export class InternshipsComponent implements OnInit {
       next: (app: any) => {
         this.applicationsMap[id] = app;
       },
-      error: (err) => {
-        console.error('Already applied or error', err);
-      },
-    });
-  }
-
-  resetFilters() {
-    this.search = '';
-    this.companyFilter = '';
-    this.technologyFilter = '';
-    this.filtered = this.internships;
-  }
-
-  generateAI() {
-    this.loadingRecommendations = true;
-    this.service.generateRecommendations().subscribe({
-      next: (res) => {
-        this.recommendations = res;
-        this.loadingRecommendations = false;
-      },
-      error: (err) => {
-        console.error('AI Error', err);
-        this.loadingRecommendations = false;
-      },
+      error: (err) => console.error('Application error', err),
     });
   }
 
@@ -147,9 +182,9 @@ export class InternshipsComponent implements OnInit {
 
   getScoreColor(score: number): string {
     const val = score * 10;
-    if (val >= 8) return '#2e7d32'; 
-    if (val >= 5) return '#f9a825'; 
-    return '#d32f2f'; 
+    if (val >= 8) return '#2e7d32';
+    if (val >= 5) return '#f9a825';
+    return '#d32f2f';
   }
 
   goToWorkLogs(internshipId: number) {

@@ -3,6 +3,8 @@ package com.example.internships.controller;
 import com.example.internships.dto.internship.*;
 import com.example.internships.service.InternshipService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,11 +17,13 @@ public class InternshipController {
     private final InternshipService internshipService;
 
     @GetMapping
-    public List<InternshipSummaryDTO> getAll(@RequestParam(required = false) Long company,
-                                             @RequestParam(required = false) Long technology) {
-        if (company != null) return internshipService.filterByCompany(company);
-        if (technology != null) return internshipService.filterByTechnology(technology);
-        return internshipService.getAllInternships();
+    public Page<InternshipSummaryDTO> getAll(
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(required = false) Long company,
+            @RequestParam(required = false) Long technology,
+            Pageable pageable) {
+
+        return internshipService.getInternships(search, company, technology, pageable);
     }
 
     @GetMapping("/{id}")

@@ -1,35 +1,33 @@
-@if (internship) {
-  <mat-card
-    class="mat-elevation-z4"
-    style="max-width: 800px; margin: 24px auto; padding: 16px"
-  >
-    <mat-card-title>{{ internship.title }}</mat-card-title>
+<div class="details-container">
+  @if (internship) {
+    <mat-card class="details-card">
+      <mat-card-header>
+        <mat-card-title>{{ internship.title }}</mat-card-title>
+        <mat-card-subtitle>
+          {{ internship.companyName }} • {{ internship.location }}
+        </mat-card-subtitle>
+      </mat-card-header>
 
-    <mat-card-subtitle>
-      <b>Company:</b> {{ internship.companyName }} |
-      <b>Location:</b> {{ internship.location }}
-    </mat-card-subtitle>
+      <mat-card-content>
+        <p class="desc">{{ internship.description }}</p>
 
-    <mat-card-content style="margin-top: 16px">
-      <p>{{ internship.description }}</p>
+        <div class="tech-list">
+          <strong>Technologies:</strong>
+          @for (tech of internship.technologies; track tech) {
+            <span class="tech-tag">{{ tech }}</span>
+          }
+        </div>
+      </mat-card-content>
 
-      <h4>Technologies</h4>
-      <ul>
-        @for (tech of internship.technologies; track tech) {
-          <li>{{ tech }}</li>
-        }
-      </ul>
-    </mat-card-content>
-
-    <mat-card-actions style="margin-top: 16px">
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="apply()"
-        [disabled]="hasApplied(internship.id)"
-      >
-        Apply
-      </button>
-    </mat-card-actions>
-  </mat-card>
-}
+      <mat-card-actions align="end">
+        <button
+          mat-button
+          (click)="apply()"
+          [disabled]="hasApplied(internship.id)"
+        >
+          {{ hasApplied(internship.id) ? "Applied" : "Apply" }}
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  }
+</div>

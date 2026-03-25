@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login',
@@ -14,14 +16,17 @@ import { MatButtonModule } from '@angular/material/button';
     MatCardModule,
     MatInputModule,
     MatButtonModule,
+    MatIconModule,
+    MatSnackBarModule,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
-
 export class LoginComponent {
+  hidePassword = true; // Logika za oko na password polju
+
   form = this.fb.group({
-    email: ['', [Validators.required]],
+    email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
   });
 
@@ -29,19 +34,22 @@ export class LoginComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private snackBar: MatSnackBar,
   ) {}
 
   login() {
     if (this.form.invalid) return;
 
     const { email, password } = this.form.value;
-
     this.authService.login(email!, password!).subscribe({
       next: () => {
         this.router.navigate(['/cv']);
       },
       error: () => {
-        alert('Login failed');
+        this.snackBar.open('Invalid credentials. Please try again.', 'Close', {
+          duration: 3000,
+          panelClass: ['error-snackbar'],
+        });
       },
     });
   }

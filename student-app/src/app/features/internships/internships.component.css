@@ -1,62 +1,152 @@
 .filters-container {
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
-  margin-bottom: 16px;
+  margin: 20px 0;
+  align-items: center;
+}
+
+.filter-item {
+  min-width: 220px;
+}
+
+.table-container {
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  margin-bottom: 30px;
+}
+
+table {
+  width: 100%;
+}
+
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.status-badge.accepted {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+.status-badge.rejected {
+  background: #ffebee;
+  color: #c62828;
+}
+.status-badge.pending {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+.status-badge.default-status {
+  background: #f5f5f5;
+  color: #757575;
 }
 
 .recommendations-container {
-  margin-top: 40px;
-  padding: 20px;
-  background: #fafafa;
-  border-radius: 8px;
+  margin-top: 30px;
+  padding: 15px 25px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #e9ecef;
 }
 
 .recommendations-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
-.no-margin {
-  margin: 0;
-}
-
-.centered {
-  text-align: center;
-  padding: 20px;
-}
-
-.empty-state {
-  text-align: center;
-  color: #888;
-  padding: 40px;
+.recommendations-header h2 {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #444;
 }
 
 .recommendations-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 15px;
 }
 
-.card-content {
-  margin-top: 12px;
+.rec-card {
+  transition: transform 0.2s;
+  border: 1px solid #eee;
+  box-shadow: none !important;
+  border-radius: 8px;
 }
 
-.explanation {
-  font-style: italic;
-  color: #666;
+.rec-card:hover {
+  transform: translateY(-3px);
+  border-color: #b2ebf2;
+}
+
+.rec-card mat-card-header {
+  margin-bottom: 8px;
+}
+
+.rec-card mat-card-title {
+  font-size: 0.95rem !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rec-card mat-card-subtitle {
+  font-size: 0.8rem !important;
 }
 
 .score-avatar {
+  width: 32px !important;
+  height: 32px !important;
+  font-size: 11px !important;
+  font-weight: bold;
   color: white;
-  display: flex;
+
+  display: flex !important;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-weight: bold;
+}
+
+.explanation {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #666;
+  margin: 8px 0 !important;
+  border-left: 2px solid #00acc1;
+  padding-left: 10px;
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.empty-state {
+  padding: 30px !important;
+}
+
+.empty-state p {
+  font-size: 0.9rem;
+}
+
+.large-icon {
+  font-size: 36px !important;
+  width: 36px !important;
+  height: 36px !important;
 }
 
 .clickable-row {
   cursor: pointer;
+}
+
+.clickable-row:hover {
+  background-color: #f9f9f9;
 }

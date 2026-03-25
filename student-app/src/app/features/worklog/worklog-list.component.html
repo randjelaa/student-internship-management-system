@@ -1,38 +1,39 @@
 <div class="page-container">
-  <h2>My Active Internships</h2>
-  <p>Select an internship to manage your weekly work logs.</p>
+  <div class="header-section">
+    <h2>My Active Internships</h2>
+    <p>Select an internship to manage your weekly work logs.</p>
+  </div>
 
-  @if (acceptedInternships.length > 0) {
+  @if (loading) {
+    <div class="loader">Loading...</div>
+  } @else if (acceptedInternships.length > 0) {
     <div class="internships-grid">
       @for (item of acceptedInternships; track item.id) {
-        <mat-card class="mat-elevation-z3">
+        <mat-card class="internship-card">
           <mat-card-header>
             <mat-card-title>{{ item.title }}</mat-card-title>
             <mat-card-subtitle>{{ item.companyName }}</mat-card-subtitle>
           </mat-card-header>
 
-          <mat-card-content class="card-content">
-            <p>
-              <mat-icon inline>location_on</mat-icon>
-              {{ item.location }}
-            </p>
+          <mat-card-content>
+            <div class="location-box">
+              <mat-icon>location_on</mat-icon>
+              <span>{{ item.location }}</span>
+            </div>
           </mat-card-content>
 
           <mat-card-actions align="end">
-            <button
-              mat-raised-button
-              color="primary"
-              (click)="viewDetails(item.id)"
-            >
-              SEE DETAILS & LOGS
+            <button mat-button color="primary" (click)="viewDetails(item.id)">
+              VIEW LOGS
             </button>
           </mat-card-actions>
         </mat-card>
       }
     </div>
   } @else {
-    <div class="empty-state-centered">
-      <p>You don't have any accepted internships yet.</p>
+    <div class="empty-state">
+      <mat-icon>info_outline</mat-icon>
+      <p>No active internships found.</p>
     </div>
   }
 </div>

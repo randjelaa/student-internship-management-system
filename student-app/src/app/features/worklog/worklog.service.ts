@@ -15,8 +15,8 @@ export class WorkLogService {
 
   constructor(private http: HttpClient) {}
 
-  getMyWorkLogs(): Observable<WorkLogResponse[]> {
-    return this.http.get<WorkLogResponse[]>(`${this.baseUrl}/my`);
+  getWorkLogsByInternship(internshipId: number, page: number = 0, size: number = 10): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/internship/${internshipId}?page=${page}&size=${size}`);
   }
 
   createWorkLog(request: CreateWorkLogRequest): Observable<WorkLogResponse> {

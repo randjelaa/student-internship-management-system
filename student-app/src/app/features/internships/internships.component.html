@@ -1,106 +1,133 @@
-<h2>Internships</h2>
-
-<div class="filters-container">
-  <!-- SEARCH -->
-  <mat-form-field appearance="outline">
-    <mat-label>Search</mat-label>
-    <input matInput [(ngModel)]="search" (input)="filter()" />
-  </mat-form-field>
-
-  <!-- COMPANY FILTER -->
-  <mat-form-field appearance="outline">
-    <mat-label>Company</mat-label>
-    <mat-select [(ngModel)]="companyFilter" (selectionChange)="filter()">
-      <mat-option value="">All</mat-option>
-      @for (c of companies; track c) {
-        <mat-option [value]="c">
-          {{ c }}
-        </mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-
-  <!-- TECHNOLOGY FILTER -->
-  <mat-form-field appearance="outline">
-    <mat-label>Technology</mat-label>
-    <mat-select [(ngModel)]="technologyFilter" (selectionChange)="filter()">
-      <mat-option value="">All</mat-option>
-      @for (t of technologies; track t) {
-        <mat-option [value]="t">
-          {{ t }}
-        </mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-
-  <button mat-button (click)="resetFilters()">Reset</button>
+<div class="page-header">
+  <h2>Internships</h2>
 </div>
 
-<table mat-table [dataSource]="filtered" class="mat-elevation-z8">
-  <!-- Work Log -->
-  <ng-container matColumnDef="workLog">
-    <th mat-header-cell *matHeaderCellDef>Work Log</th>
-    <td mat-cell *matCellDef="let i">
-      @if (getStatus(i.id) === "ACCEPTED") {
-        <button
-          mat-stroked-button
-          color="accent"
-          (click)="goToWorkLogs(i.id); $event.stopPropagation()"
-        >
-          Manage Logs
-        </button>
+<div class="filters-container">
+  <mat-form-field appearance="outline" class="filter-item">
+    <mat-label>Search</mat-label>
+    <input
+      matInput
+      [(ngModel)]="search"
+      (input)="onSearchInput()"
+      placeholder="Search by title..."
+    />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="filter-item">
+    <mat-label>Company</mat-label>
+    <mat-select [(ngModel)]="companyFilter" (selectionChange)="filter()">
+      <mat-option value="">All Companies</mat-option>
+      @for (c of companies; track c.id) {
+        <mat-option [value]="c.id">{{ c.name }}</mat-option>
       }
-    </td>
-  </ng-container>
+    </mat-select>
+  </mat-form-field>
 
-  <ng-container matColumnDef="title">
-    <th mat-header-cell *matHeaderCellDef>Title</th>
-    <td mat-cell *matCellDef="let i">{{ i.title }}</td>
-  </ng-container>
+  <mat-form-field appearance="outline" class="filter-item">
+    <mat-label>Technology</mat-label>
+    <mat-select [(ngModel)]="technologyFilter" (selectionChange)="filter()">
+      <mat-option value="">All Technologies</mat-option>
+      @for (t of technologies; track t.id) {
+        <mat-option [value]="t.id">{{ t.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
 
-  <ng-container matColumnDef="company">
-    <th mat-header-cell *matHeaderCellDef>Company</th>
-    <td mat-cell *matCellDef="let i">{{ i.companyName }}</td>
-  </ng-container>
+  <button mat-stroked-button color="warn" (click)="resetFilters()">
+    <mat-icon>refresh</mat-icon> Reset
+  </button>
+</div>
 
-  <ng-container matColumnDef="location">
-    <th mat-header-cell *matHeaderCellDef>Location</th>
-    <td mat-cell *matCellDef="let i">{{ i.location }}</td>
-  </ng-container>
+<div class="table-container mat-elevation-z8">
+  <table mat-table [dataSource]="internships">
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef>Title</th>
+      <td mat-cell *matCellDef="let i">
+        <strong>{{ i.title }}</strong>
+      </td>
+    </ng-container>
 
-  <ng-container matColumnDef="status">
-    <th mat-header-cell *matHeaderCellDef>Status</th>
-    <td mat-cell *matCellDef="let i">
-      {{ getStatus(i.id) }}
-    </td>
-  </ng-container>
+    <ng-container matColumnDef="company">
+      <th mat-header-cell *matHeaderCellDef>Company</th>
+      <td mat-cell *matCellDef="let i">{{ i.companyName }}</td>
+    </ng-container>
 
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef>Actions</th>
-    <td mat-cell *matCellDef="let i">
-      <button
-        mat-raised-button
-        color="primary"
-        (click)="apply(i.id); $event.stopPropagation()"
-        [disabled]="hasApplied(i.id)"
-      >
-        Apply
-      </button>
-    </td>
-  </ng-container>
+    <ng-container matColumnDef="location">
+      <th mat-header-cell *matHeaderCellDef>Location</th>
+      <td mat-cell *matCellDef="let i">{{ i.location }}</td>
+    </ng-container>
 
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr
-    mat-row
-    *matRowDef="let row; columns: displayedColumns"
-    (click)="openDetails(row.id)"
-    class="clickable-row"
-  ></tr>
-</table>
+    <ng-container matColumnDef="status">
+      <th mat-header-cell *matHeaderCellDef>Status</th>
+      <td mat-cell *matCellDef="let i">
+        <span
+          class="status-badge"
+          [ngClass]="
+            getStatus(i.id) !== '-'
+              ? getStatus(i.id).toLowerCase()
+              : 'default-status'
+          "
+        >
+          {{ getStatus(i.id) }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let i">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="apply(i.id); $event.stopPropagation()"
+          [disabled]="hasApplied(i.id)"
+        >
+          {{ hasApplied(i.id) ? "Applied" : "Apply" }}
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="workLog">
+      <th mat-header-cell *matHeaderCellDef>Work Log</th>
+      <td mat-cell *matCellDef="let i">
+        @if (getStatus(i.id) === "ACCEPTED") {
+          <button
+            mat-icon-button
+            color="accent"
+            (click)="goToWorkLogs(i.id); $event.stopPropagation()"
+          >
+            <mat-icon>assignment</mat-icon>
+          </button>
+        }
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumns"
+      (click)="openDetails(row.id)"
+      class="clickable-row"
+    ></tr>
+  </table>
+
+  <mat-paginator
+    [length]="totalElements"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[5, 10, 20]"
+    (page)="onPageChange($event)"
+    showFirstLastButtons
+  >
+  </mat-paginator>
+</div>
 
 <div class="recommendations-container">
   <div class="recommendations-header">
-    <h2 class="no-margin">AI Match Recommendations</h2>
+    <div class="title-with-icon">
+      <mat-icon color="accent">auto_awesome</mat-icon>
+      <h2 class="no-margin">AI Match Recommendations</h2>
+    </div>
 
     <button
       mat-raised-button
@@ -111,6 +138,7 @@
       @if (!loadingRecommendations) {
         <span>Generate New Suggestions</span>
       } @else {
+        <mat-spinner diameter="20" class="inline-spinner"></mat-spinner>
         <span>Analyzing CV...</span>
       }
     </button>
@@ -118,6 +146,7 @@
 
   @if (loadingRecommendations) {
     <div class="centered">
+      <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
       <p>Our AI is comparing your skills with available internships...</p>
     </div>
   }
@@ -125,7 +154,7 @@
   @if (recommendations.length > 0) {
     <div class="recommendations-grid">
       @for (rec of recommendations; track rec.internshipId) {
-        <mat-card class="mat-elevation-z3">
+        <mat-card class="rec-card">
           <mat-card-header>
             <div
               mat-card-avatar
@@ -134,38 +163,40 @@
             >
               {{ getFormattedScore(rec.score) }}
             </div>
-
-            <mat-card-title>{{ rec.internshipTitle }}</mat-card-title>
-
-            <mat-card-subtitle>
-              Match Rating: {{ getFormattedScore(rec.score) }} / 10
-            </mat-card-subtitle>
+            <mat-card-title title="{{ rec.internshipTitle }}">{{
+              rec.internshipTitle
+            }}</mat-card-title>
+            <mat-card-subtitle
+              >Match: {{ getFormattedScore(rec.score) }}/10</mat-card-subtitle
+            >
           </mat-card-header>
 
           <mat-card-content class="card-content">
-            <p class="explanation">"{{ rec.explanation }}"</p>
+            <p class="explanation" title="{{ rec.explanation }}">
+              "{{ rec.explanation }}"
+            </p>
           </mat-card-content>
 
-          <mat-card-actions align="end">
+          <mat-card-actions align="end" style="padding: 0 8px 8px 0">
             <button
               mat-button
               color="primary"
+              style="font-size: 0.75rem"
               (click)="openDetails(rec.internshipId)"
             >
-              VIEW INTERNSHIP
+              VIEW
             </button>
           </mat-card-actions>
         </mat-card>
       }
     </div>
-  } @else {
-    @if (!loadingRecommendations) {
-      <div class="empty-state">
-        <p>
-          Click the button above to get personalized internship recommendations
-          based on your profile.
-        </p>
-      </div>
-    }
+  } @else if (!loadingRecommendations) {
+    <div class="empty-state">
+      <mat-icon class="large-icon">lightbulb_outline</mat-icon>
+      <p>
+        Click the button above to get personalized internship recommendations
+        based on your profile.
+      </p>
+    </div>
   }
 </div>

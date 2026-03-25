@@ -13,7 +13,13 @@ import { MatInputModule } from '@angular/material/input';
 import { Router } from '@angular/router';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatCardModule } from '@angular/material/card';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-cv',
@@ -24,12 +30,16 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
     MatButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatCardModule,
+    MatTooltipModule,
+    MatDividerModule,
+    MatSnackBarModule,
+    MatIconModule,
   ],
   templateUrl: './cv.component.html',
   styleUrls: ['./cv.component.css'],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'en-GB' }],
 })
-
 export class CvComponent implements OnInit {
   hasCv = false;
   imagePreview: string | null = null;
@@ -48,7 +58,8 @@ export class CvComponent implements OnInit {
     private fb: FormBuilder,
     private cvService: CvService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
@@ -148,7 +159,14 @@ export class CvComponent implements OnInit {
   save() {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
-      alert('Please fill all required fields');
+      this.snackBar.open(
+        'Please fill all required fields!',
+        'Close',
+        {
+          duration: 3000,
+          horizontalPosition: 'end',
+        },
+      );
       return;
     }
 
@@ -175,12 +193,22 @@ export class CvComponent implements OnInit {
 
     request.subscribe({
       next: () => {
-        alert(this.hasCv ? 'Updated!' : 'Created!');
+        this.snackBar.open(
+          this.hasCv ? 'CV Updated successfully!' : 'CV Created!',
+          'Close',
+          {
+            duration: 3000,
+            horizontalPosition: 'end',
+          },
+        );
         this.loadCv();
       },
       error: (err) => {
         console.error(err);
-        alert('Error saving CV');
+        this.snackBar.open('Error saving CV!', 'Close', {
+          duration: 3000,
+          horizontalPosition: 'end',
+        });
       },
     });
   }

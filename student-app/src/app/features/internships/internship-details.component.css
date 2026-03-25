@@ -1,0 +1,33 @@
+.details-container {
+  max-width: 700px;
+  margin: 20px auto;
+}
+
+.details-card {
+  padding: 10px;
+}
+
+.desc {
+  margin: 15px 0;
+  line-height: 1.5;
+  color: #444;
+}
+
+.tech-list {
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+.tech-tag {
+  display: inline-block;
+  background: #eee;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 6px;
+  color: #555;
+}
+
+mat-card-title {
+  font-size: 1.4rem !important;
+  margin-bottom: 5px !important;
+}
