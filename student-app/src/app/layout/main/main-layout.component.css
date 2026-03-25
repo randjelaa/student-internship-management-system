@@ -1,0 +1,16 @@
+.layout {
+  display: flex;
+  height: calc(100vh - 64px);
+}
+
+.sidebar {
+  width: 220px;
+  border-right: 1px solid #ddd;
+  padding: 10px;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+  overflow: auto;
+}

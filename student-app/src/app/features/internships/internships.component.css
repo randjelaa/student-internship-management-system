@@ -1,0 +1,62 @@
+.filters-container {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.recommendations-container {
+  margin-top: 40px;
+  padding: 20px;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.recommendations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+.centered {
+  text-align: center;
+  padding: 20px;
+}
+
+.empty-state {
+  text-align: center;
+  color: #888;
+  padding: 40px;
+}
+
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.card-content {
+  margin-top: 12px;
+}
+
+.explanation {
+  font-style: italic;
+  color: #666;
+}
+
+.score-avatar {
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.clickable-row {
+  cursor: pointer;
+}

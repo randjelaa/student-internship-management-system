@@ -1,48 +1,53 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Internship
+import { Internship } from '../../core/models/internship.model';
+import { environment } from '../../../environments/environment';
 
- } from '../../core/models/internship.model';
 @Injectable({ providedIn: 'root' })
 export class InternshipsService {
-
-  private baseUrl = 'http://localhost:8080/api/internships';
+  private baseUrlInternships = `${environment.apiUrl}/internships`;
+  private baseUrlApplications = `${environment.apiUrl}/applications`;
+  private baseUrlCompanies = `${environment.apiUrl}/companies`;
+  private baseUrlTechnologies = `${environment.apiUrl}/technologies`;
+  private baseUrlRecommendations = `${environment.apiUrl}/recommendations`;
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Internship[]> {
-    return this.http.get<Internship[]>(this.baseUrl);
+  getAllInternships(): Observable<Internship[]> {
+    return this.http.get<Internship[]>(this.baseUrlInternships);
   }
 
-  getById(id: number): Observable<Internship> {
-    return this.http.get<Internship>(`${this.baseUrl}/${id}`);
+  getInternshipById(id: number): Observable<Internship> {
+    return this.http.get<Internship>(`${this.baseUrlInternships}/${id}`);
   }
 
   apply(internshipId: number) {
-    return this.http.post('http://localhost:8080/api/applications', {
-      internshipId
+    return this.http.post(`${this.baseUrlApplications}`, {
+      internshipId,
     });
   }
 
   getMyApplications() {
-  return this.http.get<any[]>('http://localhost:8080/api/applications/my');
-}
+    return this.http.get<any[]>(`${this.baseUrlApplications}/my`);
+  }
 
-getCompanies() {
-  return this.http.get<string[]>('http://localhost:8080/api/companies');
-}
+  getAllCompanies() {
+    return this.http.get<string[]>(`${this.baseUrlCompanies}`);
+  }
 
-getTechnologies() {
-  return this.http.get<string[]>('http://localhost:8080/api/technologies');
-}
+  getAllTechnologies() {
+    return this.http.get<string[]>(`${this.baseUrlTechnologies}`);
+  }
 
-generateRecommendations() {
-  // Šaljemo prazan body jer backend koristi ulogovanog korisnika
-  return this.http.post<any[]>('http://localhost:8080/api/recommendations/generate', {});
-}
+  generateRecommendations() {
+    return this.http.post<any[]>(
+      `${this.baseUrlRecommendations}/generate`,
+      {},
+    );
+  }
 
-getRecommendations() {
-  return this.http.get<any[]>('http://localhost:8080/api/recommendations');
-}
+  getRecommendations() {
+    return this.http.get<any[]>(`${this.baseUrlRecommendations}`);
+  }
 }

@@ -1,15 +1,11 @@
 <app-navbar></app-navbar>
 
-<div style="display: flex; height: calc(100vh - 64px);">
-
-  <!-- SIDEBAR -->
-  <div style="width: 220px; border-right: 1px solid #ddd; padding: 10px;">
+<div class="layout">
+  <div class="sidebar">
     <app-sidebar></app-sidebar>
   </div>
 
-  <!-- CONTENT -->
-  <div style="flex: 1; padding: 20px; overflow: auto;">
+  <div class="content">
     <router-outlet></router-outlet>
   </div>
-
 </div>

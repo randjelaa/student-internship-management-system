@@ -2,41 +2,39 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CvResponse } from '../../core/models/cv.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class CvService {
-
-  private baseUrl = 'http://localhost:8080/api/cv';
+  private baseUrl = `${environment.apiUrl}/cv`;
 
   constructor(private http: HttpClient) {}
 
-  getCv(studentId: number): Observable<CvResponse> {
+  getCv(): Observable<CvResponse> {
     return this.http.get<CvResponse>(`${this.baseUrl}`);
   }
 
-  createCv(studentId: number, body: any) {
+  createCv(body: any) {
     return this.http.post(`${this.baseUrl}`, body);
   }
 
-  updateCv(studentId: number, body: any) {
+  updateCv(body: any) {
     return this.http.put(`${this.baseUrl}`, body);
   }
 
-  deleteCv(studentId: number) {
+  deleteCv() {
     return this.http.delete(`${this.baseUrl}`);
   }
 
-  downloadPdf(studentId: number) {
+  downloadPdf() {
     return this.http.get(`${this.baseUrl}/pdf`, {
-      responseType: 'blob'
+      responseType: 'blob',
     });
   }
 
-  uploadImage(studentId: number, formData: FormData) {
-    return this.http.post(
-        `${this.baseUrl}/upload-image`,
-        formData,
-        { responseType: 'text' }
-    );
+  uploadImage(formData: FormData) {
+    return this.http.post(`${this.baseUrl}/upload-image`, formData, {
+      responseType: 'text',
+    });
   }
 }

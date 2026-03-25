@@ -4,9 +4,9 @@ import { authGuard } from './core/auth/auth.guard';
 import { MainLayoutComponent } from './layout/main/main-layout.component';
 
 export const routes: Routes = [
-    {
+  {
     path: 'login',
-    component: LoginComponent
+    component: LoginComponent,
   },
   {
     path: '',
@@ -14,57 +14,46 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       {
-        path: 'dashboard',
-        loadComponent: () =>
-          import('./features/dashboard/dashboard.component')
-            .then(m => m.DashboardComponent)
-      },
-      {
         path: 'cv',
         loadComponent: () =>
-          import('./features/cv/cv.component')
-            .then(m => m.CvComponent)
+          import('./features/cv/cv.component').then((m) => m.CvComponent),
       },
       {
         path: 'internships',
         loadComponent: () =>
-          import('./features/internships/internships.component')
-            .then(m => m.InternshipsComponent)
+          import('./features/internships/internships.component').then(
+            (m) => m.InternshipsComponent,
+          ),
       },
       {
-        path: 'internship-details/:id',
+        path: 'internships/:id',
         loadComponent: () =>
-          import('./features/internships/internship-details.component')
-            .then(m => m.InternshipDetailsComponent)
+          import('./features/internships/internship-details.component').then(
+            (m) => m.InternshipDetailsComponent,
+          ),
       },
       {
-        path: 'recommendations',
+        path: 'worklogs', 
         loadComponent: () =>
-          import('./features/recommendations/recommendations.component')
-            .then(m => m.RecommendationsComponent)
+          import('./features/worklog/worklog-list.component') 
+            .then((m) => m.WorkLogListComponent),
       },
       {
-  path: 'worklog', // Ovo će sada biti lista svih prihvaćenih praksi
-  loadComponent: () =>
-    import('./features/worklog/worklog-list.component') // Nova komponenta sa karticama
-      .then(m => m.WorkLogListComponent)
-},
-{
-  path: 'worklog/:id', // Ovo je stranica gde se zapravo kuca dnevnik za određenu praksu
-  loadComponent: () =>
-    import('./features/worklog/worklog.component') // Postojeća komponenta sa formom i listom logova
-      .then(m => m.WorkLogComponent)
-},
+        path: 'worklogs/:id', 
+        loadComponent: () =>
+          import('./features/worklog/worklog.component') 
+            .then((m) => m.WorkLogComponent),
+      },
       {
         path: '',
-        redirectTo: 'dashboard',
-        pathMatch: 'full'
-      }
-    ]
+        redirectTo: 'cv',
+        pathMatch: 'full',
+      },
+    ],
   },
   {
     path: '',
     redirectTo: 'login',
-    pathMatch: 'full'
-  }
+    pathMatch: 'full',
+  },
 ];

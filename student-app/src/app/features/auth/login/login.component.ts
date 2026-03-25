@@ -13,22 +13,22 @@ import { MatButtonModule } from '@angular/material/button';
     ReactiveFormsModule,
     MatCardModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
   ],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
 })
-export class LoginComponent {
 
+export class LoginComponent {
   form = this.fb.group({
     email: ['', [Validators.required]],
-    password: ['', [Validators.required]]
+    password: ['', [Validators.required]],
   });
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {}
 
   login() {
@@ -36,14 +36,13 @@ export class LoginComponent {
 
     const { email, password } = this.form.value;
 
-    this.authService.login(email!, password!)
-      .subscribe({
-        next: () => {
-          this.router.navigate(['/dashboard']);
-        },
-        error: () => {
-          alert('Login failed');
-        }
-      });
+    this.authService.login(email!, password!).subscribe({
+      next: () => {
+        this.router.navigate(['/cv']);
+      },
+      error: () => {
+        alert('Login failed');
+      },
+    });
   }
 }

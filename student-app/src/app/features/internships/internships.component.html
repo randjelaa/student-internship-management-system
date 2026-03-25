@@ -1,7 +1,6 @@
 <h2>Internships</h2>
 
-<div style="display:flex; gap: 16px; margin-bottom: 16px;">
-
+<div class="filters-container">
   <!-- SEARCH -->
   <mat-form-field appearance="outline">
     <mat-label>Search</mat-label>
@@ -13,9 +12,11 @@
     <mat-label>Company</mat-label>
     <mat-select [(ngModel)]="companyFilter" (selectionChange)="filter()">
       <mat-option value="">All</mat-option>
-      <mat-option *ngFor="let c of companies" [value]="c">
-        {{ c }}
-      </mat-option>
+      @for (c of companies; track c) {
+        <mat-option [value]="c">
+          {{ c }}
+        </mat-option>
+      }
     </mat-select>
   </mat-form-field>
 
@@ -24,119 +25,147 @@
     <mat-label>Technology</mat-label>
     <mat-select [(ngModel)]="technologyFilter" (selectionChange)="filter()">
       <mat-option value="">All</mat-option>
-      <mat-option *ngFor="let t of technologies" [value]="t">
-        {{ t }}
-      </mat-option>
+      @for (t of technologies; track t) {
+        <mat-option [value]="t">
+          {{ t }}
+        </mat-option>
+      }
     </mat-select>
   </mat-form-field>
 
   <button mat-button (click)="resetFilters()">Reset</button>
-
 </div>
 
 <table mat-table [dataSource]="filtered" class="mat-elevation-z8">
+  <!-- Work Log -->
+  <ng-container matColumnDef="workLog">
+    <th mat-header-cell *matHeaderCellDef>Work Log</th>
+    <td mat-cell *matCellDef="let i">
+      @if (getStatus(i.id) === "ACCEPTED") {
+        <button
+          mat-stroked-button
+          color="accent"
+          (click)="goToWorkLogs(i.id); $event.stopPropagation()"
+        >
+          Manage Logs
+        </button>
+      }
+    </td>
+  </ng-container>
 
-  <!-- Title -->
   <ng-container matColumnDef="title">
-    <th mat-header-cell *matHeaderCellDef> Title </th>
-    <td mat-cell *matCellDef="let i"> {{ i.title }} </td>
+    <th mat-header-cell *matHeaderCellDef>Title</th>
+    <td mat-cell *matCellDef="let i">{{ i.title }}</td>
   </ng-container>
 
-  <!-- Company -->
   <ng-container matColumnDef="company">
-    <th mat-header-cell *matHeaderCellDef> Company </th>
-    <td mat-cell *matCellDef="let i"> {{ i.companyName }} </td>
+    <th mat-header-cell *matHeaderCellDef>Company</th>
+    <td mat-cell *matCellDef="let i">{{ i.companyName }}</td>
   </ng-container>
 
-  <!-- Location -->
   <ng-container matColumnDef="location">
-    <th mat-header-cell *matHeaderCellDef> Location </th>
-    <td mat-cell *matCellDef="let i"> {{ i.location }} </td>
+    <th mat-header-cell *matHeaderCellDef>Location</th>
+    <td mat-cell *matCellDef="let i">{{ i.location }}</td>
   </ng-container>
 
-  <!-- Status -->
   <ng-container matColumnDef="status">
-    <th mat-header-cell *matHeaderCellDef> Status </th>
+    <th mat-header-cell *matHeaderCellDef>Status</th>
     <td mat-cell *matCellDef="let i">
       {{ getStatus(i.id) }}
     </td>
   </ng-container>
 
-  <!-- Actions -->
   <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef> Actions </th>
+    <th mat-header-cell *matHeaderCellDef>Actions</th>
     <td mat-cell *matCellDef="let i">
       <button
-  mat-raised-button
-  color="primary"
-  (click)="apply(i.id); $event.stopPropagation()"
-  [disabled]="hasApplied(i.id)"
->
-  Apply
-</button>
+        mat-raised-button
+        color="primary"
+        (click)="apply(i.id); $event.stopPropagation()"
+        [disabled]="hasApplied(i.id)"
+      >
+        Apply
+      </button>
     </td>
   </ng-container>
-
-  <ng-container matColumnDef="workLog">
-  <th mat-header-cell *matHeaderCellDef> Work Log </th>
-  <td mat-cell *matCellDef="let i">
-    <button *ngIf="getStatus(i.id) === 'ACCEPTED'" 
-            mat-stroked-button color="accent" 
-            (click)="goToWorkLogs(i.id); $event.stopPropagation()">
-      Manage Logs
-    </button>
-  </td>
-</ng-container>
 
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr
     mat-row
-    *matRowDef="let row; columns: displayedColumns;"
+    *matRowDef="let row; columns: displayedColumns"
     (click)="openDetails(row.id)"
-    style="cursor:pointer"
+    class="clickable-row"
   ></tr>
-
 </table>
 
-<div class="recommendations-container" style="margin-top: 40px; padding: 20px; background: #fafafa; border-radius: 8px;">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h2 style="margin: 0;">AI Match Recommendations</h2>
-    <button mat-raised-button color="accent" (click)="generateAI()" [disabled]="loadingRecommendations">
-      <span *ngIf="!loadingRecommendations">Generate New Suggestions</span>
-      <span *ngIf="loadingRecommendations">Analyzing CV...</span>
+<div class="recommendations-container">
+  <div class="recommendations-header">
+    <h2 class="no-margin">AI Match Recommendations</h2>
+
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="generateAI()"
+      [disabled]="loadingRecommendations"
+    >
+      @if (!loadingRecommendations) {
+        <span>Generate New Suggestions</span>
+      } @else {
+        <span>Analyzing CV...</span>
+      }
     </button>
   </div>
 
-  <div *ngIf="loadingRecommendations" style="text-align: center; padding: 20px;">
-    <p>Our AI is comparing your skills with available internships...</p>
-  </div>
-
-  <div *ngIf="recommendations.length > 0; else noRecs" 
-       style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
-    
-    <mat-card *ngFor="let rec of recommendations" class="mat-elevation-z3">
-      <mat-card-header>
-        <div mat-card-avatar [style.backgroundColor]="getScoreColor(rec.score)" 
-             style="color: white; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold;">
-          {{ getFormattedScore(rec.score) }}
-        </div>
-        <mat-card-title>{{ rec.internshipTitle }}</mat-card-title>
-        <mat-card-subtitle>Match Rating: {{ getFormattedScore(rec.score) }} / 10</mat-card-subtitle>
-      </mat-card-header>
-
-      <mat-card-content style="margin-top: 12px;">
-        <p style="font-style: italic; color: #666;">"{{ rec.explanation }}"</p>
-      </mat-card-content>
-
-      <mat-card-actions align="end">
-        <button mat-button color="primary" (click)="openDetails(rec.internshipId)">VIEW INTERNSHIP</button>
-      </mat-card-actions>
-    </mat-card>
-  </div>
-
-  <ng-template #noRecs>
-    <div *ngIf="!loadingRecommendations" style="text-align: center; color: #888; padding: 40px;">
-      <p>Click the button above to get personalized internship recommendations based on your profile.</p>
+  @if (loadingRecommendations) {
+    <div class="centered">
+      <p>Our AI is comparing your skills with available internships...</p>
     </div>
-  </ng-template>
+  }
+
+  @if (recommendations.length > 0) {
+    <div class="recommendations-grid">
+      @for (rec of recommendations; track rec.internshipId) {
+        <mat-card class="mat-elevation-z3">
+          <mat-card-header>
+            <div
+              mat-card-avatar
+              class="score-avatar"
+              [style.backgroundColor]="getScoreColor(rec.score)"
+            >
+              {{ getFormattedScore(rec.score) }}
+            </div>
+
+            <mat-card-title>{{ rec.internshipTitle }}</mat-card-title>
+
+            <mat-card-subtitle>
+              Match Rating: {{ getFormattedScore(rec.score) }} / 10
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content class="card-content">
+            <p class="explanation">"{{ rec.explanation }}"</p>
+          </mat-card-content>
+
+          <mat-card-actions align="end">
+            <button
+              mat-button
+              color="primary"
+              (click)="openDetails(rec.internshipId)"
+            >
+              VIEW INTERNSHIP
+            </button>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+  } @else {
+    @if (!loadingRecommendations) {
+      <div class="empty-state">
+        <p>
+          Click the button above to get personalized internship recommendations
+          based on your profile.
+        </p>
+      </div>
+    }
+  }
 </div>

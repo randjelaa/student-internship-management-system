@@ -61,11 +61,10 @@
   text-align: center;
 }
 
-/* Dugmad su sada inline kao kod add education */
 .photo-buttons {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  margin-left: 10px; /* razmak od slike */
+  margin-left: 10px; 
   justify-content: flex-start;
 }

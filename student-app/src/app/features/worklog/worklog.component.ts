@@ -3,8 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { WorkLogService } from './worklog.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-// Angular Material uvozi koji nedostaju
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -22,7 +20,6 @@ import { InternshipsService } from '../internships/internships.service';
   imports: [
     CommonModule,
     FormsModule,
-    // Dodaj sve ove module ovde:
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
@@ -30,68 +27,78 @@ import { InternshipsService } from '../internships/internships.service';
     MatDatepickerModule,
     MatNativeDateModule,
     MatExpansionModule,
-    MatIconModule
+    MatIconModule,
   ],
-  templateUrl: './worklog.component.html'
+  templateUrl: './worklog.component.html',
 })
 export class WorkLogComponent implements OnInit {
   internshipId!: number;
+  internship: any = null;
+
   logs: any[] = [];
-  
+
   newLog = {
     startDate: null,
     endDate: null,
-    description: ''
+    description: '',
   };
 
-  internship: any = null;
-
   editingLogId: number | null = null;
-editLogData: any = { startDate: null, endDate: null, description: '' };
+  editLogData: any = { startDate: null, endDate: null, description: '' };
 
-constructor(
-  private route: ActivatedRoute, 
-  private service: WorkLogService,
-  private internshipService: InternshipsService // DODAJ I OVAJ SERVIS
-) {}
+  constructor(
+    private route: ActivatedRoute,
+    private service: WorkLogService,
+    private internshipService: InternshipsService
+  ) {}
 
-ngOnInit() {
-  this.route.queryParams.subscribe(params => {
-    this.internshipId = +this.route.snapshot.paramMap.get('id')!;
-  this.loadInternshipDetails();
-  this.loadLogs();
-  });
-}
+  ngOnInit() {
+    this.route.queryParams.subscribe((params) => {
+      this.internshipId = +this.route.snapshot.paramMap.get('id')!;
+      this.loadInternshipDetails();
+      this.loadLogs();
+    });
+  }
 
-loadInternshipDetails() {
-  this.internshipService.getById(this.internshipId).subscribe(data => {
-    this.internship = data;
-  });
-}
+  loadInternshipDetails() {
+    this.internshipService
+      .getInternshipById(this.internshipId)
+      .subscribe((data) => {
+        this.internship = data;
+      });
+  }
 
   loadLogs() {
-    this.service.getMyWorkLogs().subscribe(allLogs => {
-      this.logs = allLogs.filter(l => l.internshipId === this.internshipId);
+    this.service.getMyWorkLogs().subscribe((allLogs) => {
+      this.logs = allLogs.filter((l) => l.internshipId === this.internshipId);
     });
   }
 
   onStartDateChange() {
-    if (this.newLog.startDate && this.newLog.endDate && this.newLog.endDate < this.newLog.startDate) {
+    if (
+      this.newLog.startDate &&
+      this.newLog.endDate &&
+      this.newLog.endDate < this.newLog.startDate
+    ) {
       this.newLog.endDate = null;
     }
   }
 
   saveLog() {
-    if (!this.newLog.startDate || !this.newLog.endDate || !this.newLog.description) {
+    if (
+      !this.newLog.startDate ||
+      !this.newLog.endDate ||
+      !this.newLog.description
+    ) {
       alert('Please fill all fields');
       return;
     }
-    
+
     const payload = {
       internshipId: this.internshipId,
       startDate: this.formatDate(this.newLog.startDate),
       endDate: this.formatDate(this.newLog.endDate),
-      description: this.newLog.description
+      description: this.newLog.description,
     };
 
     this.service.createWorkLog(payload).subscribe({
@@ -99,11 +106,10 @@ loadInternshipDetails() {
         this.newLog = { startDate: null, endDate: null, description: '' };
         this.loadLogs();
       },
-      error: (err) => console.error('Save failed', err)
+      error: (err) => console.error('Save failed', err),
     });
   }
 
-  // Dodaj metodu za brisanje pošto je koristiš u HTML-u
   deleteLog(id: number) {
     if (confirm('Are you sure you want to delete this log?')) {
       this.service.deleteWorkLog(id).subscribe(() => this.loadLogs());
@@ -119,34 +125,33 @@ loadInternshipDetails() {
   }
 
   startEdit(log: any) {
-  this.editingLogId = log.id;
-  // Kreiramo kopiju podataka da ne bismo menjali original dok ne kliknemo Save
-  this.editLogData = { 
-    startDate: new Date(log.startDate), 
-    endDate: new Date(log.endDate), 
-    description: log.description 
-  };
-}
+    this.editingLogId = log.id;
+    this.editLogData = {
+      startDate: new Date(log.startDate),
+      endDate: new Date(log.endDate),
+      description: log.description,
+    };
+  }
 
-cancelEdit() {
-  this.editingLogId = null;
-}
+  cancelEdit() {
+    this.editingLogId = null;
+  }
 
-saveUpdate() {
-  if (!this.editingLogId) return;
+  saveUpdate() {
+    if (!this.editingLogId) return;
 
-  const payload = {
-    startDate: this.formatDate(this.editLogData.startDate),
-    endDate: this.formatDate(this.editLogData.endDate),
-    description: this.editLogData.description
-  };
+    const payload = {
+      startDate: this.formatDate(this.editLogData.startDate),
+      endDate: this.formatDate(this.editLogData.endDate),
+      description: this.editLogData.description,
+    };
 
-  this.service.updateWorkLog(this.editingLogId, payload).subscribe({
-    next: () => {
-      this.editingLogId = null;
-      this.loadLogs();
-    },
-    error: (err) => console.error('Update failed', err)
-  });
-}
+    this.service.updateWorkLog(this.editingLogId, payload).subscribe({
+      next: () => {
+        this.editingLogId = null;
+        this.loadLogs();
+      },
+      error: (err) => console.error('Update failed', err),
+    });
+  }
 }

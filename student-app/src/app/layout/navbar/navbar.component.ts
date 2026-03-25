@@ -7,19 +7,15 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [
-    MatToolbarModule,
-    MatButtonModule
-  ],
-  templateUrl: './navbar.component.html'
+  imports: [MatToolbarModule, MatButtonModule],
+  templateUrl: './navbar.component.html',
 })
 export class NavbarComponent {
-
   user = computed(() => this.authService.getUser());
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
   ) {}
 
   logout() {

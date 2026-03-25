@@ -3,24 +3,28 @@
     <h2>Login</h2>
 
     <form [formGroup]="form" (ngSubmit)="login()">
-
       <mat-form-field appearance="outline" class="full-width">
-        <input matInput placeholder="Email" formControlName="email">
+        <input matInput placeholder="Email" formControlName="email" />
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="full-width">
-        <input matInput type="password" placeholder="Password" formControlName="password">
+        <input
+          matInput
+          type="password"
+          placeholder="Password"
+          formControlName="password"
+        />
       </mat-form-field>
 
-      <button 
-        mat-raised-button 
-        color="primary" 
+      <button
+        mat-raised-button
+        color="primary"
         type="submit"
         class="full-width"
-        [disabled]="form.invalid">
+        [disabled]="form.invalid"
+      >
         Login
       </button>
-
     </form>
   </mat-card>
 </div>

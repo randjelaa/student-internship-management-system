@@ -1,0 +1,50 @@
+.page-container {
+  padding: 24px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 20px;
+}
+
+.header-title {
+  margin-bottom: 4px;
+}
+
+.header-subtitle {
+  color: #666;
+  font-size: 1.1em;
+}
+
+.card {
+  margin-bottom: 32px;
+  padding: 16px;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.pre-wrap {
+  white-space: pre-wrap;
+}

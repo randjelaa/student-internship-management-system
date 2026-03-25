@@ -1,24 +1,35 @@
-<mat-card *ngIf="internship" class="mat-elevation-z4" style="max-width: 800px; margin: 24px auto; padding: 16px;">
-  <mat-card-title>{{ internship.title }}</mat-card-title>
-  <mat-card-subtitle>
-    <b>Company:</b> {{ internship.companyName }} |
-    <b>Location:</b> {{ internship.location }}
-  </mat-card-subtitle>
+@if (internship) {
+  <mat-card
+    class="mat-elevation-z4"
+    style="max-width: 800px; margin: 24px auto; padding: 16px"
+  >
+    <mat-card-title>{{ internship.title }}</mat-card-title>
 
-  <mat-card-content style="margin-top: 16px;">
-    <p>{{ internship.description }}</p>
+    <mat-card-subtitle>
+      <b>Company:</b> {{ internship.companyName }} |
+      <b>Location:</b> {{ internship.location }}
+    </mat-card-subtitle>
 
-    <h4>Technologies</h4>
-    <ul>
-      <li *ngFor="let tech of internship.technologies">{{ tech }}</li>
-    </ul>
-  </mat-card-content>
+    <mat-card-content style="margin-top: 16px">
+      <p>{{ internship.description }}</p>
 
-  <mat-card-actions style="margin-top: 16px;">
-    <button mat-raised-button color="primary"
-            (click)="apply()"
-            [disabled]="hasApplied(internship.id)">
-      Apply
-    </button>
-  </mat-card-actions>
-</mat-card>
+      <h4>Technologies</h4>
+      <ul>
+        @for (tech of internship.technologies; track tech) {
+          <li>{{ tech }}</li>
+        }
+      </ul>
+    </mat-card-content>
+
+    <mat-card-actions style="margin-top: 16px">
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="apply()"
+        [disabled]="hasApplied(internship.id)"
+      >
+        Apply
+      </button>
+    </mat-card-actions>
+  </mat-card>
+}

@@ -26,7 +26,7 @@ export interface Experience {
   companyName: string;
   position: string;
   description: string;
-  startDate: string; // LocalDate → string
+  startDate: string; 
   endDate: string;
 }
 

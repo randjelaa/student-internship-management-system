@@ -1,48 +1,33 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-export interface WorkLogResponse {
-  id: number;
-  studentId: number;
-  internshipId: number;
-  startDate: string;
-  endDate: string;
-  description: string;
-}
-
-export interface CreateWorkLogRequest {
-  internshipId: number;
-  startDate: string;
-  endDate: string;
-  description: string;
-}
+import {
+  CreateWorkLogRequest,
+  WorkLogResponse,
+} from '../../core/models/worklog.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WorkLogService {
-  private apiUrl = 'http://localhost:8080/api/worklogs'; // Prilagodi svom portu
+  private baseUrl = `${environment.apiUrl}/worklogs`;
 
   constructor(private http: HttpClient) {}
 
-  // Dohvata sve logove ulogovanog studenta
   getMyWorkLogs(): Observable<WorkLogResponse[]> {
-    return this.http.get<WorkLogResponse[]>(`${this.apiUrl}/my`);
+    return this.http.get<WorkLogResponse[]>(`${this.baseUrl}/my`);
   }
 
-  // Kreira novi log
   createWorkLog(request: CreateWorkLogRequest): Observable<WorkLogResponse> {
-    return this.http.post<WorkLogResponse>(this.apiUrl, request);
+    return this.http.post<WorkLogResponse>(this.baseUrl, request);
   }
 
-  // Briše log
   deleteWorkLog(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
-  // Ažurira postojeći log
   updateWorkLog(id: number, request: any): Observable<WorkLogResponse> {
-    return this.http.put<WorkLogResponse>(`${this.apiUrl}/${id}`, request);
+    return this.http.put<WorkLogResponse>(`${this.baseUrl}/${id}`, request);
   }
 }

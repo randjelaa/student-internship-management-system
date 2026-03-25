@@ -15,154 +15,144 @@ import { MatCardModule } from '@angular/material/card';
   selector: 'app-internships',
   standalone: true,
   imports: [
-  FormsModule,
-  MatTableModule,
-  MatButtonModule,
-  MatInputModule,
-  MatSelectModule,
-  CommonModule,
-  MatCardModule
-],
+    FormsModule,
+    MatTableModule,
+    MatButtonModule,
+    MatInputModule,
+    MatSelectModule,
+    CommonModule,
+    MatCardModule,
+  ],
   templateUrl: './internships.component.html',
-  styleUrl: './internships.component.css'
+  styleUrl: './internships.component.css',
 })
 export class InternshipsComponent implements OnInit {
-
   internships: Internship[] = [];
+  companies: string[] = [];
+  technologies: string[] = [];
+  recommendations: any[] = [];
+
   filtered: Internship[] = [];
+  loadingRecommendations = false;
 
   search = '';
-
   companyFilter = '';
-technologyFilter = '';
+  technologyFilter = '';
 
-applicationsMap: { [key: number]: any } = {};
+  applicationsMap: { [key: number]: any } = {};
 
-displayedColumns: string[] = [
-  'title',
-  'company',
-  'location',
-  'status',
-  'actions',
-  'workLog'
-];
-
-companies: string[] = [];
-technologies: string[] = [];
-
-recommendations: any[] = [];
-loadingRecommendations = false;
+  displayedColumns: string[] = [
+    'title',
+    'company',
+    'location',
+    'status',
+    'actions',
+    'workLog',
+  ];
 
   constructor(
     private service: InternshipsService,
-    private router: Router
+    private router: Router,
   ) {}
 
   ngOnInit() {
-  forkJoin({
-  internships: this.service.getAll(),
-  companies: this.service.getCompanies(),
-  technologies: this.service.getTechnologies(),
-  applications: this.service.getMyApplications()
-}).subscribe(({ internships, companies, technologies, applications }) => {
+    forkJoin({
+      internships: this.service.getAllInternships(),
+      companies: this.service.getAllCompanies(),
+      technologies: this.service.getAllTechnologies(),
+      applications: this.service.getMyApplications(),
+    }).subscribe(({ internships, companies, technologies, applications }) => {
+      this.internships = internships;
+      this.filtered = internships;
+      this.companies = companies.map((c: any) => c.name);
+      this.technologies = technologies.map((t: any) => t.name);
 
-  this.internships = internships;
-  this.filtered = internships;
-
-  // ✅ OVO JE KLJUČNO
-  this.companies = companies.map((c: any) => c.name);
-  this.technologies = technologies.map((t: any) => t.name);
-
-  this.applicationsMap = {};
-  applications.forEach(a => {
-    this.applicationsMap[a.internshipId] = a;
-  });
-});
-this.service.getRecommendations().subscribe({
-    next: (res) => this.recommendations = res,
-    error: (err) => console.error('Greška pri dobavljanju preporuka', err)
-  });
-}
+      this.applicationsMap = {};
+      applications.forEach((a) => {
+        this.applicationsMap[a.internshipId] = a;
+      });
+    });
+    this.service.getRecommendations().subscribe({
+      next: (res) => (this.recommendations = res),
+      error: (err) => console.error('Greška pri dobavljanju preporuka', err),
+    });
+  }
 
   filter() {
-  this.filtered = this.internships.filter(i => {
-    const matchesSearch = i.title
-      .toLowerCase()
-      .includes(this.search.toLowerCase());
+    this.filtered = this.internships.filter((i) => {
+      const matchesSearch = i.title
+        .toLowerCase()
+        .includes(this.search.toLowerCase());
 
-    const matchesCompany =
-      !this.companyFilter || i.companyName === this.companyFilter;
+      const matchesCompany =
+        !this.companyFilter || i.companyName === this.companyFilter;
 
-    const matchesTechnology =
-      !this.technologyFilter ||
-      i.technologies?.includes(this.technologyFilter);
+      const matchesTechnology =
+        !this.technologyFilter ||
+        i.technologies?.includes(this.technologyFilter);
 
-    return matchesSearch && matchesCompany && matchesTechnology;
-  });
-}
+      return matchesSearch && matchesCompany && matchesTechnology;
+    });
+  }
 
   openDetails(id: number) {
     console.log('klik', id);
-  this.router.navigate(['/internship-details', id]);
-    this.router.navigate(['/internship-details', id]);
+    this.router.navigate(['/internships', id]);
+    this.router.navigate(['/internships', id]);
   }
 
   hasApplied(internshipId: number): boolean {
-  return !!this.applicationsMap[internshipId];
-}
+    return !!this.applicationsMap[internshipId];
+  }
 
-getStatus(internshipId: number): string {
-  return this.applicationsMap[internshipId]?.status || '-';
-}
+  getStatus(internshipId: number): string {
+    return this.applicationsMap[internshipId]?.status || '-';
+  }
 
-apply(id: number) {
-  this.service.apply(id).subscribe({
-    next: (app: any) => {
-      this.applicationsMap[id] = app;
-    },
-    error: err => {
-      console.error('Already applied or error', err);
-    }
-  });
-}
+  apply(id: number) {
+    this.service.apply(id).subscribe({
+      next: (app: any) => {
+        this.applicationsMap[id] = app;
+      },
+      error: (err) => {
+        console.error('Already applied or error', err);
+      },
+    });
+  }
 
-resetFilters() {
-  this.search = '';
-  this.companyFilter = '';
-  this.technologyFilter = '';
-  this.filtered = this.internships;
-}
+  resetFilters() {
+    this.search = '';
+    this.companyFilter = '';
+    this.technologyFilter = '';
+    this.filtered = this.internships;
+  }
 
-generateAI() {
-  this.loadingRecommendations = true;
-  this.service.generateRecommendations().subscribe({
-    next: (res) => {
-      this.recommendations = res;
-      this.loadingRecommendations = false;
-    },
-    error: (err) => {
-      console.error('AI Error', err);
-      this.loadingRecommendations = false;
-    }
-  });
-}
+  generateAI() {
+    this.loadingRecommendations = true;
+    this.service.generateRecommendations().subscribe({
+      next: (res) => {
+        this.recommendations = res;
+        this.loadingRecommendations = false;
+      },
+      error: (err) => {
+        console.error('AI Error', err);
+        this.loadingRecommendations = false;
+      },
+    });
+  }
 
-// Score 0.85 -> 8.5
-getFormattedScore(score: number): string {
-  return (score * 10).toFixed(1);
-}
+  getFormattedScore(score: number): string {
+    return (score * 10).toFixed(1);
+  }
 
-// Boja na osnovu ocene
-getScoreColor(score: number): string {
-  const val = score * 10;
-  if (val >= 8) return '#2e7d32'; // Zelena
-  if (val >= 5) return '#f9a825'; // Žuta/Narandžasta
-  return '#d32f2f'; // Crvena
-}
+  getScoreColor(score: number): string {
+    const val = score * 10;
+    if (val >= 8) return '#2e7d32'; 
+    if (val >= 5) return '#f9a825'; 
+    return '#d32f2f'; 
+  }
 
-// Dodaj 'workLog' u displayedColumns niz
-// U InternshipsComponent.ts
-goToWorkLogs(internshipId: number) {
-  this.router.navigate(['/worklog', internshipId]);
-}
+  goToWorkLogs(internshipId: number) {
+    this.router.navigate(['/worklogs', internshipId]);
+  }
 }
