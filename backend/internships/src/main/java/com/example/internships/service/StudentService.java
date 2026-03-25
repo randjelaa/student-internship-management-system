@@ -73,7 +73,6 @@ public class StudentService {
         }
 
         studentMapper.updateStudentFromDto(request, student);
-
         return studentMapper.toResponse(studentRepository.save(student));
     }
 
@@ -91,12 +90,10 @@ public class StudentService {
         List<StudentSummaryDTO> importedStudents = new ArrayList<>();
 
         try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream()))) {
-
             String[] line;
             boolean firstLine = true;
 
             while ((line = reader.readNext()) != null) {
-
                 if (firstLine) {
                     firstLine = false;
                     continue;
@@ -110,7 +107,7 @@ public class StudentService {
                 String password = line[1].trim();
 
                 if (userRepository.findByEmail(email).isPresent()) {
-                    continue; // skip duplikate
+                    continue;
                 }
 
                 String firstName = line[2].trim();

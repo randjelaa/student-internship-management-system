@@ -8,6 +8,7 @@ import com.example.internships.mapper.GradeMapper;
 import com.example.internships.repository.GradeRepository;
 import com.example.internships.repository.StudentRepository;
 import com.example.internships.repository.InternshipRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ public class GradeService {
     private final InternshipRepository internshipRepository;
     private final GradeMapper gradeMapper;
 
+    @Transactional
     public GradeResponseDTO createGrade(CreateGradeRequest request) {
         Student student = studentRepository.findById(request.getStudentId())
                 .orElseThrow(() -> new RuntimeException("Student not found"));

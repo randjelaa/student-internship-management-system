@@ -8,6 +8,7 @@ import com.example.internships.mapper.WorkLogMapper;
 import com.example.internships.repository.StudentRepository;
 import com.example.internships.repository.WorkLogRepository;
 import com.example.internships.repository.InternshipRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,7 @@ public class WorkLogService {
         return workLogMapper.toResponse(workLog);
     }
 
+    @Transactional
     public WorkLogResponseDTO createWorkLog(CreateWorkLogRequest request, Long userId) {
         Student student = studentRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
@@ -50,6 +52,7 @@ public class WorkLogService {
         return workLogMapper.toResponse(saved);
     }
 
+    @Transactional
     public WorkLogResponseDTO updateWorkLog(Long id, UpdateWorkLogRequest request) {
         WorkLog workLog = workLogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("WorkLog not found"));
@@ -59,6 +62,7 @@ public class WorkLogService {
         return workLogMapper.toResponse(updated);
     }
 
+    @Transactional
     public void deleteWorkLog(Long id) {
         if (!workLogRepository.existsById(id)) {
             throw new RuntimeException("WorkLog not found");

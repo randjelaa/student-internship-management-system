@@ -31,36 +31,27 @@ public class RecommendationService {
     private final AiRecommendationService aiService;
 
     public List<RecommendationResponseDTO> generate(Long userId) {
-
         Student student = studentRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
-        // 1️⃣ CV
         String cvText = student.getCvs().stream()
                 .findFirst()
                 .map(Cv::getSummary)
                 .orElse("No CV provided");
 
-        // 2️⃣ internships
         List<Internship> internships = internshipRepository.findAll();
 
-        // 🔥 BITNO: pravilno formatiranje
         String internshipsText = IntStream.range(0, internships.size())
                 .mapToObj(i -> i + ". " +
                         internships.get(i).getTitle() + " - " +
                         internships.get(i).getDescription())
                 .collect(Collectors.joining("\n"));
 
-        // 3️⃣ prompt
         String prompt = aiService.buildPrompt(cvText, internshipsText);
 
-        // 4️⃣ AI call
         String aiResponse = aiService.callGemini(prompt);
-
-        // 5️⃣ parse
         List<RecommendationItemDTO> items = parseAiResponse(aiResponse);
 
-        // 6️⃣ map + filter + sort
         List<Recommendation> saved = items.stream()
                 .filter(item ->
                         item.getInternshipIndex() != null &&
@@ -84,10 +75,8 @@ public class RecommendationService {
                 .limit(5)
                 .toList();
 
-        // 7️⃣ save
         recommendationRepository.saveAll(saved);
 
-        // 8️⃣ response
         return saved.stream()
                 .map(r -> {
                     RecommendationResponseDTO dto = new RecommendationResponseDTO();
@@ -100,7 +89,6 @@ public class RecommendationService {
                 .toList();
     }
 
-    // ✅ GET endpoint
     public List<RecommendationResponseDTO> getByStudent(Long userId) {
         Student student = studentRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
@@ -119,25 +107,19 @@ public class RecommendationService {
                 .toList();
     }
 
-    // ✅ CLEAN JSON
     private String cleanJson(String response) {
-
         if (response == null) return "[]";
-
         return response
                 .replace("```json", "")
                 .replace("```", "")
                 .trim();
     }
 
-    // ✅ SAFE PARSE
     private List<RecommendationItemDTO> parseAiResponse(String aiResponse) {
-
         ObjectMapper mapper = new ObjectMapper();
 
         try {
             String cleaned = cleanJson(aiResponse);
-
             return mapper.readValue(
                     cleaned,
                     new TypeReference<>() {
@@ -145,9 +127,7 @@ public class RecommendationService {
             );
 
         } catch (Exception e) {
-
             System.out.println("AI parsing failed: " + e.getMessage());
-
             return List.of();
         }
     }

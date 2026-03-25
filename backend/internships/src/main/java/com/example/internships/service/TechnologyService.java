@@ -2,6 +2,7 @@ package com.example.internships.service;
 
 import com.example.internships.entity.Technology;
 import com.example.internships.repository.TechnologyRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,10 +23,12 @@ public class TechnologyService {
                 .orElseThrow(() -> new RuntimeException("Technology not found with id: " + id));
     }
 
+    @Transactional
     public Technology createTechnology(Technology technology) {
         return technologyRepository.save(technology);
     }
 
+    @Transactional
     public Technology updateTechnology(Long id, Technology updatedTechnology) {
         Technology existing = getTechnologyById(id);
         existing.setName(updatedTechnology.getName());
@@ -33,9 +36,9 @@ public class TechnologyService {
         return technologyRepository.save(existing);
     }
 
+    @Transactional
     public void deleteTechnology(Long id) {
         Technology technology = getTechnologyById(id);
-
         technologyRepository.delete(technology);
     }
 }

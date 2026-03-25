@@ -7,6 +7,7 @@ import com.example.internships.entity.Student;
 import com.example.internships.repository.ApplicationRepository;
 import com.example.internships.repository.InternshipRepository;
 import com.example.internships.repository.StudentRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class ApplicationService {
                 .orElseThrow(() -> new RuntimeException("Application not found"));
     }
 
+    @Transactional
     public Application createApplication(Long userId, Long internshipId) {
         Student student = studentRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
@@ -44,18 +46,21 @@ public class ApplicationService {
         return applicationRepository.save(application);
     }
 
+    @Transactional
     public Application acceptApplication(Long id) {
         Application application = getApplicationById(id);
         application.setStatus(ApplicationStatus.ACCEPTED);
         return applicationRepository.save(application);
     }
 
+    @Transactional
     public Application rejectApplication(Long id) {
         Application application = getApplicationById(id);
         application.setStatus(ApplicationStatus.REJECTED);
         return applicationRepository.save(application);
     }
 
+    @Transactional
     public void deleteApplication(Long id) {
         Application application = getApplicationById(id);
         applicationRepository.delete(application);

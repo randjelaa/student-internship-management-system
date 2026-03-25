@@ -35,7 +35,6 @@ public class CvService {
     private final SkillRepository skillRepository;
     private final CvMapper cvMapper;
 
-    // CREATE
     @Transactional
     public CvResponseDTO createCv(Long userId, CreateCvRequest request) {
         Student student = getStudentByUserId(userId);
@@ -49,14 +48,11 @@ public class CvService {
         return cvMapper.toDto(cv);
     }
 
-    // READ
-    @Transactional
     public CvResponseDTO getCvByUserId(Long userId) {
         Cv cv = getCvEntityByUserId(userId);
         return cvMapper.toDto(cv);
     }
 
-    // UPDATE
     @Transactional
     public CvResponseDTO updateCv(Long userId, CreateCvRequest request) {
         Cv cv = getCvEntityByUserId(userId);
@@ -65,7 +61,6 @@ public class CvService {
         cv.setPhotoUrl(request.getPhotoUrl());
         cv.setSummary(request.getSummary());
 
-        // reset relacija
         cv.getEducations().clear();
         cv.getExperiences().clear();
         cv.getSkills().clear();
@@ -78,7 +73,6 @@ public class CvService {
         return cvMapper.toDto(cv);
     }
 
-    // DELETE
     @Transactional
     public void deleteCv(Long userId) {
         Cv cv = getCvEntityByUserId(userId);
@@ -92,7 +86,6 @@ public class CvService {
         cvRepository.delete(cv);
     }
 
-    // PDF
     public byte[] generateCvPdf(Long userId) {
         Cv cv = getCvEntityByUserId(userId);
 
@@ -121,7 +114,6 @@ public class CvService {
                         }
                     }
                 } catch (Exception e) {
-                    // ako slika ne može da se učita, ignoriši
                     System.out.println("Image load failed: " + e.getMessage());
                 }
             }
@@ -181,7 +173,6 @@ public class CvService {
         }
     }
 
-    // HELPERS
     private Student getStudentByUserId(Long userId) {
         return studentRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
@@ -244,7 +235,6 @@ public class CvService {
                 Experience experience;
 
                 if (dto.getId() != null) {
-                    // UPDATE POSTOJEĆEG
                     experience = experienceRepository.findById(dto.getId())
                             .orElseThrow(() -> new RuntimeException("Experience not found: " + dto.getId()));
 
@@ -252,12 +242,10 @@ public class CvService {
                         throw new RuntimeException("Niste vlasnik ovog zapisa");
                     }
                 } else {
-                    // KREIRANJE NOVOG
                     experience = new Experience();
                     experience.setStudent(student);
                 }
 
-                // Mapiranje polja (možeš koristiti i MapStruct ovdje ako želiš)
                 experience.setCompanyName(dto.getCompanyName());
                 experience.setPosition(dto.getPosition());
                 experience.setDescription(dto.getDescription());

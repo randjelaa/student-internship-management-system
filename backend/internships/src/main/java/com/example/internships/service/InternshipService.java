@@ -40,6 +40,7 @@ public class InternshipService {
         return internshipMapper.toResponse(internship);
     }
 
+    @Transactional
     public InternshipResponseDTO createInternship(CreateInternshipRequest request) {
         Company company = companyRepository.findById(request.getCompanyId())
                 .orElseThrow(() -> new RuntimeException("Company not found"));
@@ -56,6 +57,7 @@ public class InternshipService {
         return internshipMapper.toResponse(saved);
     }
 
+    @Transactional
     public InternshipResponseDTO updateInternship(Long id, UpdateInternshipRequest request) {
         Internship internship = internshipRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Internship not found"));
@@ -77,6 +79,7 @@ public class InternshipService {
         return internshipMapper.toResponse(updated);
     }
 
+    @Transactional
     public void deleteInternship(Long id) {
         Internship internship = internshipRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Internship not found"));

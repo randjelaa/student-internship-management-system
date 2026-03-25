@@ -3,6 +3,7 @@ package com.example.internships.service;
 import com.example.internships.dto.enums.Role;
 import com.example.internships.entity.User;
 import com.example.internships.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,11 +26,13 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
     }
 
+    @Transactional
     public User createUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
+    @Transactional
     public User updateUser(Long id, User updatedUser) {
         User existing = getUserById(id);
 
@@ -45,12 +48,13 @@ public class UserService {
         return userRepository.save(existing);
     }
 
+    @Transactional
     public void deleteUser(Long id) {
         User user = getUserById(id);
-
         userRepository.delete(user);
     }
 
+    @Transactional
     public User createUser(String email, String password, Role role) {
         User user = new User();
         user.setEmail(email);
@@ -69,6 +73,7 @@ public class UserService {
                 });
     }
 
+    @Transactional
     public void updatePassword(User user, String rawPassword) {
         user.setPassword(passwordEncoder.encode(rawPassword));
     }
