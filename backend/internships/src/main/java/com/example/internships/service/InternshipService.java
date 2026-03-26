@@ -7,6 +7,7 @@ import com.example.internships.entity.Technology;
 import com.example.internships.mapper.InternshipMapper;
 import com.example.internships.repository.CompanyRepository;
 import com.example.internships.repository.InternshipRepository;
+import com.example.internships.repository.StudentRepository;
 import com.example.internships.repository.TechnologyRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ public class InternshipService {
     private final CompanyRepository companyRepository;
     private final TechnologyRepository technologyRepository;
     private final InternshipMapper internshipMapper;
+    private final StudentRepository studentRepository;
 
     public InternshipResponseDTO getInternshipById(Long id) {
         Internship internship = internshipRepository.findById(id)
@@ -91,6 +93,18 @@ public class InternshipService {
                     .map(internshipMapper::toSummary);
         }
         return internshipRepository.findByTitleContainingIgnoreCase(title, pageable)
+                .map(internshipMapper::toSummary);
+    }
+
+    public Page<InternshipSummaryDTO> getNotAcceptedInternships(String title, Long companyId, Long techId, Pageable pageable, Long userId) {
+        Long studentId = studentRepository.findByUserId(userId).orElseThrow().getId();
+        return internshipRepository.findNotAccepted(studentId, title, companyId, techId, pageable)
+                .map(internshipMapper::toSummary);
+    }
+
+    public Page<InternshipSummaryDTO> getAcceptedInternships(String title, Long companyId, Long techId, Pageable pageable, Long userId) {
+        Long studentId = studentRepository.findByUserId(userId).orElseThrow().getId();
+        return internshipRepository.findAcceptedByStudent(studentId, title, companyId, techId, pageable)
                 .map(internshipMapper::toSummary);
     }
 }

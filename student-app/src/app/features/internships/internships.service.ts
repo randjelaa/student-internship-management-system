@@ -61,4 +61,40 @@ export class InternshipsService {
   getRecommendations() {
     return this.http.get<any[]>(`${this.baseUrlRecommendations}`);
   }
+
+  getNotAcceptedInternships(
+    page: number,
+    size: number,
+    search: string = '',
+    companyId?: number,
+    techId?: number,
+  ): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('search', search);
+
+    if (companyId) params = params.set('company', companyId.toString());
+    if (techId) params = params.set('tech', techId.toString()); 
+
+    return this.http.get<any>(`${this.baseUrlInternships}/not-accepted`, { params });
+  }
+
+  getAcceptedInternships(
+    page: number,
+    size: number,
+    search: string = '',
+    companyId?: number,
+    techId?: number,
+  ): Observable<any> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString())
+      .set('search', search);
+
+    if (companyId) params = params.set('company', companyId.toString());
+    if (techId) params = params.set('tech', techId.toString());
+
+    return this.http.get<any>(`${this.baseUrlInternships}/accepted`, { params });
+  }
 }

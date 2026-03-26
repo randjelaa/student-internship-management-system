@@ -1,13 +1,6 @@
-.filters-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin: 20px 0;
-  align-items: center;
-}
-
-.filter-item {
-  min-width: 220px;
+/* Kopirano iz Internship komponente radi unifikacije */
+.page-header {
+  margin-bottom: 20px;
 }
 
 .table-container {
@@ -15,132 +8,11 @@
   overflow: hidden;
   background: white;
   margin-bottom: 30px;
+  min-height: 200px;
 }
 
 table {
   width: 100%;
-}
-
-.status-badge {
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  display: inline-block;
-}
-
-.status-badge.accepted {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
-.status-badge.rejected {
-  background: #ffebee;
-  color: #c62828;
-}
-.status-badge.pending {
-  background: #fff3e0;
-  color: #ef6c00;
-}
-.status-badge.default-status {
-  background: #f5f5f5;
-  color: #757575;
-}
-
-.recommendations-container {
-  margin-top: 30px;
-  padding: 15px 25px;
-  background: #f8f9fa;
-  border-radius: 10px;
-  border: 1px solid #e9ecef;
-}
-
-.recommendations-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-}
-
-.recommendations-header h2 {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #444;
-}
-
-.recommendations-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 15px;
-}
-
-.rec-card {
-  transition: transform 0.2s;
-  border: 1px solid #eee;
-  box-shadow: none !important;
-  border-radius: 8px;
-}
-
-.rec-card:hover {
-  transform: translateY(-3px);
-  border-color: #b2ebf2;
-}
-
-.rec-card mat-card-header {
-  margin-bottom: 8px;
-}
-
-.rec-card mat-card-title {
-  font-size: 0.95rem !important;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.rec-card mat-card-subtitle {
-  font-size: 0.8rem !important;
-}
-
-.score-avatar {
-  width: 32px !important;
-  height: 32px !important;
-  font-size: 11px !important;
-  font-weight: bold;
-  color: white;
-
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-}
-
-.explanation {
-  font-size: 0.85rem;
-  line-height: 1.4;
-  color: #666;
-  margin: 8px 0 !important;
-  border-left: 2px solid #00acc1;
-  padding-left: 10px;
-
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  overflow: hidden;
-}
-
-.empty-state {
-  padding: 30px !important;
-}
-
-.empty-state p {
-  font-size: 0.9rem;
-}
-
-.large-icon {
-  font-size: 36px !important;
-  width: 36px !important;
-  height: 36px !important;
 }
 
 .clickable-row {
@@ -150,3 +22,111 @@ table {
 .clickable-row:hover {
   background-color: #f9f9f9;
 }
+
+.centered-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 50px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #757575;
+}
+
+.large-icon {
+  font-size: 48px !important;
+  width: 48px !important;
+  height: 48px !important;
+  margin-bottom: 10px;
+  color: #bdbdbd;
+}
+
+/* Specifično za ovu stranicu ako zatreba */
+th.mat-header-cell {
+  font-weight: 600;
+  color: #333;
+}
+
+/* --- AI RECOMMENDATIONS (SMIRENO) --- */
+.recommendations-container {
+  padding: 15px 20px;
+  background: #f7f7f7; /* manje kontrasta */
+  border-radius: 6px; /* manje “card look” */
+  border: 1px solid #e5e5e5; /* obična linija umjesto dashed */
+}
+
+.recommendations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* NASLOV VEĆI */
+.recommendations-header h2 {
+  font-size: 1rem; /* bilo 0.85rem */
+  font-weight: 600;
+  color: #333;
+}
+
+/* MATCH TEKST MANJI */
+.rec-card mat-card-subtitle {
+  font-size: 0.7rem;
+  color: #777;
+}
+
+/* UKLONI LIJEVU LINIJU IZ OPISA */
+.explanation {
+  font-size: 0.75rem;
+  color: #666;
+  border-left: none; /* uklonjeno */
+  padding-left: 0;   /* reset */
+  margin: 8px 0;
+}
+
+.score-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px; /* umjesto kruga → manje flashy */
+  font-size: 10px;
+  font-weight: 600;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recommendations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.rec-card mat-card-title {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.recommendations-header button {
+  transform: scale(0.85); /* malo manje agresivno */
+  transform-origin: right;
+}
+
+/* --- STATUS BADGES --- */
+.status-badge {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.status-badge.accepted { background: #e8f5e9; color: #2e7d32; }
+.status-badge.rejected { background: #ffebee; color: #c62828; }
+.status-badge.pending  { background: #fff3e0; color: #ef6c00; }
+.status-badge.default-status { background: #f5f5f5; color: #757575; }

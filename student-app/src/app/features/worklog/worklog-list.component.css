@@ -1,63 +1,51 @@
-.page-container {
-  padding: 30px 20px;
-  max-width: 1100px;
-  margin: 0 auto;
+/* Kopirano iz Internship komponente radi unifikacije */
+.page-header {
+  margin-bottom: 20px;
 }
 
-.header-section {
-  margin-bottom: 30px;
-}
-
-.header-section h2 {
-  margin-bottom: 5px;
-  font-weight: 600;
-}
-
-.internships-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.internship-card {
+.table-container {
   border-radius: 8px;
-  border-top: 4px solid #3f51b5; /* Diskretna linija u primarnoj boji */
-  transition: box-shadow 0.2s;
+  overflow: hidden;
+  background: white;
+  margin-bottom: 30px;
+  min-height: 200px;
 }
 
-.internship-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+table {
+  width: 100%;
 }
 
-.location-box {
+.clickable-row {
+  cursor: pointer;
+}
+
+.clickable-row:hover {
+  background-color: #f9f9f9;
+}
+
+.centered-spinner {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 4px;
-  color: #666;
-  margin-top: 15px;
-  font-size: 0.9rem;
-}
-
-.location-box mat-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
+  padding: 50px;
 }
 
 .empty-state {
   text-align: center;
-  margin-top: 60px;
-  color: #999;
-}
-
-.empty-state mat-icon {
-  font-size: 40px;
-  width: 40px;
-  height: 40px;
-  margin-bottom: 10px;
-}
-
-.loader {
-  text-align: center;
   padding: 40px;
+  color: #757575;
+}
+
+.large-icon {
+  font-size: 48px !important;
+  width: 48px !important;
+  height: 48px !important;
+  margin-bottom: 10px;
+  color: #bdbdbd;
+}
+
+/* Specifično za ovu stranicu ako zatreba */
+th.mat-header-cell {
+  font-weight: 600;
+  color: #333;
 }

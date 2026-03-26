@@ -57,14 +57,7 @@ export class InternshipsComponent implements OnInit {
 
   loadingRecommendations = false;
   applicationsMap: { [key: number]: any } = {};
-  displayedColumns = [
-    'title',
-    'company',
-    'location',
-    'status',
-    'actions',
-    'workLog',
-  ];
+  displayedColumns = ['title', 'company', 'status', 'actions'];
 
   private searchSubject = new Subject<string>();
 
@@ -73,15 +66,16 @@ export class InternshipsComponent implements OnInit {
   constructor(
     private service: InternshipsService,
     private router: Router,
-  ) {
-    this.searchSubject
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe(() => {
-        this.filter();
-      });
-  }
+  ) {}
 
   ngOnInit() {
+    this.searchSubject
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe((searchValue) => {
+        console.log('Searching for:', searchValue);
+        this.filter();
+      });
+
     this.loadInitialData();
   }
 
@@ -96,6 +90,7 @@ export class InternshipsComponent implements OnInit {
       this.technologies = technologies;
       this.recommendations = recs;
 
+      // Mapiramo aplikacije da bismo znali status (npr. PENDING, REJECTED)
       applications.forEach((a) => (this.applicationsMap[a.internshipId] = a));
       this.loadData();
     });
@@ -105,8 +100,9 @@ export class InternshipsComponent implements OnInit {
     const companyId = this.companyFilter ? +this.companyFilter : undefined;
     const techId = this.technologyFilter ? +this.technologyFilter : undefined;
 
+    // POZIV NOVOG ENDPOINTA
     this.service
-      .getAllInternships(
+      .getNotAcceptedInternships(
         this.currentPage,
         this.pageSize,
         this.search,
@@ -120,20 +116,22 @@ export class InternshipsComponent implements OnInit {
   }
 
   onSearchInput() {
+    // Prosleđujemo trenutnu vrednost search stringa
     this.searchSubject.next(this.search);
+  }
+
+  filter() {
+    this.currentPage = 0;
+    // Resetujemo paginator vizuelno ako postoji
+    if (this.paginator) {
+      this.paginator.pageIndex = 0;
+    }
+    this.loadData();
   }
 
   onPageChange(event: PageEvent) {
     this.currentPage = event.pageIndex;
     this.pageSize = event.pageSize;
-    this.loadData();
-  }
-
-  filter() {
-    this.currentPage = 0;
-    if (this.paginator) {
-      this.paginator.pageIndex = 0;
-    }
     this.loadData();
   }
 
