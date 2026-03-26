@@ -35,13 +35,13 @@ export const routes: Routes = [
       {
         path: 'worklogs', 
         loadComponent: () =>
-          import('./features/worklog/worklog-list.component') 
+          import('./features/worklog/worklogs.component') 
             .then((m) => m.WorkLogListComponent),
       },
       {
         path: 'worklogs/:id', 
         loadComponent: () =>
-          import('./features/worklog/worklog.component') 
+          import('./features/worklog/worklogs-details.component') 
             .then((m) => m.WorkLogComponent),
       },
       {

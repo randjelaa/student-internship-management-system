@@ -30,8 +30,8 @@ import { Internship } from '../../core/models/internship.model';
     MatPaginatorModule,
     MatProgressSpinnerModule
   ],
-  templateUrl: './worklog-list.component.html',
-  styleUrl: './worklog-list.component.css',
+  templateUrl: './worklogs.component.html',
+  styleUrl: './worklogs.component.css',
 })
 export class WorkLogListComponent implements OnInit {
   acceptedInternships: Internship[] = [];

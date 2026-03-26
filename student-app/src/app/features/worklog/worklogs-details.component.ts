@@ -16,7 +16,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 // Services
-import { WorkLogService } from './worklog.service';
+import { WorkLogService } from './worklogs.service';
 import { InternshipsService } from '../internships/internships.service';
 
 @Component({
@@ -39,8 +39,8 @@ import { InternshipsService } from '../internships/internships.service';
     MatTableModule,
     MatPaginatorModule,
   ],
-  templateUrl: './worklog.component.html',
-  styleUrl: './worklog.component.css',
+  templateUrl: './worklogs-details.component.html',
+  styleUrl: './worklogs-details.component.css',
 })
 export class WorkLogComponent implements OnInit {
   internshipId!: number;

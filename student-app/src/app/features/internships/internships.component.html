@@ -98,80 +98,78 @@
   </mat-paginator>
 </div>
 
-<div class="recommendations-container">
-  <div class="recommendations-header">
-    <div class="title-with-icon">
-      <h2 class="no-margin">AI Match Recommendations</h2>
-    </div>
-
-    <button
-      mat-raised-button
-      color="accent"
-      (click)="generateAI()"
-      [disabled]="loadingRecommendations"
-    >
-      @if (!loadingRecommendations) {
-        <span>Generate New Suggestions</span>
-      } @else {
-        <mat-spinner diameter="20" class="inline-spinner"></mat-spinner>
-        <span>Analyzing CV...</span>
-      }
-    </button>
+<div class="recommendations-header">
+  <div class="title-with-icon">
+    <h2 class="no-margin">AI Match Recommendations</h2>
   </div>
 
-  @if (loadingRecommendations) {
-    <div class="centered">
-      <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
-      <p>Our AI is comparing your skills with available internships...</p>
-    </div>
-  }
-
-  @if (recommendations.length > 0) {
-    <div class="recommendations-grid">
-      @for (rec of recommendations; track rec.internshipId) {
-        <mat-card class="rec-card">
-          <mat-card-header>
-            <div
-              mat-card-avatar
-              class="score-avatar"
-              [style.backgroundColor]="getScoreColor(rec.score)"
-            >
-              {{ getFormattedScore(rec.score) }}
-            </div>
-            <mat-card-title title="{{ rec.internshipTitle }}">{{
-              rec.internshipTitle
-            }}</mat-card-title>
-            <mat-card-subtitle
-              >Match: {{ getFormattedScore(rec.score) }}/10</mat-card-subtitle
-            >
-          </mat-card-header>
-
-          <mat-card-content class="card-content">
-            <p class="explanation" title="{{ rec.explanation }}">
-              "{{ rec.explanation }}"
-            </p>
-          </mat-card-content>
-
-          <mat-card-actions align="end" style="padding: 0 8px 8px 0">
-            <button
-              mat-button
-              color="primary"
-              style="font-size: 0.75rem"
-              (click)="openDetails(rec.internshipId)"
-            >
-              VIEW
-            </button>
-          </mat-card-actions>
-        </mat-card>
-      }
-    </div>
-  } @else if (!loadingRecommendations) {
-    <div class="empty-state">
-      <mat-icon class="large-icon">lightbulb_outline</mat-icon>
-      <p>
-        Click the button above to get personalized internship recommendations
-        based on your profile.
-      </p>
-    </div>
-  }
+  <button
+    mat-raised-button
+    color="accent"
+    (click)="generateAI()"
+    [disabled]="loadingRecommendations"
+  >
+    @if (!loadingRecommendations) {
+      <span>Generate New Suggestions</span>
+    } @else {
+      <mat-spinner diameter="20" class="inline-spinner"></mat-spinner>
+      <span>Analyzing CV...</span>
+    }
+  </button>
 </div>
+
+@if (loadingRecommendations) {
+  <div class="centered">
+    <mat-progress-bar mode="indeterminate" color="accent"></mat-progress-bar>
+    <p>Our AI is comparing your skills with available internships...</p>
+  </div>
+}
+
+@if (recommendations.length > 0) {
+  <div class="recommendations-grid">
+    @for (rec of recommendations; track rec.internshipId) {
+      <mat-card class="rec-card">
+        <mat-card-header>
+          <div
+            mat-card-avatar
+            class="score-avatar"
+            [style.backgroundColor]="getScoreColor(rec.score)"
+          >
+            {{ getFormattedScore(rec.score) }}
+          </div>
+          <mat-card-title title="{{ rec.internshipTitle }}">{{
+            rec.internshipTitle
+          }}</mat-card-title>
+          <mat-card-subtitle
+            >Match: {{ getFormattedScore(rec.score) }}/10</mat-card-subtitle
+          >
+        </mat-card-header>
+
+        <mat-card-content class="card-content">
+          <p class="explanation" title="{{ rec.explanation }}">
+            "{{ rec.explanation }}"
+          </p>
+        </mat-card-content>
+
+        <mat-card-actions align="end" style="padding: 0 8px 8px 0">
+          <button
+            mat-button
+            color="primary"
+            style="font-size: 0.75rem"
+            (click)="openDetails(rec.internshipId)"
+          >
+            VIEW
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    }
+  </div>
+} @else if (!loadingRecommendations) {
+  <div class="empty-state">
+    <mat-icon class="large-icon">lightbulb_outline</mat-icon>
+    <p>
+      Click the button above to get personalized internship recommendations
+      based on your profile.
+    </p>
+  </div>
+}

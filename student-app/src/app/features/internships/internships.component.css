@@ -51,13 +51,6 @@ th.mat-header-cell {
 }
 
 /* --- AI RECOMMENDATIONS (SMIRENO) --- */
-.recommendations-container {
-  padding: 15px 20px;
-  background: #f7f7f7; /* manje kontrasta */
-  border-radius: 6px; /* manje “card look” */
-  border: 1px solid #e5e5e5; /* obična linija umjesto dashed */
-}
-
 .recommendations-header {
   display: flex;
   justify-content: space-between;
