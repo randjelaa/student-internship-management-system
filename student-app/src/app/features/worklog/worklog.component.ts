@@ -1,17 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { WorkLogService } from './worklog.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
+import { ActivatedRoute, RouterModule } from '@angular/router';
+
+// Material
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatTableModule } from '@angular/material/table';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
+// Services
+import { WorkLogService } from './worklog.service';
 import { InternshipsService } from '../internships/internships.service';
 
 @Component({
@@ -20,51 +25,56 @@ import { InternshipsService } from '../internships/internships.service';
   imports: [
     CommonModule,
     FormsModule,
-    MatCardModule,
+    RouterModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatExpansionModule,
     MatIconModule,
     MatPaginatorModule,
-    RouterModule
+    MatTableModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
+    MatTableModule,
+    MatPaginatorModule,
   ],
   templateUrl: './worklog.component.html',
+  styleUrl: './worklog.component.css',
 })
 export class WorkLogComponent implements OnInit {
   internshipId!: number;
   internship: any = null;
   logs: any[] = [];
   loading = false;
+  editingLogId: number | null = null; // Prati da li editujemo
 
   totalElements = 0;
   page = 0;
   size = 5;
 
-  newLog: any = {
-    startDate: null,
-    endDate: null,
-    description: '',
-  };
-
-  editingLogId: number | null = null;
-  editLogData: any = { startDate: null, endDate: null, description: '' };
+  newLog = { startDate: null, endDate: null, description: '' };
 
   constructor(
     private route: ActivatedRoute,
     private service: WorkLogService,
     private internshipService: InternshipsService,
+    private snackBar: MatSnackBar,
   ) {}
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.internshipId = +id;
-      this.loadInternshipDetails();
-      this.loadLogs();
+      this.loadInitialData();
     }
+  }
+
+  private loadInitialData() {
+    this.internshipService
+      .getInternshipById(this.internshipId)
+      .subscribe((data) => (this.internship = data));
+    this.loadLogs();
   }
 
   loadLogs() {
@@ -72,46 +82,35 @@ export class WorkLogComponent implements OnInit {
     this.service
       .getWorkLogsByInternship(this.internshipId, this.page, this.size)
       .subscribe({
-        next: (response) => {
-          this.logs = response.content;
-          this.totalElements = response.totalElements;
+        next: (res) => {
+          this.logs = res.content;
+          this.totalElements = res.totalElements;
           this.loading = false;
         },
-        error: () => (this.loading = false),
+        error: () => {
+          this.showMsg('Error loading logs');
+          this.loading = false;
+        },
       });
   }
 
-  onPageChange(event: PageEvent) {
-    this.page = event.pageIndex;
-    this.size = event.pageSize;
-    this.loadLogs();
-  }
-
-  loadInternshipDetails() {
-    this.internshipService
-      .getInternshipById(this.internshipId)
-      .subscribe((data) => {
-        this.internship = data;
-      });
-  }
-
-  onStartDateChange() {
-    if (
-      this.newLog.startDate &&
-      this.newLog.endDate &&
-      this.newLog.endDate < this.newLog.startDate
-    ) {
-      this.newLog.endDate = null;
-    }
+  // Poziva se kada klikneš na ikonicu olovke u tabeli
+  prepareEdit(log: any) {
+    this.editingLogId = log.id;
+    this.newLog = {
+      startDate: log.startDate,
+      endDate: log.endDate,
+      description: log.description,
+    };
+    // Skroluj do forme
+    document
+      .querySelector('.form-section')
+      ?.scrollIntoView({ behavior: 'smooth' });
   }
 
   saveLog() {
-    if (
-      !this.newLog.startDate ||
-      !this.newLog.endDate ||
-      !this.newLog.description
-    ) {
-      alert('Please fill all fields');
+    if (!this.isValid()) {
+      this.showMsg('Please fill all fields');
       return;
     }
 
@@ -122,57 +121,60 @@ export class WorkLogComponent implements OnInit {
       description: this.newLog.description,
     };
 
-    this.service.createWorkLog(payload).subscribe({
-      next: () => {
-        this.newLog = { startDate: null, endDate: null, description: '' };
-        this.loadLogs();
-      },
-      error: (err) => console.error('Save failed', err),
-    });
-  }
-
-  deleteLog(id: number) {
-    if (confirm('Are you sure you want to delete this log?')) {
-      this.service.deleteWorkLog(id).subscribe(() => this.loadLogs());
+    if (this.editingLogId) {
+      // UPDATE režim
+      this.service.updateWorkLog(this.editingLogId, payload).subscribe({
+        next: () => {
+          this.showMsg('Log updated');
+          this.resetForm();
+          this.loadLogs();
+        },
+        error: () => this.showMsg('Update failed'),
+      });
+    } else {
+      // CREATE režim
+      this.service.createWorkLog(payload).subscribe({
+        next: () => {
+          this.showMsg('Log saved');
+          this.resetForm();
+          this.loadLogs();
+        },
+        error: () => this.showMsg('Save failed'),
+      });
     }
   }
 
-  private formatDate(date: any): string {
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = ('0' + (d.getMonth() + 1)).slice(-2);
-    const day = ('0' + d.getDate()).slice(-2);
-    return `${year}-${month}-${day}`;
-  }
-
-  startEdit(log: any) {
-    this.editingLogId = log.id;
-    this.editLogData = {
-      startDate: new Date(log.startDate),
-      endDate: new Date(log.endDate),
-      description: log.description,
-    };
-  }
-
-  cancelEdit() {
-    this.editingLogId = null;
-  }
-
-  saveUpdate() {
-    if (!this.editingLogId) return;
-
-    const payload = {
-      startDate: this.formatDate(this.editLogData.startDate),
-      endDate: this.formatDate(this.editLogData.endDate),
-      description: this.editLogData.description,
-    };
-
-    this.service.updateWorkLog(this.editingLogId, payload).subscribe({
-      next: () => {
-        this.editingLogId = null;
+  deleteLog(id: number) {
+    if (confirm('Delete this entry?')) {
+      this.service.deleteWorkLog(id).subscribe(() => {
+        this.showMsg('Deleted');
         this.loadLogs();
-      },
-      error: (err) => console.error('Update failed', err),
-    });
+      });
+    }
+  }
+
+  resetForm() {
+    this.editingLogId = null;
+    this.newLog = { startDate: null, endDate: null, description: '' };
+  }
+
+  onPageChange(event: PageEvent) {
+    this.page = event.pageIndex;
+    this.size = event.pageSize;
+    this.loadLogs();
+  }
+
+  private isValid() {
+    return !!(
+      this.newLog.startDate &&
+      this.newLog.endDate &&
+      this.newLog.description.trim()
+    );
+  }
+  private showMsg(msg: string) {
+    this.snackBar.open(msg, 'OK', { duration: 3000 });
+  }
+  private formatDate(date: any) {
+    return date ? new Date(date).toISOString().split('T')[0] : '';
   }
 }

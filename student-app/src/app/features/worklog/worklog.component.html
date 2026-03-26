@@ -1,138 +1,114 @@
-<div class="page-container">
-  <div class="navigation-header">
-    <button mat-button routerLink="/worklogs" class="back-btn">
-      <mat-icon>arrow_back</mat-icon> Back to Internships
+<div class="wide-container">
+  <div class="top-bar">
+    <button mat-button routerLink="/worklogs">
+      <mat-icon>arrow_back</mat-icon> Back
     </button>
   </div>
 
   @if (internship) {
-    <div class="header">
-      <h2>Work Log: {{ internship.title }}</h2>
-      <p class="header-subtitle">
+    <div class="header-section">
+      <h1>Work Logs: {{ internship.title }}</h1>
+      <p class="meta">
         Company: <b>{{ internship.companyName }}</b>
       </p>
     </div>
   }
 
-  <mat-card class="mat-elevation-z2 add-card">
-    <mat-card-header>
-      <mat-card-title>New Weekly Entry</mat-card-title>
-    </mat-card-header>
-    <mat-card-content class="card-content">
-      <div class="row">
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>From</mat-label>
-          <input
-            matInput
-            [matDatepicker]="startPicker"
-            [(ngModel)]="newLog.startDate"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="startPicker"
-          ></mat-datepicker-toggle>
-          <mat-datepicker #startPicker></mat-datepicker>
-        </mat-form-field>
+  <div class="table-container mat-elevation-z8">
+    <table mat-table [dataSource]="logs">
+      <ng-container matColumnDef="week">
+        <th mat-header-cell *matHeaderCellDef>Week Period</th>
+        <td mat-cell *matCellDef="let log">
+          {{ log.startDate | date: "dd.MM.yyyy" }} -
+          {{ log.endDate | date: "dd.MM.yyyy" }}
+        </td>
+      </ng-container>
 
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>To</mat-label>
-          <input
-            matInput
-            [matDatepicker]="endPicker"
-            [(ngModel)]="newLog.endDate"
-            [min]="newLog.startDate"
-          />
-          <mat-datepicker-toggle
-            matSuffix
-            [for]="endPicker"
-          ></mat-datepicker-toggle>
-          <mat-datepicker #endPicker></mat-datepicker>
-        </mat-form-field>
-      </div>
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef>Activities</th>
+        <td mat-cell *matCellDef="let log" class="desc-cell">
+          {{ log.description }}
+        </td>
+      </ng-container>
 
-      <mat-form-field appearance="outline">
-        <mat-label>Activities & Tasks</mat-label>
-        <textarea
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let log">
+          <button mat-icon-button color="primary" (click)="prepareEdit(log)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteLog(log.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr
+        mat-header-row
+        *matHeaderRowDef="['week', 'description', 'actions']"
+      ></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: ['week', 'description', 'actions']"
+      ></tr>
+    </table>
+    <mat-paginator
+      [length]="totalElements"
+      [pageSize]="size"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="onPageChange($event)"
+      showFirstLastButtons
+      class="paginator"
+    >
+    </mat-paginator>
+  </div>
+
+  <div class="form-section">
+    <h3>{{ editingLogId ? "Edit entry" : "Add New Weekly Entry" }}</h3>
+    <div class="form-grid">
+      <mat-form-field appearance="outline" class="filter-item">
+        <mat-label>From</mat-label>
+        <input
           matInput
-          [(ngModel)]="newLog.description"
-          rows="3"
-          placeholder="What did you work on this week?"
-        ></textarea>
+          [matDatepicker]="startPicker"
+          [(ngModel)]="newLog.startDate"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="startPicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
       </mat-form-field>
-    </mat-card-content>
-    <mat-card-actions align="end">
-      <button mat-flat-button color="primary" (click)="saveLog()">
-        Save Log
-      </button>
-    </mat-card-actions>
-  </mat-card>
 
-  <div class="history-section">
-    <h3>Previous Entries</h3>
+      <mat-form-field appearance="outline" class="filter-item">
+        <mat-label>To</mat-label>
+        <input
+          matInput
+          [matDatepicker]="endPicker"
+          [(ngModel)]="newLog.endDate"
+          [min]="newLog.startDate"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="endPicker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+      </mat-form-field>
 
-    @if (loading) {
-      <p>Loading logs...</p>
-    } @else if (logs.length > 0) {
-      <mat-accordion>
-        @for (log of logs; track log.id) {
-          <mat-expansion-panel [expanded]="editingLogId === log.id">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                Week: {{ log.startDate | date: "dd.MM.yyyy" }} -
-                {{ log.endDate | date: "dd.MM.yyyy" }}
-              </mat-panel-title>
-            </mat-expansion-panel-header>
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Activities</mat-label>
+        <textarea matInput [(ngModel)]="newLog.description" rows="3"></textarea>
+      </mat-form-field>
 
-            @if (editingLogId !== log.id) {
-              <p class="pre-wrap">{{ log.description }}</p>
-
-              <ng-container matExtraContent>
-                <mat-action-row>
-                  <button mat-button color="primary" (click)="startEdit(log)">
-                    Edit
-                  </button>
-                  <button mat-button color="warn" (click)="deleteLog(log.id)">
-                    Delete
-                  </button>
-                </mat-action-row>
-              </ng-container>
-            } @else {
-              <div class="column">
-                <mat-form-field appearance="outline">
-                  <mat-label>Edit Description</mat-label>
-                  <textarea
-                    matInput
-                    [(ngModel)]="editLogData.description"
-                    rows="3"
-                  ></textarea>
-                </mat-form-field>
-
-                <mat-action-row>
-                  <button mat-button (click)="cancelEdit()">Cancel</button>
-                  <button
-                    mat-raised-button
-                    color="primary"
-                    (click)="saveUpdate()"
-                  >
-                    Save Changes
-                  </button>
-                </mat-action-row>
-              </div>
-            }
-          </mat-expansion-panel>
+      <div class="form-actions">
+        @if (editingLogId) {
+          <button mat-button (click)="resetForm()">Cancel</button>
         }
-      </mat-accordion>
-
-      <mat-paginator
-        [length]="totalElements"
-        [pageSize]="size"
-        [pageSizeOptions]="[5, 10, 20]"
-        (page)="onPageChange($event)"
-        class="paginator"
-      >
-      </mat-paginator>
-    } @else {
-      <div class="empty-state">No logs found for this internship.</div>
-    }
+        <button mat-raised-button color="primary" (click)="saveLog()">
+          <mat-icon>{{ editingLogId ? "edit" : "add" }}</mat-icon>
+          {{ editingLogId ? "Update Log" : "Save Weekly Log" }}
+        </button>
+      </div>
+    </div>
   </div>
 </div>
