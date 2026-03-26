@@ -1,33 +1,69 @@
-.details-container {
-  max-width: 700px;
-  margin: 20px auto;
+.wide-container {
+  padding: 10px 30px; /* Mali razmak od ivica ekrana */
+  width: 100%;
 }
 
-.details-card {
-  padding: 10px;
+.top-bar {
+  margin-bottom: 20px;
 }
 
-.desc {
-  margin: 15px 0;
-  line-height: 1.5;
-  color: #444;
+.header-section h1 {
+  font-size: 24px;
+  margin: 0 0 5px 0;
+  font-weight: 500;
 }
 
-.tech-list {
-  margin-top: 15px;
-  font-size: 0.9rem;
+.meta {
+  color: #666;
+  margin-bottom: 20px;
 }
 
-.tech-tag {
-  display: inline-block;
-  background: #eee;
-  padding: 2px 8px;
+.content-section {
+  display: flex;
+  flex-direction: column; /* KLJUČNO */
+  gap: 30px;
+  padding-top: 30px;
+}
+
+.main-info {
+  flex: 1; /* Uzima sav preostali prostor */
+}
+
+.description-text {
+  line-height: 1.6;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  background: #f0f0f0;
+  padding: 4px 12px;
   border-radius: 4px;
-  margin-left: 6px;
-  color: #555;
+  font-size: 13px;
 }
 
-mat-card-title {
-  font-size: 1.4rem !important;
-  margin-bottom: 5px !important;
+.action-bar {
+  width: 100%;
+  max-width: 300px; /* da ne bude preširoko */
+}
+
+h3 {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Dugme rastegnuto u svom kontejneru */
+.action-bar button {
+  width: 100%;
+  padding: 10px 0;
 }

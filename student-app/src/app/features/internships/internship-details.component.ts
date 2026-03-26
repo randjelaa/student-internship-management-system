@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common'; // Dodat Location
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
-import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { InternshipsService } from './internships.service';
 import { AuthService } from '../../core/auth/auth.service';
@@ -17,11 +16,10 @@ import { AuthService } from '../../core/auth/auth.service';
   standalone: true,
   imports: [
     CommonModule,
-    MatCardModule,
     MatButtonModule,
     MatIconModule,
-    MatChipsModule,
     MatDividerModule,
+    MatProgressSpinnerModule,
     RouterModule,
   ],
   templateUrl: './internship-details.component.html',
@@ -35,6 +33,7 @@ export class InternshipDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private service: InternshipsService,
     private auth: AuthService,
+    private location: Location // Injectovan servis
   ) {}
 
   ngOnInit() {
@@ -43,12 +42,19 @@ export class InternshipDetailsComponent implements OnInit {
     forkJoin({
       internship: this.service.getInternshipById(id),
       applications: this.service.getMyApplications(),
-    }).subscribe(({ internship, applications }) => {
-      this.internship = internship;
-      applications.forEach((a) => {
-        this.applicationsMap[a.internshipId] = a;
-      });
+    }).subscribe({
+      next: ({ internship, applications }) => {
+        this.internship = internship;
+        applications.forEach((a) => {
+          this.applicationsMap[a.internshipId] = a;
+        });
+      },
+      error: () => this.goBack() // Ako staž ne postoji, vrati nazad
     });
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 
   hasApplied(internshipId: number): boolean {
