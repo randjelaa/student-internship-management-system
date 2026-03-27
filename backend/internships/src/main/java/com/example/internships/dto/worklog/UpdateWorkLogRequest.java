@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Data
 public class UpdateWorkLogRequest {
-    private LocalDate startDate; // Promenjeno
-    private LocalDate endDate;   // Promenjeno
+    private LocalDate startDate;
+    private LocalDate endDate;
     private String description;
 }

@@ -8,14 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface InternshipRepository extends JpaRepository<Internship, Long> {
-    Page<Internship> findByTitleContainingIgnoreCase(String title, Pageable pageable);
-    Page<Internship> findByTitleContainingIgnoreCaseAndCompanyId(String title, Long companyId, Pageable pageable);
-    Page<Internship> findByTitleContainingIgnoreCaseAndTechnologiesId(String title, Long technologyId, Pageable pageable);
-
     @Query("SELECT DISTINCT i FROM Internship i " +
             "LEFT JOIN i.technologies t " +
             "WHERE i.id NOT IN (" +

@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/api/worklogs")
 @RequiredArgsConstructor
@@ -16,13 +18,15 @@ public class WorkLogController {
 
     private final WorkLogService workLogService;
 
-    @GetMapping("/internship/{internshipId}")
-    public ResponseEntity<Page<WorkLogResponseDTO>> getWorkLogsByInternship(
+    @GetMapping("/my/internship/{internshipId}")
+    public ResponseEntity<Page<WorkLogResponseDTO>> getMyWorkLogsByInternship(
             @PathVariable Long internshipId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            Authentication authentication
     ) {
-        return ResponseEntity.ok(workLogService.getWorkLogsByInternship(internshipId, page, size));
+        Long userId = ((UserPrincipal) Objects.requireNonNull(authentication.getPrincipal())).getUser().getId();
+        return ResponseEntity.ok(workLogService.getMyWorkLogsByInternship(internshipId, userId, page, size));
     }
 
     @PostMapping
@@ -30,21 +34,27 @@ public class WorkLogController {
             @RequestBody CreateWorkLogRequest request,
             Authentication authentication
     ) {
-        UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-        return ResponseEntity.ok(workLogService.createWorkLog(request, principal.getUser().getId()));
+        Long userId = ((UserPrincipal) Objects.requireNonNull(authentication.getPrincipal())).getUser().getId();
+        return ResponseEntity.ok(workLogService.createWorkLog(request, userId));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<WorkLogResponseDTO> updateWorkLog(
             @PathVariable Long id,
-            @RequestBody UpdateWorkLogRequest request
+            @RequestBody UpdateWorkLogRequest request,
+            Authentication authentication
     ) {
-        return ResponseEntity.ok(workLogService.updateWorkLog(id, request));
+        Long userId = ((UserPrincipal) Objects.requireNonNull(authentication.getPrincipal())).getUser().getId();
+        return ResponseEntity.ok(workLogService.updateWorkLog(id, request, userId));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWorkLog(@PathVariable Long id) {
-        workLogService.deleteWorkLog(id);
+    public ResponseEntity<Void> deleteWorkLog(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+        Long userId = ((UserPrincipal) Objects.requireNonNull(authentication.getPrincipal())).getUser().getId();
+        workLogService.deleteWorkLog(id, userId);
         return ResponseEntity.noContent().build();
     }
 }

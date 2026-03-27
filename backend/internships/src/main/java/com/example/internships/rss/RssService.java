@@ -61,7 +61,6 @@ public class RssService {
         return rss.toString();
     }
 
-    // 🔥 BITNO – da XML ne pukne
     private String escapeXml(String input) {
         if (input == null) return "";
 

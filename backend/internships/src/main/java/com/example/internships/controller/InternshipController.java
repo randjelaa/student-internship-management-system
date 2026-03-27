@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -18,16 +17,6 @@ import java.util.Objects;
 public class InternshipController {
 
     private final InternshipService internshipService;
-
-    @GetMapping
-    public Page<InternshipSummaryDTO> getAll(
-            @RequestParam(defaultValue = "") String search,
-            @RequestParam(required = false) Long company,
-            @RequestParam(required = false) Long technology,
-            Pageable pageable) {
-
-        return internshipService.getInternships(search, company, technology, pageable);
-    }
 
     @GetMapping("/{id}")
     public InternshipResponseDTO getById(@PathVariable Long id) {

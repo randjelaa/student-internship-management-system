@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -40,12 +41,6 @@ public class WorkLogService {
         return workLogMapper.toResponse(workLog);
     }
 
-    public Page<WorkLogResponseDTO> getWorkLogsByInternship(Long internshipId, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("startDate").descending());
-        return workLogRepository.findByInternshipId(internshipId, pageable)
-                .map(workLogMapper::toResponse);
-    }
-
     @Transactional
     public WorkLogResponseDTO createWorkLog(CreateWorkLogRequest request, Long userId) {
         Student student = studentRepository.findByUserId(userId)
@@ -62,9 +57,16 @@ public class WorkLogService {
     }
 
     @Transactional
-    public WorkLogResponseDTO updateWorkLog(Long id, UpdateWorkLogRequest request) {
+    public WorkLogResponseDTO updateWorkLog(Long id, UpdateWorkLogRequest request, Long userId) {
+        Student student = studentRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
         WorkLog workLog = workLogRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("WorkLog not found"));
+
+        if (!Objects.equals(workLog.getStudent().getId(), student.getId())) {
+            throw new RuntimeException("Student id mismatch");
+        }
 
         workLogMapper.updateWorkLogFromDto(request, workLog);
         WorkLog updated = workLogRepository.save(workLog);
@@ -72,20 +74,28 @@ public class WorkLogService {
     }
 
     @Transactional
-    public void deleteWorkLog(Long id) {
-        if (!workLogRepository.existsById(id)) {
-            throw new RuntimeException("WorkLog not found");
+    public void deleteWorkLog(Long id, Long userId) {
+        Student student = studentRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        WorkLog workLog = workLogRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("WorkLog not found"));
+
+        if (!Objects.equals(workLog.getStudent().getId(), student.getId())) {
+            throw new RuntimeException("Student id mismatch");
         }
-        workLogRepository.deleteById(id);
+
+        workLogRepository.delete(workLog);
     }
 
-//    public List<WorkLogResponseDTO> getMyWorkLogs(Long userId) {
-//        Student student = studentRepository.findByUserId(userId)
-//                .orElseThrow(() -> new RuntimeException("Student not found"));
-//
-//        return workLogRepository.findByStudentId(student.getId())
-//                .stream()
-//                .map(workLogMapper::toResponse)
-//                .toList();
-//    }
+    public Page<WorkLogResponseDTO> getMyWorkLogsByInternship(Long internshipId, Long userId, int page, int size) {
+        Student student = studentRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Student not found"));
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("startDate").descending());
+
+        return workLogRepository
+                .findByInternshipIdAndStudentId(internshipId, student.getId(), pageable)
+                .map(workLogMapper::toResponse);
+    }
 }
