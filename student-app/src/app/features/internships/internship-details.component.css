@@ -1,5 +1,5 @@
 .wide-container {
-  padding: 10px 30px; /* Mali razmak od ivica ekrana */
+  padding: 10px 30px;
   width: 100%;
 }
 
@@ -20,13 +20,13 @@
 
 .content-section {
   display: flex;
-  flex-direction: column; /* KLJUČNO */
+  flex-direction: column;
   gap: 30px;
   padding-top: 30px;
 }
 
 .main-info {
-  flex: 1; /* Uzima sav preostali prostor */
+  flex: 1;
 }
 
 .description-text {
@@ -50,7 +50,7 @@
 
 .action-bar {
   width: 100%;
-  max-width: 300px; /* da ne bude preširoko */
+  max-width: 300px;
 }
 
 h3 {
@@ -62,7 +62,6 @@ h3 {
   letter-spacing: 1px;
 }
 
-/* Dugme rastegnuto u svom kontejneru */
 .action-bar button {
   width: 100%;
   padding: 10px 0;

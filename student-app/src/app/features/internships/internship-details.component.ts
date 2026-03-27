@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, Location } from '@angular/common'; // Dodat Location
+import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
@@ -33,7 +33,7 @@ export class InternshipDetailsComponent implements OnInit {
     private route: ActivatedRoute,
     private service: InternshipsService,
     private auth: AuthService,
-    private location: Location // Injectovan servis
+    private location: Location,
   ) {}
 
   ngOnInit() {
@@ -49,7 +49,7 @@ export class InternshipDetailsComponent implements OnInit {
           this.applicationsMap[a.internshipId] = a;
         });
       },
-      error: () => this.goBack() // Ako staž ne postoji, vrati nazad
+      error: () => this.goBack(),
     });
   }
 

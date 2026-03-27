@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 
-// Material
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -15,7 +14,6 @@ import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
-// Services
 import { WorkLogService } from './worklogs.service';
 import { InternshipsService } from '../internships/internships.service';
 
@@ -47,7 +45,7 @@ export class WorkLogComponent implements OnInit {
   internship: any = null;
   logs: any[] = [];
   loading = false;
-  editingLogId: number | null = null; // Prati da li editujemo
+  editingLogId: number | null = null;
 
   totalElements = 0;
   page = 0;
@@ -80,7 +78,7 @@ export class WorkLogComponent implements OnInit {
   loadLogs() {
     this.loading = true;
     this.service
-      .getWorkLogsByInternship(this.internshipId, this.page, this.size)
+      .getMyWorkLogsByInternship(this.internshipId, this.page, this.size)
       .subscribe({
         next: (res) => {
           this.logs = res.content;
@@ -94,7 +92,6 @@ export class WorkLogComponent implements OnInit {
       });
   }
 
-  // Poziva se kada klikneš na ikonicu olovke u tabeli
   prepareEdit(log: any) {
     this.editingLogId = log.id;
     this.newLog = {
@@ -102,7 +99,6 @@ export class WorkLogComponent implements OnInit {
       endDate: log.endDate,
       description: log.description,
     };
-    // Skroluj do forme
     document
       .querySelector('.form-section')
       ?.scrollIntoView({ behavior: 'smooth' });
@@ -122,7 +118,6 @@ export class WorkLogComponent implements OnInit {
     };
 
     if (this.editingLogId) {
-      // UPDATE režim
       this.service.updateWorkLog(this.editingLogId, payload).subscribe({
         next: () => {
           this.showMsg('Log updated');
@@ -132,7 +127,6 @@ export class WorkLogComponent implements OnInit {
         error: () => this.showMsg('Update failed'),
       });
     } else {
-      // CREATE režim
       this.service.createWorkLog(payload).subscribe({
         next: () => {
           this.showMsg('Log saved');
@@ -171,9 +165,11 @@ export class WorkLogComponent implements OnInit {
       this.newLog.description.trim()
     );
   }
+
   private showMsg(msg: string) {
     this.snackBar.open(msg, 'OK', { duration: 3000 });
   }
+
   private formatDate(date: any) {
     return date ? new Date(date).toISOString().split('T')[0] : '';
   }

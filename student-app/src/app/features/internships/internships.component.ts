@@ -90,7 +90,6 @@ export class InternshipsComponent implements OnInit {
       this.technologies = technologies;
       this.recommendations = recs;
 
-      // Mapiramo aplikacije da bismo znali status (npr. PENDING, REJECTED)
       applications.forEach((a) => (this.applicationsMap[a.internshipId] = a));
       this.loadData();
     });
@@ -100,7 +99,6 @@ export class InternshipsComponent implements OnInit {
     const companyId = this.companyFilter ? +this.companyFilter : undefined;
     const techId = this.technologyFilter ? +this.technologyFilter : undefined;
 
-    // POZIV NOVOG ENDPOINTA
     this.service
       .getNotAcceptedInternships(
         this.currentPage,
@@ -116,13 +114,11 @@ export class InternshipsComponent implements OnInit {
   }
 
   onSearchInput() {
-    // Prosleđujemo trenutnu vrednost search stringa
     this.searchSubject.next(this.search);
   }
 
   filter() {
     this.currentPage = 0;
-    // Resetujemo paginator vizuelno ako postoji
     if (this.paginator) {
       this.paginator.pageIndex = 0;
     }

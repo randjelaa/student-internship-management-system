@@ -1,4 +1,3 @@
-/* Kopirano iz Internship komponente radi unifikacije */
 .page-header {
   margin-bottom: 20px;
 }
@@ -44,13 +43,11 @@ table {
   color: #bdbdbd;
 }
 
-/* Specifično za ovu stranicu ako zatreba */
 th.mat-header-cell {
   font-weight: 600;
   color: #333;
 }
 
-/* --- AI RECOMMENDATIONS (SMIRENO) --- */
 .recommendations-header {
   display: flex;
   justify-content: space-between;
@@ -58,32 +55,29 @@ th.mat-header-cell {
   margin-bottom: 10px;
 }
 
-/* NASLOV VEĆI */
 .recommendations-header h2 {
-  font-size: 1rem; /* bilo 0.85rem */
+  font-size: 1rem;
   font-weight: 600;
   color: #333;
 }
 
-/* MATCH TEKST MANJI */
 .rec-card mat-card-subtitle {
   font-size: 0.7rem;
   color: #777;
 }
 
-/* UKLONI LIJEVU LINIJU IZ OPISA */
 .explanation {
   font-size: 0.75rem;
   color: #666;
-  border-left: none; /* uklonjeno */
-  padding-left: 0;   /* reset */
+  border-left: none;
+  padding-left: 0;
   margin: 8px 0;
 }
 
 .score-avatar {
   width: 30px;
   height: 30px;
-  border-radius: 6px; /* umjesto kruga → manje flashy */
+  border-radius: 6px;
   font-size: 10px;
   font-weight: 600;
   color: white;
@@ -105,11 +99,10 @@ th.mat-header-cell {
 }
 
 .recommendations-header button {
-  transform: scale(0.85); /* malo manje agresivno */
+  transform: scale(0.85);
   transform-origin: right;
 }
 
-/* --- STATUS BADGES --- */
 .status-badge {
   padding: 3px 8px;
   border-radius: 4px;
@@ -119,7 +112,22 @@ th.mat-header-cell {
   display: inline-block;
 }
 
-.status-badge.accepted { background: #e8f5e9; color: #2e7d32; }
-.status-badge.rejected { background: #ffebee; color: #c62828; }
-.status-badge.pending  { background: #fff3e0; color: #ef6c00; }
-.status-badge.default-status { background: #f5f5f5; color: #757575; }
+.status-badge.accepted {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-badge.rejected {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.status-badge.pending {
+  background: #fff3e0;
+  color: #ef6c00;
+}
+
+.status-badge.default-status {
+  background: #f5f5f5;
+  color: #757575;
+}

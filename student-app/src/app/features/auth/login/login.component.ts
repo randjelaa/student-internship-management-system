@@ -23,7 +23,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  hidePassword = true; // Logika za oko na password polju
+  hidePassword = true; 
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],

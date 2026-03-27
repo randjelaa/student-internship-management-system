@@ -10,7 +10,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import {
+  MatPaginator,
+  MatPaginatorModule,
+  PageEvent,
+} from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { InternshipsService } from '../internships/internships.service';
@@ -28,7 +32,7 @@ import { Internship } from '../../core/models/internship.model';
     MatInputModule,
     MatSelectModule,
     MatPaginatorModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
   ],
   templateUrl: './worklogs.component.html',
   styleUrl: './worklogs.component.css',
@@ -39,7 +43,6 @@ export class WorkLogListComponent implements OnInit {
   technologies: any[] = [];
   loading = true;
 
-  // Pagination & Filters
   totalElements = 0;
   pageSize = 5;
   currentPage = 0;
@@ -56,13 +59,11 @@ export class WorkLogListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Postavljanje debounce-a za pretragu
-    this.searchSubject.pipe(
-      debounceTime(300),
-      distinctUntilChanged()
-    ).subscribe(() => {
-      this.filter();
-    });
+    this.searchSubject
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe(() => {
+        this.filter();
+      });
 
     this.loadInitialData();
   }
@@ -84,23 +85,25 @@ export class WorkLogListComponent implements OnInit {
     const companyId = this.companyFilter ? +this.companyFilter : undefined;
     const techId = this.technologyFilter ? +this.technologyFilter : undefined;
 
-    this.internshipService.getAcceptedInternships(
-      this.currentPage,
-      this.pageSize,
-      this.search,
-      companyId,
-      techId
-    ).subscribe({
-      next: (res) => {
-        this.acceptedInternships = res.content;
-        this.totalElements = res.totalElements;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error loading accepted internships', err);
-        this.loading = false;
-      }
-    });
+    this.internshipService
+      .getAcceptedInternships(
+        this.currentPage,
+        this.pageSize,
+        this.search,
+        companyId,
+        techId,
+      )
+      .subscribe({
+        next: (res) => {
+          this.acceptedInternships = res.content;
+          this.totalElements = res.totalElements;
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('Error loading accepted internships', err);
+          this.loading = false;
+        },
+      });
   }
 
   onSearchInput() {
@@ -127,12 +130,10 @@ export class WorkLogListComponent implements OnInit {
   }
 
   openDetails(id: number): void {
-    // Vodi na detalje internshipa (isto kao na glavnoj stranici)
     this.router.navigate(['/internships', id]);
   }
 
   goToWorkLogs(id: number) {
-    // Vodi na upravljanje logovima
     this.router.navigate(['/worklogs', id]);
   }
 }

@@ -1,4 +1,3 @@
-/* Kopirano iz Internship komponente radi unifikacije */
 .page-header {
   margin-bottom: 20px;
 }
@@ -44,7 +43,6 @@ table {
   color: #bdbdbd;
 }
 
-/* Specifično za ovu stranicu ako zatreba */
 th.mat-header-cell {
   font-weight: 600;
   color: #333;
