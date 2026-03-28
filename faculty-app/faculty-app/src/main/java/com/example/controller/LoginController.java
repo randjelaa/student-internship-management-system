@@ -13,7 +13,7 @@ import java.io.IOException;
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
 
-    private AuthService authService = new AuthService();
+    private final AuthService authService = new AuthService();
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -24,10 +24,7 @@ public class LoginController extends HttpServlet {
 
         try {
             LoginResponse response = authService.login(email, password, req);
-
-            // sacuvaj user u session
             req.getSession().setAttribute("user", response);
-
             resp.sendRedirect(req.getContextPath() + "/dashboard");
 
         } catch (Exception e) {
