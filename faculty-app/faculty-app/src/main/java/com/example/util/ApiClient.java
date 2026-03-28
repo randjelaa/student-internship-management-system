@@ -1,4 +1,4 @@
-package com.example.service;
+package com.example.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
