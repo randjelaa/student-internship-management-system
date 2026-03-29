@@ -11,10 +11,10 @@
     <title>Students</title>
 </head>
 <body>
-<jsp:include page="header.jsp"/>
+<jsp:include page="layout/header.jsp"/>
 
 <h2>Students</h2>
 
-<jsp:include page="footer.jsp"/>
+<jsp:include page="layout/footer.jsp"/>
 </body>
 </html>

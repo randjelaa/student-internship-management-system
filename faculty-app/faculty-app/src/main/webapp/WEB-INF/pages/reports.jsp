@@ -11,10 +11,10 @@
     <title>Reports</title>
 </head>
 <body>
-<jsp:include page="header.jsp"/>
+<jsp:include page="layout/header.jsp"/>
 
 <h2>Reports</h2>
 
-<jsp:include page="footer.jsp"/>
+<jsp:include page="layout/footer.jsp"/>
 </body>
 </html>
