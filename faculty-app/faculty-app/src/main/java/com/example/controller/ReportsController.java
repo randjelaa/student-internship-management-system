@@ -8,11 +8,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/dashboard")
-public class DashboardController extends HttpServlet {
+@WebServlet("/reports")
+public class ReportsController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/pages/dashboard.jsp").forward(req, resp);
+        req.getRequestDispatcher("/WEB-INF/pages/reports.jsp").forward(req, resp);
     }
 }

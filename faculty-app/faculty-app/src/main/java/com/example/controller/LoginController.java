@@ -25,15 +25,15 @@ public class LoginController extends HttpServlet {
         try {
             LoginResponse response = authService.login(email, password, req);
             req.getSession().setAttribute("user", response);
-            resp.sendRedirect(req.getContextPath() + "/dashboard");
+            resp.sendRedirect(req.getContextPath() + "/companies");
         } catch (Exception e) {
             req.setAttribute("error", "Incorrect email or password");
-            req.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(req, resp);
+            req.getRequestDispatcher("/login.jsp").forward(req, resp);
         }
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/WEB-INF/pages/login.jsp").forward(req, resp);
+        req.getRequestDispatcher("/login.jsp").forward(req, resp);
     }
 }

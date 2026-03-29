@@ -16,5 +16,15 @@
     </label>
     <button type="submit">Login</button>
 </form>
+
+<%
+    String error = (String) request.getAttribute("error");
+    if (error != null) {
+%>
+<p style="color:red;"><%= error %></p>
+<%
+    }
+%>
+
 </body>
 </html>
