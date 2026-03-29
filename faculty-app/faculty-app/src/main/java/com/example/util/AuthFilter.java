@@ -13,7 +13,6 @@ public class AuthFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
@@ -36,6 +35,7 @@ public class AuthFilter implements Filter {
 
     private boolean isPublic(String path) {
         return path.contains("login") ||
+                path.contains("logout") ||
                 path.contains("css") ||
                 path.contains("js") ||
                 path.contains("images");

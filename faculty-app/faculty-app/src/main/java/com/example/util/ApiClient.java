@@ -12,9 +12,7 @@ public class ApiClient {
     private static final String BASE_URL = "http://localhost:8080/api";
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public static <T> T post(String path, Object requestBody, Class<T> responseType,
-                             HttpServletRequest request) throws Exception {
-
+    public static <T> T post(String path, Object requestBody, Class<T> responseType, HttpServletRequest request) throws Exception {
         URL url = new URL(BASE_URL + path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -42,8 +40,7 @@ public class ApiClient {
         }
     }
 
-    public static <T> T get(String path, Class<T> responseType,
-                            HttpServletRequest request) throws Exception {
+    public static <T> T get(String path, Class<T> responseType, HttpServletRequest request) throws Exception {
         URL url = new URL(BASE_URL + path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
