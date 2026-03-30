@@ -10,36 +10,6 @@
 
     <h2>Companies</h2>
 
-    <h3>Add company</h3>
-
-    <form method="post" action="companies">
-        <input type="hidden" name="action" value="create"/>
-
-        <div>
-            Email: <input type="text" name="email"/>
-        </div>
-
-        <div>
-            Password: <input type="password" name="password"/>
-        </div>
-
-        <div>
-            Naziv: <input type="text" name="name"/>
-        </div>
-
-        <div>
-            Opis: <input type="text" name="description"/>
-        </div>
-
-        <div>
-            Website: <input type="text" name="website"/>
-        </div>
-
-        <button type="submit">Dodaj</button>
-    </form>
-
-    <br/>
-
     <table border="1">
         <tr>
             <th>ID</th>
@@ -56,7 +26,7 @@
                 for (CompanySummaryDTO c : companies) {
         %>
 
-        <tr>
+        <tr onclick="window.location='companies?id=<%= c.getId() %>'" style="cursor:pointer;">
             <td><%= c.getId() %></td>
             <td><%= c.getName() %></td>
             <td><%= c.isActive() ? "Active" : "Inactive" %></td>
@@ -82,6 +52,51 @@
         %>
 
     </table>
+
+    <br/>
+
+    <h3>Add company</h3>
+
+    <form method="post" action="companies">
+        <input type="hidden" name="action" value="create"/>
+
+        <div>
+            <label>
+                Email:
+                <input type="text" name="email"/>
+            </label>
+        </div>
+
+        <div>
+            <label>
+                Password:
+                <input type="password" name="password"/>
+            </label>
+        </div>
+
+        <div>
+            <label>
+                Name:
+                <input type="text" name="name"/>
+            </label>
+        </div>
+
+        <div>
+            <label>
+                Description:
+                <input type="text" name="description"/>
+            </label>
+        </div>
+
+        <div>
+            <label>
+                Website:
+                <input type="text" name="website"/>
+            </label>
+        </div>
+
+        <button type="submit">Add</button>
+    </form>
 
     <jsp:include page="layout/footer.jsp"/>
 </body>

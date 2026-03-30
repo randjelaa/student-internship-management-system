@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.model.dto.CompanyResponseDTO;
 import com.example.util.ApiClient;
 import jakarta.servlet.http.HttpServletRequest;
 import com.example.model.dto.CompanySummaryDTO;
@@ -11,6 +12,10 @@ public class CompanyService {
 
     public CompanySummaryDTO[] getAll(HttpServletRequest request) throws Exception {
         return ApiClient.get("/companies", CompanySummaryDTO[].class, request);
+    }
+
+    public CompanyResponseDTO getById(Long id, HttpServletRequest request) throws Exception {
+        return ApiClient.get("/companies/" + id, CompanyResponseDTO.class, request);
     }
 
     public void activate(Long id, HttpServletRequest request) throws Exception {

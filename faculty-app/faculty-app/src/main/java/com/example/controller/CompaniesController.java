@@ -1,5 +1,6 @@
 package com.example.controller;
 
+import com.example.model.dto.CompanyResponseDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,13 +18,28 @@ public class CompaniesController extends HttpServlet {
     private final CompanyService service = new CompanyService();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            CompanySummaryDTO[] companies = service.getAll(req);
-            req.setAttribute("companies", companies);
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
-            req.getRequestDispatcher("WEB-INF/pages/companies.jsp")
-                    .forward(req, resp);
+        String idParam = req.getParameter("id");
+
+        try {
+            if (idParam != null) {
+                Long id = Long.parseLong(idParam);
+
+                CompanyResponseDTO company = service.getById(id, req);
+                req.setAttribute("company", company);
+
+                req.getRequestDispatcher("WEB-INF/pages/company-details.jsp")
+                        .forward(req, resp);
+            } else {
+                CompanySummaryDTO[] companies = service.getAll(req);
+                req.setAttribute("companies", companies);
+
+                req.getRequestDispatcher("WEB-INF/pages/companies.jsp")
+                        .forward(req, resp);
+            }
+
         } catch (Exception e) {
             throw new ServletException(e);
         }
