@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -42,10 +41,6 @@ public class Company {
     @Size(max = 255)
     @Column(name = "website")
     private String website;
-
-    @ColumnDefault("0")
-    @Column(name = "active")
-    private Boolean active;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

@@ -9,5 +9,4 @@ public class UpdateCompanyRequest {
     private String name;
     private String description;
     private String website;
-    private Boolean active;
 }

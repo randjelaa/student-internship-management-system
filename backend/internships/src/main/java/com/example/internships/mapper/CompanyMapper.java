@@ -18,7 +18,9 @@ public interface CompanyMapper {
 
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "email", source = "user.email")
+    @Mapping(target = "active", source = "user.active")
     CompanyResponseDTO toResponse(Company entity);
 
+    @Mapping(target = "active", source = "user.active")
     CompanySummaryDTO toSummary(Company entity);
 }

@@ -2,6 +2,7 @@ package com.example.internships.controller;
 
 import com.example.internships.dto.auth.LoginRequest;
 import com.example.internships.dto.auth.LoginResponse;
+import com.example.internships.entity.User;
 import com.example.internships.security.UserPrincipal;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -45,10 +46,16 @@ public class AuthController {
             throw new RuntimeException("Authentication failed");
         }
 
+        User user = principal.getUser();
+
+        if (!user.getActive()) {
+            throw new RuntimeException("Authentication failed");
+        }
+
         LoginResponse response = new LoginResponse(
-                principal.getUser().getId(),
-                principal.getUser().getEmail(),
-                principal.getUser().getRole().name()
+                user.getId(),
+                user.getEmail(),
+                user.getRole().name()
         );
 
         return ResponseEntity.ok(response);

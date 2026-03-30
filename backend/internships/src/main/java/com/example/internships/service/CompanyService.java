@@ -46,7 +46,6 @@ public class CompanyService {
 
         Company company = companyMapper.toEntity(request);
         company.setUser(user);
-        company.setActive(true);
 
         return companyMapper.toResponse(companyRepository.save(company));
     }
@@ -77,7 +76,7 @@ public class CompanyService {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
 
-        company.setActive(true);
+        company.getUser().setActive(true);
         return companyMapper.toResponse(companyRepository.save(company));
     }
 
@@ -86,7 +85,7 @@ public class CompanyService {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
 
-        company.setActive(false);
+        company.getUser().setActive(false);
         return companyMapper.toResponse(companyRepository.save(company));
     }
 
