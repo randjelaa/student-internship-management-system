@@ -92,4 +92,8 @@ public class InternshipService {
         return internshipRepository.findAcceptedByStudent(studentId, title, companyId, techId, pageable)
                 .map(internshipMapper::toSummary);
     }
+
+    public Page<InternshipSummaryDTO> getAllInternships(Pageable pageable) {
+        return internshipRepository.findAll(pageable).map(internshipMapper::toSummary);
+    }
 }
