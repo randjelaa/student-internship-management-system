@@ -35,12 +35,12 @@ public class CompanyController {
         return companyService.updateCompany(id, request);
     }
 
-    @PatchMapping("/{id}/activate")
+    @PostMapping("/{id}/activate")
     public CompanyResponseDTO activateCompany(@PathVariable Long id) {
         return companyService.activateCompany(id);
     }
 
-    @PatchMapping("/{id}/deactivate")
+    @PostMapping("/{id}/deactivate")
     public CompanyResponseDTO deactivateCompany(@PathVariable Long id) {
         return companyService.deactivateCompany(id);
     }
