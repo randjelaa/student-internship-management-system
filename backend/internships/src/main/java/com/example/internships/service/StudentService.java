@@ -28,10 +28,10 @@ public class StudentService {
     private final StudentMapper studentMapper;
     private final UserService userService;
 
-    public List<StudentSummaryDTO> getAllStudents() {
+    public List<StudentResponseDTO> getAllStudents() {
         return studentRepository.findAll()
                 .stream()
-                .map(studentMapper::toSummary)
+                .map(studentMapper::toResponse)
                 .toList();
     }
 

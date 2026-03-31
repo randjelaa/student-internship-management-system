@@ -3,6 +3,8 @@ package com.example.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Part;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -70,6 +72,55 @@ public class ApiClient {
         }
 
         return mapper.readValue(response.toString(), type);
+    }
+
+    public static void postMultipart(
+            String path,
+            Part filePart,
+            HttpServletRequest request
+    ) throws Exception {
+
+        String boundary = "----WebKitFormBoundary" + System.currentTimeMillis();
+
+        URL url = new URL(BASE_URL + path);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setRequestMethod("POST");
+        conn.setDoOutput(true);
+
+        conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
+
+        // 🔐 session/cookie (ako koristiš)
+        addCookie(conn, request);
+
+        OutputStream os = conn.getOutputStream();
+        PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF-8"), true);
+
+        // start file part
+        writer.append("--").append(boundary).append("\r\n");
+        writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"file.csv\"\r\n");
+        writer.append("Content-Type: text/csv\r\n\r\n").flush();
+
+        InputStream input = filePart.getInputStream();
+        byte[] buffer = new byte[4096];
+        int bytesRead;
+
+        while ((bytesRead = input.read(buffer)) != -1) {
+            os.write(buffer, 0, bytesRead);
+        }
+
+        os.flush();
+
+        writer.append("\r\n").flush();
+        writer.append("--").append(boundary).append("--").append("\r\n").flush();
+
+        writer.close();
+
+        int status = conn.getResponseCode();
+
+        if (status != 200) {
+            throw new RuntimeException("Multipart POST failed: " + status);
+        }
     }
 
     private static void addCookie(HttpURLConnection conn, HttpServletRequest request) {
