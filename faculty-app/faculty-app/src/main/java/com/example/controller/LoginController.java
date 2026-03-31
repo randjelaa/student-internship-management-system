@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.model.dto.LoginResponse;
+import com.example.dto.LoginResponse;
 import com.example.service.AuthService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

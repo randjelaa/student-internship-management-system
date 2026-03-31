@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="com.example.model.dto.CompanySummaryDTO" %>
+<%@ page import="com.example.dto.CompanySummaryDTO" %>
 <html>
 <head>
     <title>Title</title>

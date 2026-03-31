@@ -1,6 +1,6 @@
 package com.example.controller;
 
-import com.example.model.dto.CompanyResponseDTO;
+import com.example.dto.CompanyResponseDTO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-import com.example.model.dto.CompanySummaryDTO;
+import com.example.dto.CompanySummaryDTO;
 import com.example.service.CompanyService;
 
 @WebServlet("/companies")

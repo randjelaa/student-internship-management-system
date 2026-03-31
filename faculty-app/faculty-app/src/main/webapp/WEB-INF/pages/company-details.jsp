@@ -1,4 +1,4 @@
-<%@ page import="com.example.model.dto.CompanyResponseDTO" %><%--
+<%@ page import="com.example.dto.CompanyResponseDTO" %><%--
   Created by IntelliJ IDEA.
   User: Admin
   Date: 3/30/2026

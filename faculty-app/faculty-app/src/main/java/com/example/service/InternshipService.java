@@ -2,7 +2,7 @@ package com.example.service;
 
 import com.example.util.ApiClient;
 import jakarta.servlet.http.HttpServletRequest;
-import com.example.model.dto.InternshipSummaryDTO;
+import com.example.dto.InternshipSummaryDTO;
 import com.example.util.PageResponse;
 
 public class InternshipService {

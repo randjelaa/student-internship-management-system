@@ -1,9 +1,9 @@
 package com.example.service;
 
-import com.example.model.dto.CompanyResponseDTO;
+import com.example.dto.CompanyResponseDTO;
 import com.example.util.ApiClient;
 import jakarta.servlet.http.HttpServletRequest;
-import com.example.model.dto.CompanySummaryDTO;
+import com.example.dto.CompanySummaryDTO;
 
 import java.util.HashMap;
 import java.util.Map;

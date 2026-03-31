@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" %>
-<%@ page import="com.example.model.dto.LoginResponse" %>
+<%@ page import="com.example.dto.LoginResponse" %>
 
 <%
     LoginResponse user = (LoginResponse) session.getAttribute("user");
