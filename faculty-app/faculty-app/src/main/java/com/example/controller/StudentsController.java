@@ -23,6 +23,26 @@ public class StudentsController extends HttpServlet {
             throws ServletException, IOException {
 
         try {
+            String action = req.getParameter("action");
+
+            if ("edit".equals(action)) {
+                Long id = Long.parseLong(req.getParameter("id"));
+
+                try {
+                    StudentResponseDTO student = service.getById(id, req);
+
+                    req.setAttribute("student", student);
+
+                    req.getRequestDispatcher("WEB-INF/pages/update-student.jsp")
+                            .forward(req, resp);
+
+                    return;
+
+                } catch (Exception e) {
+                    throw new ServletException(e);
+                }
+            }
+
             StudentResponseDTO[] students = service.getAll(req);
             req.setAttribute("students", students);
 
@@ -48,6 +68,16 @@ public class StudentsController extends HttpServlet {
             if ("upload".equals(action)) {
                 Part filePart = req.getPart("file");
                 service.uploadCsv(filePart, req);
+            }
+
+            if ("delete".equals(action)) {
+                Long id = Long.parseLong(req.getParameter("id"));
+                service.delete(id, req);
+            }
+
+            if ("update".equals(action)) {
+                Long id = Long.parseLong(req.getParameter("id"));
+                service.update(id, req);
             }
         } catch (Exception e) {
             e.printStackTrace();

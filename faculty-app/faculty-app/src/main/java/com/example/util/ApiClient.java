@@ -123,6 +123,57 @@ public class ApiClient {
         }
     }
 
+    public static void delete(String path, HttpServletRequest request) throws Exception {
+        URL url = new URL(BASE_URL + path);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setRequestMethod("DELETE");
+
+        addCookie(conn, request);
+
+        int status = conn.getResponseCode();
+
+        if (status != 200 && status != 204) {
+            throw new RuntimeException("DELETE failed: " + status);
+        }
+    }
+
+    public static <T> T put(
+            String path,
+            Object body,
+            Class<T> responseType,
+            HttpServletRequest request
+    ) throws Exception {
+
+        URL url = new URL(BASE_URL + path);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setRequestMethod("PUT");
+        conn.setDoOutput(true);
+
+        conn.setRequestProperty("Content-Type", "application/json");
+
+        // session cookie
+        addCookie(conn, request);
+
+        // šaljemo JSON
+        ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(body);
+
+        OutputStream os = conn.getOutputStream();
+        os.write(json.getBytes());
+        os.flush();
+
+        int status = conn.getResponseCode();
+
+        if (status != 200) {
+            throw new RuntimeException("PUT failed: " + status);
+        }
+
+        InputStream is = conn.getInputStream();
+        return mapper.readValue(is, responseType);
+    }
+
     private static void addCookie(HttpURLConnection conn, HttpServletRequest request) {
         Object cookie = request.getSession().getAttribute("JSESSIONID");
 

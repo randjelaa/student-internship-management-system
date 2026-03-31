@@ -45,6 +45,7 @@
         <th>Email</th>
         <th>Fakultet</th>
         <th>Godina studija</th>
+        <th>Akcije</th>
     </tr>
 
     <%
@@ -62,6 +63,22 @@
         <td><%= s.getEmail() %></td>
         <td><%= s.getFaculty() %></td>
         <td><%= s.getYearOfStudy() %></td>
+        <td>
+
+            <!-- DELETE -->
+            <form method="post" action="students" style="display:inline;">
+                <input type="hidden" name="action" value="delete"/>
+                <input type="hidden" name="id" value="<%= s.getId() %>"/>
+
+                <button type="submit">Obriši</button>
+            </form>
+
+            <!-- UPDATE -->
+            <a href="students?action=edit&id=<%= s.getId() %>">
+                <button type="button">Uredi</button>
+            </a>
+
+        </td>
     </tr>
 
     <%

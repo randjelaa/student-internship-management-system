@@ -32,4 +32,29 @@ public class StudentService {
     public void uploadCsv(Part filePart, HttpServletRequest request) throws Exception {
         ApiClient.postMultipart("/students/import-csv", filePart, request);
     }
+
+    public void delete(Long id, HttpServletRequest request) throws Exception {
+        ApiClient.delete("/students/" + id, request);
+    }
+
+    public StudentResponseDTO getById(Long id, HttpServletRequest request) throws Exception {
+        return ApiClient.get("/students/" + id, StudentResponseDTO.class, request);
+    }
+
+    public void update(Long id, HttpServletRequest req) throws Exception {
+
+        Map<String, Object> body = new HashMap<>();
+
+        body.put("email", req.getParameter("email"));
+        if (req.getParameter("password") != null && !req.getParameter("password").isEmpty()) {
+            body.put("password", req.getParameter("password"));
+        }
+        body.put("firstName", req.getParameter("firstName"));
+        body.put("lastName", req.getParameter("lastName"));
+        body.put("indexNumber", req.getParameter("indexNumber"));
+        body.put("faculty", req.getParameter("faculty"));
+        body.put("yearOfStudy", Integer.parseInt(req.getParameter("yearOfStudy")));
+
+        ApiClient.put("/students/" + id, body, Object.class, req);
+    }
 }
