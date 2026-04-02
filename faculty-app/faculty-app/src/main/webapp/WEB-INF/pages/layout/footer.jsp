@@ -16,7 +16,7 @@
         <a href="companies">Kompanije</a>
         <a href="students">Studenti</a>
         <a href="internships">Prakse</a>
-        <a href="reports">Dnevnik</a>
+        <a href="grades">Ocjene</a>
     </div>
 </body>
 </html>

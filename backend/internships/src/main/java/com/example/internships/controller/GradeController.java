@@ -26,4 +26,18 @@ public class GradeController {
         List<GradeResponseDTO> grades = gradeService.getGradesByStudentId(studentId);
         return ResponseEntity.ok(grades);
     }
+
+    @GetMapping("/details")
+    public List<GradeDetails> getGradeDetails() {
+        return gradeService.getAllGradeDetails();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<GradeResponseDTO> updateGrade(
+            @PathVariable Long id,
+            @RequestBody CreateGradeRequest request) {
+
+        GradeResponseDTO updated = gradeService.updateGrade(id, request);
+        return ResponseEntity.ok(updated);
+    }
 }

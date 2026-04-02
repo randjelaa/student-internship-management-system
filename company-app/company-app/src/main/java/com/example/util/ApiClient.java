@@ -1,14 +1,12 @@
 package com.example.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 
 public class ApiClient {
 
@@ -94,7 +92,7 @@ public class ApiClient {
         addCookie(conn, request);
 
         OutputStream os = conn.getOutputStream();
-        PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, StandardCharsets.UTF_8), true);
+        PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF-8"), true);
 
         writer.append("--").append(boundary).append("\r\n");
         writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"file.csv\"\r\n");

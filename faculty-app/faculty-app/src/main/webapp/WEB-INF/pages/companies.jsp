@@ -6,98 +6,101 @@
     <title>Title</title>
 </head>
 <body>
-    <jsp:include page="layout/header.jsp"/>
+<jsp:include page="layout/header.jsp"/>
 
-    <h2>Companies</h2>
+<h2>Companies</h2>
 
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
 
-        <%
-            CompanySummaryDTO[] companies =
-                    (CompanySummaryDTO[]) request.getAttribute("companies");
+    <%
+        CompanySummaryDTO[] companies =
+                (CompanySummaryDTO[]) request.getAttribute("companies");
 
-            if (companies != null) {
-                for (CompanySummaryDTO c : companies) {
-        %>
+        if (companies != null) {
+            for (CompanySummaryDTO c : companies) {
+    %>
 
-        <tr onclick="window.location='companies?id=<%= c.getId() %>'" style="cursor:pointer;">
-            <td><%= c.getId() %></td>
-            <td><%= c.getName() %></td>
-            <td><%= c.isActive() ? "Active" : "Inactive" %></td>
+    <tr onclick="window.location='companies?id=<%= c.getId() %>'" style="cursor:pointer;">
+        <td><%= c.getId() %>
+        </td>
+        <td><%= c.getName() %>
+        </td>
+        <td><%= c.isActive() ? "Active" : "Inactive" %>
+        </td>
 
-            <td>
-                <form method="post" action="companies" style="display:inline;">
-                    <input type="hidden" name="id" value="<%= c.getId() %>"/>
+        <td>
+            <form method="post" action="companies" style="display:inline;">
+                <input type="hidden" name="id" value="<%= c.getId() %>"/>
 
-                    <% if (c.isActive()) { %>
-                    <input type="hidden" name="action" value="deactivate"/>
-                    <button type="submit">Deactivate</button>
-                    <% } else { %>
-                    <input type="hidden" name="action" value="activate"/>
-                    <button type="submit">Activate</button>
-                    <% } %>
-                </form>
-            </td>
-        </tr>
+                <% if (c.isActive()) { %>
+                <input type="hidden" name="action" value="deactivate"/>
+                <button type="submit">Deactivate</button>
+                <% } else { %>
+                <input type="hidden" name="action" value="activate"/>
+                <button type="submit">Activate</button>
+                <% } %>
+            </form>
+        </td>
+    </tr>
 
-        <%
-                }
+    <%
             }
-        %>
+        }
+    %>
 
-    </table>
+</table>
 
-    <br/>
+<br/>
 
-    <h3>Add company</h3>
+<h3>Add company</h3>
 
-    <form method="post" action="companies">
-        <input type="hidden" name="action" value="create"/>
+<form method="post" action="companies">
+    <input type="hidden" name="action" value="create"/>
 
-        <div>
-            <label>
-                Email:
-                <input type="text" name="email"/>
-            </label>
-        </div>
+    <div>
+        <label>
+            Email:
+            <input type="text" name="email"/>
+        </label>
+    </div>
 
-        <div>
-            <label>
-                Password:
-                <input type="password" name="password"/>
-            </label>
-        </div>
+    <div>
+        <label>
+            Password:
+            <input type="password" name="password"/>
+        </label>
+    </div>
 
-        <div>
-            <label>
-                Name:
-                <input type="text" name="name"/>
-            </label>
-        </div>
+    <div>
+        <label>
+            Name:
+            <input type="text" name="name"/>
+        </label>
+    </div>
 
-        <div>
-            <label>
-                Description:
-                <input type="text" name="description"/>
-            </label>
-        </div>
+    <div>
+        <label>
+            Description:
+            <input type="text" name="description"/>
+        </label>
+    </div>
 
-        <div>
-            <label>
-                Website:
-                <input type="text" name="website"/>
-            </label>
-        </div>
+    <div>
+        <label>
+            Website:
+            <input type="text" name="website"/>
+        </label>
+    </div>
 
-        <button type="submit">Add</button>
-    </form>
+    <button type="submit">Add</button>
+</form>
 
-    <jsp:include page="layout/footer.jsp"/>
+<jsp:include page="layout/footer.jsp"/>
 </body>
 </html>

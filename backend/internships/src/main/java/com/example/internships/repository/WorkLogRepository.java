@@ -11,4 +11,5 @@ import java.util.List;
 @Repository
 public interface WorkLogRepository extends JpaRepository<WorkLog, Long> {
     Page<WorkLog> findByInternshipIdAndStudentId(Long internshipId, Long studentId, Pageable pageable);
+    List<WorkLog> findByStudentIdAndInternshipId(Long studentId, Long internshipId);
 }

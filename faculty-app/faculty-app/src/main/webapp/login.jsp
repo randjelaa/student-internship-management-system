@@ -7,12 +7,12 @@
 <form method="post" action="login">
     <label>
         Email:
-        <input type="text" name="email" />
+        <input type="text" name="email"/>
     </label>
     <br/>
     <label>
         Password:
-        <input type="password" name="password" /><br/>
+        <input type="password" name="password"/><br/>
     </label>
     <button type="submit">Login</button>
 </form>
