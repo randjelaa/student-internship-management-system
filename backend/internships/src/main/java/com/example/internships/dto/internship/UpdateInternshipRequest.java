@@ -6,7 +6,6 @@ import java.util.Set;
 
 @Data
 public class UpdateInternshipRequest {
-    private Long companyId;
     private String title;
     private String description;
     private String location;

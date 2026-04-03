@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 @RestController
@@ -28,15 +29,29 @@ public class InternshipController {
         return internshipService.getInternshipById(id);
     }
 
+    @GetMapping("/my")
+    public List<InternshipResponseDTO> getByCompanyId(Authentication authentication) {
+        Long userId = ((UserPrincipal) Objects.requireNonNull(authentication.getPrincipal())).getUser().getId();
+        return internshipService.getByCompanyId(userId);
+    }
+
     @PostMapping
-    public InternshipResponseDTO create(@RequestBody CreateInternshipRequest request) {
-        return internshipService.createInternship(request);
+    public InternshipResponseDTO create(
+            @RequestBody CreateInternshipRequest request,
+            Authentication authentication
+    ) {
+        Long userId = ((UserPrincipal) Objects.requireNonNull(authentication.getPrincipal())).getUser().getId();
+        return internshipService.createInternship(request, userId);
     }
 
     @PutMapping("/{id}")
-    public InternshipResponseDTO update(@PathVariable Long id,
-                                        @RequestBody UpdateInternshipRequest request) {
-        return internshipService.updateInternship(id, request);
+    public InternshipResponseDTO update(
+            @PathVariable Long id,
+            @RequestBody UpdateInternshipRequest request,
+            Authentication authentication
+    ) {
+        Long userId = ((UserPrincipal) Objects.requireNonNull(authentication.getPrincipal())).getUser().getId();
+        return internshipService.updateInternship(id, request, userId);
     }
 
     @DeleteMapping("/{id}")

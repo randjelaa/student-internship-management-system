@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface InternshipRepository extends JpaRepository<Internship, Long> {
     @Query("SELECT DISTINCT i FROM Internship i " +
@@ -39,4 +41,6 @@ public interface InternshipRepository extends JpaRepository<Internship, Long> {
             @Param("companyId") Long companyId,
             @Param("techId") Long techId,
             Pageable pageable);
+
+    List<Internship> findAllByCompanyId(Long companyId);
 }

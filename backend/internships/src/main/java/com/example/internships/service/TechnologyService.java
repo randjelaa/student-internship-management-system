@@ -1,6 +1,9 @@
 package com.example.internships.service;
 
+import com.example.internships.dto.technology.CreateTechnologyDTO;
+import com.example.internships.dto.technology.TechnologyResponseDTO;
 import com.example.internships.entity.Technology;
+import com.example.internships.mapper.TechnologyMapper;
 import com.example.internships.repository.TechnologyRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +16,7 @@ import java.util.List;
 public class TechnologyService {
 
     private final TechnologyRepository technologyRepository;
+    private final TechnologyMapper technologyMapper;
 
     public List<Technology> getAllTechnologies() {
         return technologyRepository.findAll();
@@ -24,8 +28,8 @@ public class TechnologyService {
     }
 
     @Transactional
-    public Technology createTechnology(Technology technology) {
-        return technologyRepository.save(technology);
+    public TechnologyResponseDTO createTechnology(CreateTechnologyDTO technology) {
+        return technologyMapper.toDto(technologyRepository.save(technologyMapper.toEntity(technology)));
     }
 
     @Transactional

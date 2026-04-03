@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -36,8 +37,8 @@ public class InternshipService {
     }
 
     @Transactional
-    public InternshipResponseDTO createInternship(CreateInternshipRequest request) {
-        Company company = companyRepository.findById(request.getCompanyId())
+    public InternshipResponseDTO createInternship(CreateInternshipRequest request, Long userId) {
+        Company company = companyRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Company not found"));
 
         Internship internship = internshipMapper.toEntity(request);
@@ -53,15 +54,13 @@ public class InternshipService {
     }
 
     @Transactional
-    public InternshipResponseDTO updateInternship(Long id, UpdateInternshipRequest request) {
+    public InternshipResponseDTO updateInternship(Long id, UpdateInternshipRequest request, Long userId) {
         Internship internship = internshipRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Internship not found"));
 
-        if (request.getCompanyId() != null) {
-            Company company = companyRepository.findById(request.getCompanyId())
-                    .orElseThrow(() -> new RuntimeException("Company not found"));
-            internship.setCompany(company);
-        }
+        Company company = companyRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Company not found"));
+        internship.setCompany(company);
 
         internshipMapper.updateFromDto(request, internship);
 
@@ -95,5 +94,13 @@ public class InternshipService {
 
     public Page<InternshipSummaryDTO> getAllInternships(Pageable pageable) {
         return internshipRepository.findAll(pageable).map(internshipMapper::toSummary);
+    }
+
+    public List<InternshipResponseDTO> getByCompanyId(Long userId) {
+        Company company = companyRepository.findByUserId(userId).orElseThrow();
+        return internshipRepository.findAllByCompanyId(company.getId())
+                .stream()
+                .map(internshipMapper::toResponse)
+                .toList();
     }
 }
