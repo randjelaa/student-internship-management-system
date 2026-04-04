@@ -96,6 +96,33 @@ public class CvService {
         return generateCvPdfByStudentId(cv.getStudent().getId());
     }
 
+    public byte[] getPhotoByStudentId(Long studentId) {
+        Cv cv = cvRepository.findFirstByStudentId(studentId).orElseThrow();
+        byte[] imageBytes = null;
+
+        if (cv.getPhotoUrl() != null && !cv.getPhotoUrl().isEmpty()) {
+            try {
+                String filename = null;
+
+                if (cv.getPhotoUrl() != null && cv.getPhotoUrl().contains("/")) {
+                    filename = cv.getPhotoUrl().substring(cv.getPhotoUrl().lastIndexOf("/") + 1);
+                }
+
+                if (filename != null) {
+                    try {
+                        imageBytes = Files.readAllBytes(Paths.get("uploads/" + filename));
+                    } catch (Exception e) {
+                        System.out.println("Image load failed: " + e.getMessage());
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Image load failed: " + e.getMessage());
+            }
+        }
+
+        return imageBytes;
+    }
+
     public byte[] generateCvPdfByStudentId(Long studentId) {
         Cv cv = cvRepository.findFirstByStudentId(studentId).orElseThrow();
 

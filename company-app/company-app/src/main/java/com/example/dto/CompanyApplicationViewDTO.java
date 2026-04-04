@@ -1,7 +1,5 @@
 package com.example.dto;
 
-import java.time.Instant;
-
 public class CompanyApplicationViewDTO {
     private Long applicationId;
     private String studentFullName;

@@ -43,6 +43,16 @@ public class CvController {
         return cvService.getCvByStudentId(studentId);
     }
 
+    @GetMapping("/photo/{studentId}")
+    public ResponseEntity<byte[]> getPhoto(@PathVariable Long studentId) {
+
+        byte[] image = cvService.getPhotoByStudentId(studentId);
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG) // ili IMAGE_PNG
+                .body(image);
+    }
+
     @PostMapping
     public CvResponseDTO createCv(
             Authentication authentication,

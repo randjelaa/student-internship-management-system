@@ -93,7 +93,7 @@
             |
 
             <!-- CV PDF -->
-            <a href="cv-download.jsp?studentId=<%= app.getStudentId() %>">
+            <a href="cv.jsp?studentId=<%= app.getStudentId() %>">
                 View CV
             </a>
         </td>
