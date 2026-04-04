@@ -73,7 +73,7 @@
         </td>
         <td><%= i.getRequirements() %></td>
         <td>
-            <button onclick="window.location.href='create-edit-internship.jsp?id=<%= i.getId() %>'">
+            <button onclick="window.location.href='create-update-internship.jsp?id=<%= i.getId() %>'">
                 Update
             </button>
 
@@ -94,7 +94,7 @@
 
 <br/><br/>
 
-<button onclick="window.location.href='create-edit-internship.jsp'">
+<button onclick="window.location.href='create-update-internship.jsp'">
     Create Internship
 </button>
 

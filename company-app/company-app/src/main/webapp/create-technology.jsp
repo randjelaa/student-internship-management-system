@@ -20,7 +20,7 @@
         }
     }
 
-    response.sendRedirect("create-edit-internship.jsp");
+    response.sendRedirect("create-update-internship.jsp");
 %>
 <html>
 <head>

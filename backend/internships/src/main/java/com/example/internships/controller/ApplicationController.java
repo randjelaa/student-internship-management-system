@@ -2,6 +2,9 @@ package com.example.internships.controller;
 
 import com.example.internships.dto.application.ApplicationResponseDTO;
 import com.example.internships.dto.application.CreateApplicationRequest;
+import com.example.internships.dto.internship.InternshipApplicationsDTO;
+import com.example.internships.dto.specific.CompanyApplicationViewDTO;
+import com.example.internships.dto.specific.InternshipApplicationsGroupDTO;
 import com.example.internships.mapper.ApplicationMapper;
 import com.example.internships.entity.Application;
 import com.example.internships.security.UserPrincipal;
@@ -11,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -28,6 +32,12 @@ public class ApplicationController {
                 .stream()
                 .map(applicationMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/company")
+    public List<InternshipApplicationsDTO> getByCompany(Authentication authentication) {
+        Long userId = ((UserPrincipal) Objects.requireNonNull(authentication.getPrincipal())).getUser().getId();
+        return applicationService.getByCompany(userId);
     }
 
     @GetMapping("/{id}")
@@ -66,5 +76,11 @@ public class ApplicationController {
                 .stream()
                 .map(applicationMapper::toResponse)
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/company-grouped")
+    public List<InternshipApplicationsGroupDTO> getGroupedView(Authentication authentication) {
+        Long userId = ((UserPrincipal) authentication.getPrincipal()).getUser().getId();
+        return applicationService.getGroupedApplicationsForCompany(userId);
     }
 }

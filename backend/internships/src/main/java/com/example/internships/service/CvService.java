@@ -53,6 +53,11 @@ public class CvService {
         return cvMapper.toDto(cv);
     }
 
+    public CvResponseDTO getCvByStudentId(Long studentId) {
+        Long userId = studentRepository.findById(studentId).orElseThrow().getUser().getId();
+        return getCvByUserId(userId);
+    }
+
     @Transactional
     public CvResponseDTO updateCv(Long userId, CreateCvRequest request) {
         Cv cv = getCvEntityByUserId(userId);
@@ -86,8 +91,13 @@ public class CvService {
         cvRepository.delete(cv);
     }
 
-    public byte[] generateCvPdf(Long userId) {
+    public byte[] generateCvPdfByUserId(Long userId) {
         Cv cv = getCvEntityByUserId(userId);
+        return generateCvPdfByStudentId(cv.getStudent().getId());
+    }
+
+    public byte[] generateCvPdfByStudentId(Long studentId) {
+        Cv cv = cvRepository.findFirstByStudentId(studentId).orElseThrow();
 
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PdfWriter writer = new PdfWriter(baos);

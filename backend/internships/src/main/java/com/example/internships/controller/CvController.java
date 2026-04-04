@@ -38,6 +38,11 @@ public class CvController {
         return cvService.getCvByUserId(userId);
     }
 
+    @GetMapping("/student/{studentId}")
+    public CvResponseDTO getCvByStudentId(@PathVariable Long studentId) {
+        return cvService.getCvByStudentId(studentId);
+    }
+
     @PostMapping
     public CvResponseDTO createCv(
             Authentication authentication,
@@ -65,10 +70,20 @@ public class CvController {
     @GetMapping("/pdf")
     public ResponseEntity<byte[]> downloadCvPdf(Authentication authentication) {
         Long userId = ((UserPrincipal) Objects.requireNonNull(authentication.getPrincipal())).getUser().getId();
-        byte[] pdfBytes = cvService.generateCvPdf(userId);
+        byte[] pdfBytes = cvService.generateCvPdfByUserId(userId);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=cv_" + userId + ".pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfBytes);
+    }
+
+    @GetMapping("/pdf/{studentId}")
+    public ResponseEntity<byte[]> downloadCvPdfById(@PathVariable Long studentId) {
+        byte[] pdfBytes = cvService.generateCvPdfByStudentId(studentId);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=cv_" + studentId + ".pdf")
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfBytes);
     }

@@ -169,6 +169,36 @@ public class ApiClient {
         return mapper.readValue(is, responseType);
     }
 
+    public static byte[] getBytes(String path, HttpServletRequest request) throws Exception {
+
+        URL url = new URL(BASE_URL + path);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+
+        conn.setRequestMethod("GET");
+
+        addCookie(conn, request);
+
+        int status = conn.getResponseCode();
+
+        if (status == 200) {
+
+            InputStream is = conn.getInputStream();
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+
+            byte[] data = new byte[4096];
+            int n;
+
+            while ((n = is.read(data)) != -1) {
+                buffer.write(data, 0, n);
+            }
+
+            return buffer.toByteArray();
+
+        } else {
+            throw new RuntimeException("GET (bytes) failed: " + status);
+        }
+    }
+
     private static void addCookie(HttpURLConnection conn, HttpServletRequest request) {
         Object cookie = request.getSession().getAttribute("JSESSIONID");
 
