@@ -1,5 +1,6 @@
 package com.example.internships.repository;
 
+import com.example.internships.dto.enums.ApplicationStatus;
 import com.example.internships.entity.Application;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long> 
     List<Application> findByCompanyId(Long companyId);
 
     List<Application> findByInternship_Company_Id(Long companyId);
+
+    List<Application> findByInternship_Company_IdAndStatus(Long companyId, ApplicationStatus status);
 }
