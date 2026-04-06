@@ -7,5 +7,5 @@ public class CreateGradeRequest {
     private Long studentId;
     private Long internshipId;
     private String companyComment;
-    private Integer facultyGrade;
+    private Integer facultyGrade = null;
 }

@@ -5,6 +5,8 @@
 <%@ page import="com.example.dto.InternshipGradingGroupDTO" %>
 <%@ page import="com.example.dto.StudentGradingDetailDTO" %>
 <%@ page import="com.example.dto.WorkLogResponseDTO" %>
+<%@ page import="com.example.dto.CreateGradeRequest" %>
+<%@ page import="com.example.util.ApiClient" %>
 
 <%
     LoginResponse user = AuthUtil.requireUser(request, response);
@@ -18,20 +20,20 @@
     } catch (Exception e) {
         e.printStackTrace();
     }
-%>
 
-<%
     if ("POST".equalsIgnoreCase(request.getMethod())) {
 
-        String studentId = request.getParameter("studentId");
-        String internshipId = request.getParameter("internshipId");
-        String comment = request.getParameter("comment");
-
         try {
-            // TODO: pozovi API za ocjenjivanje
-            // ApiClient.post("/grades", requestBody, ...)
+            CreateGradeRequest body = new CreateGradeRequest();
 
-            response.sendRedirect("grading.jsp");
+            body.setStudentId(Long.parseLong(request.getParameter("studentId")));
+            body.setInternshipId(Long.parseLong(request.getParameter("internshipId")));
+            body.setCompanyComment(request.getParameter("comment"));
+            body.setFacultyGrade(null);
+
+            ApiClient.post("/grades", body, Object.class, request);
+
+            response.sendRedirect("grades.jsp");
             return;
 
         } catch (Exception e) {
@@ -82,20 +84,33 @@
     <br/>
 
     <!-- COMMENT FORM -->
-    <form method="post" action="grading.jsp">
+    <form method="post" action="grades.jsp">
+
         <input type="hidden" name="studentId" value="<%= student.getStudentId() %>" />
         <input type="hidden" name="internshipId" value="<%= group.getInternshipId() %>" />
 
         <label>Comment:</label><br/>
-        <textarea name="comment" rows="3" cols="50">
-<%= student.getExistingComment() != null ? student.getExistingComment() : "" %>
-                    </textarea>
+
+        <% if (student.isGraded()) { %>
+
+        <!-- READ ONLY -->
+        <textarea rows="3" cols="50" readonly>
+<%= student.getExistingComment() %>
+        </textarea>
 
         <br/><br/>
+        <button disabled>Already graded</button>
 
-        <button type="submit">
-            <%= student.isGraded() ? "Update Grade" : "Submit Grade" %>
-        </button>
+        <% } else { %>
+
+        <!-- EDITABLE -->
+        <textarea name="comment" rows="3" cols="50" required></textarea>
+
+        <br/><br/>
+        <button type="submit">Submit Grade</button>
+
+        <% } %>
+
     </form>
 
 </div>
