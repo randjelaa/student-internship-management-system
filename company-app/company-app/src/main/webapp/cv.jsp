@@ -1,21 +1,48 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Admin
-  Date: 4/4/2026
-  Time: 6:43 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <%@ page import="com.example.util.ApiClient" %>
 <%@ page import="com.example.dto.*" %>
+<%@ page import="java.io.OutputStream" %>
+<%@ page import="com.example.util.AuthUtil" %>
 
 <%
+    LoginResponse user = AuthUtil.requireUser(request, response);
+    if (user == null) {
+        request.getRequestDispatcher("login.jsp").forward(request, response);
+        return;
+    }
+
+    String action = request.getParameter("action");
     String studentId = request.getParameter("studentId");
     CvResponseDTO cv = null;
 
+    if (action == null) action = "view";
+
     try {
         cv = ApiClient.get("/cv/student/" + studentId, CvResponseDTO.class, request);
+
+        if ("download".equals(action)) {
+            byte[] pdf = ApiClient.getBytes("/cv/pdf/" + studentId, request);
+
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename=cv.pdf");
+
+            OutputStream os = response.getOutputStream();
+            os.write(pdf);
+            os.flush();
+            return;
+        }
+
+        if ("photo".equals(action)) {
+            byte[] image = ApiClient.getBytes("/cv/photo/" + studentId, request);
+
+            response.setContentType("image/*");
+
+            OutputStream os = response.getOutputStream();
+            os.write(image);
+            os.flush();
+            return;
+        }
+
     } catch (Exception e) {
         e.printStackTrace();
     }
@@ -35,12 +62,13 @@
     if (cv != null) {
 %>
 
-<p><b>Summary:</b> <%= cv.getSummary() %></p>
+<p><b>Summary:</b> <%= cv.getSummary() %>
+</p>
 
 <%
     if (cv.getPhotoUrl() != null) {
 %>
-<img src="cv-photo.jsp?studentId=<%= studentId %>" width="150"/><%
+<img src="cv.jsp?action=photo&studentId=<%= studentId %>" width="150"/><%
     }
 %>
 
@@ -50,7 +78,8 @@
         for (EducationDTO edu : cv.getEducations()) {
     %>
     <li>
-        <b><%= edu.getInstitution() %></b> -
+        <b><%= edu.getInstitution() %>
+        </b> -
         <%= edu.getDegree() %> (<%= edu.getFieldOfStudy() %>)
         [<%= edu.getStartYear() %> - <%= edu.getEndYear() %>]
     </li>
@@ -65,8 +94,10 @@
         for (ExperienceDTO exp : cv.getExperiences()) {
     %>
     <li>
-        <b><%= exp.getCompanyName() %></b> - <%= exp.getPosition() %><br/>
-        <i><%= exp.getStartDate() %> - <%= exp.getEndDate() %></i><br/>
+        <b><%= exp.getCompanyName() %>
+        </b> - <%= exp.getPosition() %><br/>
+        <i><%= exp.getStartDate() %> - <%= exp.getEndDate() %>
+        </i><br/>
         <%= exp.getDescription() %>
     </li>
     <%
@@ -79,7 +110,8 @@
     <%
         for (SkillDTO skill : cv.getSkills()) {
     %>
-    <li><%= skill.getSkillName() %> - <%= skill.getSkillLevel() %></li>
+    <li><%= skill.getSkillName() %> - <%= skill.getSkillLevel() %>
+    </li>
     <%
         }
     %>
@@ -90,7 +122,8 @@
     <%
         for (LanguageDTO lang : cv.getLanguages()) {
     %>
-    <li><%= lang.getLanguageName() %> - <%= lang.getLevel() %></li>
+    <li><%= lang.getLanguageName() %> - <%= lang.getLevel() %>
+    </li>
     <%
         }
     %>
@@ -101,13 +134,14 @@
     <%
         for (InterestDTO i : cv.getInterests()) {
     %>
-    <li><%= i.getInterestName() %></li>
+    <li><%= i.getInterestName() %>
+    </li>
     <%
         }
     %>
 </ul>
 
-<a href="cv-download.jsp?studentId=<%= studentId %>">
+<a href="cv.jsp?action=download&studentId=<%= studentId %>">
     Download CV
 </a>
 

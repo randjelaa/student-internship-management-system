@@ -1,7 +1,6 @@
 <%@ page import="com.example.util.AuthUtil" %>
 <%@ page import="com.example.dto.LoginResponse" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <%@ page import="java.util.*" %>
 <%@ page import="com.example.dto.*" %>
 <%@ page import="com.example.service.ApplicationService" %>
@@ -9,11 +8,13 @@
 
 <%
     LoginResponse user = AuthUtil.requireUser(request, response);
-    if (user == null) return;
+    if (user == null) {
+        request.getRequestDispatcher("login.jsp").forward(request, response);
+        return;
+    }
 
     ApplicationService service = new ApplicationService();
 
-    // 🔥 HANDLE ACTIONS (accept/reject)
     String action = request.getParameter("action");
     String appId = request.getParameter("applicationId");
 
@@ -59,7 +60,8 @@
         for (InternshipApplicationsGroupDTO group : groups) {
 %>
 
-<h3><%= group.getInternshipTitle() %></h3>
+<h3><%= group.getInternshipTitle() %>
+</h3>
 
 <table border="1" cellpadding="10">
     <tr>
@@ -73,26 +75,26 @@
         for (CompanyApplicationViewDTO app : group.getApplications()) {
     %>
     <tr>
-        <td><%= app.getStudentFullName() %></td>
-        <td><%= app.getStatus() %></td>
-        <td><%= app.getAppliedAt() %></td>
+        <td><%= app.getStudentFullName() %>
+        </td>
+        <td><%= app.getStatus() %>
+        </td>
+        <td><%= app.getAppliedAt() %>
+        </td>
 
         <td>
-            <!-- ACCEPT -->
             <a href="applications.jsp?action=accept&applicationId=<%= app.getApplicationId() %>">
                 Accept
             </a>
 
             |
 
-            <!-- REJECT -->
             <a href="applications.jsp?action=reject&applicationId=<%= app.getApplicationId() %>">
                 Reject
             </a>
 
             |
 
-            <!-- CV PDF -->
             <a href="cv.jsp?studentId=<%= app.getStudentId() %>">
                 View CV
             </a>

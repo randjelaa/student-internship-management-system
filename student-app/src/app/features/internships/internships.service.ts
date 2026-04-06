@@ -14,24 +14,6 @@ export class InternshipsService {
 
   constructor(private http: HttpClient) {}
 
-  getAllInternships(
-    page: number,
-    size: number,
-    search: string = '',
-    companyId?: number,
-    techId?: number,
-  ): Observable<any> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString())
-      .set('search', search);
-
-    if (companyId) params = params.set('company', companyId.toString());
-    if (techId) params = params.set('technology', techId.toString());
-
-    return this.http.get<any>(this.baseUrlInternships, { params });
-  }
-
   getInternshipById(id: number): Observable<Internship> {
     return this.http.get<Internship>(`${this.baseUrlInternships}/${id}`);
   }

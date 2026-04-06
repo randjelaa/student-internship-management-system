@@ -1,7 +1,6 @@
 <%@ page import="com.example.util.AuthUtil" %>
 <%@ page import="com.example.dto.LoginResponse" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-
 <%@ page import="java.util.List" %>
 <%@ page import="com.example.dto.InternshipResponseDTO" %>
 <%@ page import="com.example.service.InternshipService" %>
@@ -10,9 +9,32 @@
 
 <%
     LoginResponse user = AuthUtil.requireUser(request, response);
-    if (user == null) request.getRequestDispatcher("login.jsp").forward(request, response);
+    if (user == null) {
+        request.getRequestDispatcher("login.jsp").forward(request, response);
+        return;
+    }
+
+    String action = request.getParameter("action");
+    if (action == null) action = "list";
 
     InternshipService internshipService = new InternshipService();
+
+    if ("POST".equalsIgnoreCase(request.getMethod())) {
+        String idParam = request.getParameter("id");
+
+        if (idParam != null) {
+            try {
+                Long id = Long.parseLong(idParam);
+                internshipService.delete(id, request);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        response.sendRedirect("internships.jsp");
+        return;
+    }
+
     List<InternshipResponseDTO> internships = null;
     String error = null;
 
@@ -35,7 +57,8 @@
 <h2>My Internships</h2>
 
 <% if (error != null) { %>
-<p style="color:red;"><%= error %></p>
+<p style="color:red;"><%= error %>
+</p>
 <% } %>
 
 <table border="1" cellpadding="10">
@@ -54,8 +77,10 @@
             for (InternshipResponseDTO i : internships) {
     %>
     <tr>
-        <td><%= i.getTitle() %></td>
-        <td><%= i.getDescription() %></td>
+        <td><%= i.getTitle() %>
+        </td>
+        <td><%= i.getDescription() %>
+        </td>
         <td>
             <%
                 if (i.getTechnologies() != null) {
@@ -67,17 +92,19 @@
                 }
             %>
         </td>
-        <td><%= i.getLocation() %></td>
+        <td><%= i.getLocation() %>
+        </td>
         <td>
             <%= i.getStartDate() %> - <%= i.getEndDate() %>
         </td>
-        <td><%= i.getRequirements() %></td>
+        <td><%= i.getRequirements() %>
+        </td>
         <td>
             <button onclick="window.location.href='create-update-internship.jsp?id=<%= i.getId() %>'">
                 Update
             </button>
 
-            <form action="delete-internship.jsp" method="post" style="display:inline;">
+            <form action="internships.jsp" method="post" style="display:inline;">
                 <input type="hidden" name="id" value="<%= i.getId() %>"/>
                 <button type="submit" onclick="return confirm('Are you sure?')">
                     Delete

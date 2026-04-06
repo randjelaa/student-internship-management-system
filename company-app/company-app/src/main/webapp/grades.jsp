@@ -10,7 +10,10 @@
 
 <%
     LoginResponse user = AuthUtil.requireUser(request, response);
-    if (user == null) return;
+    if (user == null) {
+        request.getRequestDispatcher("login.jsp").forward(request, response);
+        return;
+    }
 
     GradeService service = new GradeService();
     InternshipGradingGroupDTO[] groups = null;
@@ -22,7 +25,6 @@
     }
 
     if ("POST".equalsIgnoreCase(request.getMethod())) {
-
         try {
             CreateGradeRequest body = new CreateGradeRequest();
 
@@ -52,19 +54,19 @@
 
 <h2>Grading Dashboard</h2>
 
-<% if (groups != null) { %>
+<% if (groups != null) {
+    for (InternshipGradingGroupDTO group : groups) { %>
 
-<% for (InternshipGradingGroupDTO group : groups) { %>
-
-<h3><%= group.getInternshipTitle() %></h3>
+<h3><%= group.getInternshipTitle() %>
+</h3>
 
 <% for (StudentGradingDetailDTO student : group.getStudents()) { %>
 
 <div style="border:1px solid black; padding:10px; margin-bottom:20px;">
 
-    <h4><%= student.getStudentFullName() %></h4>
+    <h4><%= student.getStudentFullName() %>
+    </h4>
 
-    <!-- WORK LOG TABLE -->
     <table border="1" cellpadding="5">
         <tr>
             <th>Period</th>
@@ -76,52 +78,45 @@
             <td>
                 <%= log.getStartDate() %> - <%= log.getEndDate() %>
             </td>
-            <td><%= log.getDescription() %></td>
+            <td><%= log.getDescription() %>
+            </td>
         </tr>
         <% } %>
     </table>
 
     <br/>
 
-    <!-- COMMENT FORM -->
     <form method="post" action="grades.jsp">
-
-        <input type="hidden" name="studentId" value="<%= student.getStudentId() %>" />
-        <input type="hidden" name="internshipId" value="<%= group.getInternshipId() %>" />
+        <input type="hidden" name="studentId" value="<%= student.getStudentId() %>"/>
+        <input type="hidden" name="internshipId" value="<%= group.getInternshipId() %>"/>
 
         <label>Comment:</label><br/>
 
         <% if (student.isGraded()) { %>
-
-        <!-- READ ONLY -->
         <textarea rows="3" cols="50" readonly>
-<%= student.getExistingComment() %>
+        <%= student.getExistingComment() %>
         </textarea>
 
         <br/><br/>
         <button disabled>Already graded</button>
 
         <% } else { %>
-
-        <!-- EDITABLE -->
         <textarea name="comment" rows="3" cols="50" required></textarea>
 
         <br/><br/>
         <button type="submit">Submit Grade</button>
 
         <% } %>
-
     </form>
-
 </div>
 
 <% } %>
 
 <hr/>
 
-<% } %>
+<% }
 
-<% } %>
+} %>
 
 <jsp:include page="WEB-INF/layout/footer.jsp"/>
 
