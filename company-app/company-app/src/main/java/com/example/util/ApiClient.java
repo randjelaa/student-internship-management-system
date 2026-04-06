@@ -34,6 +34,11 @@ public class ApiClient {
 
         if (status == 200) {
             saveCookie(conn, request);
+
+            if (responseType == Object.class) {
+                return null;
+            }
+
             return readResponse(conn, responseType);
 
         } else {
