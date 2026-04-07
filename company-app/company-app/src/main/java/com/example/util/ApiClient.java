@@ -2,7 +2,6 @@ package com.example.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.Part;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -10,7 +9,7 @@ import java.net.URL;
 
 public class ApiClient {
 
-    private static final String BASE_URL = "http://localhost:8080/api";
+    private static final String BASE_URL = ConfigUtil.get("api.base.url");
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public static <T> T post(String path, Object requestBody, Class<T> responseType, HttpServletRequest request) throws Exception {
@@ -20,7 +19,6 @@ public class ApiClient {
         conn.setRequestMethod("POST");
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setDoOutput(true);
-
         addCookie(conn, request);
 
         if (requestBody != null) {
@@ -31,16 +29,13 @@ public class ApiClient {
         }
 
         int status = conn.getResponseCode();
-
         if (status == 200) {
             saveCookie(conn, request);
 
             if (responseType == Object.class) {
                 return null;
             }
-
             return readResponse(conn, responseType);
-
         } else {
             throw new RuntimeException("POST failed: " + status);
         }
@@ -51,11 +46,9 @@ public class ApiClient {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         conn.setRequestMethod("GET");
-
         addCookie(conn, request);
 
         int status = conn.getResponseCode();
-
         if (status == 200) {
             return readResponse(conn, responseType);
         } else {
@@ -64,9 +57,7 @@ public class ApiClient {
     }
 
     private static <T> T readResponse(HttpURLConnection conn, Class<T> type) throws Exception {
-        BufferedReader br = new BufferedReader(
-                new InputStreamReader(conn.getInputStream())
-        );
+        BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
         StringBuilder response = new StringBuilder();
         String line;
@@ -78,83 +69,26 @@ public class ApiClient {
         return mapper.readValue(response.toString(), type);
     }
 
-    public static void postMultipart(
-            String path,
-            Part filePart,
-            HttpServletRequest request
-    ) throws Exception {
-
-        String boundary = "----WebKitFormBoundary" + System.currentTimeMillis();
-
-        URL url = new URL(BASE_URL + path);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-        conn.setRequestMethod("POST");
-        conn.setDoOutput(true);
-
-        conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-
-        addCookie(conn, request);
-
-        OutputStream os = conn.getOutputStream();
-        PrintWriter writer = new PrintWriter(new OutputStreamWriter(os, "UTF-8"), true);
-
-        writer.append("--").append(boundary).append("\r\n");
-        writer.append("Content-Disposition: form-data; name=\"file\"; filename=\"file.csv\"\r\n");
-        writer.append("Content-Type: text/csv\r\n\r\n").flush();
-
-        InputStream input = filePart.getInputStream();
-        byte[] buffer = new byte[4096];
-        int bytesRead;
-
-        while ((bytesRead = input.read(buffer)) != -1) {
-            os.write(buffer, 0, bytesRead);
-        }
-
-        os.flush();
-
-        writer.append("\r\n").flush();
-        writer.append("--").append(boundary).append("--").append("\r\n").flush();
-
-        writer.close();
-
-        int status = conn.getResponseCode();
-
-        if (status != 200) {
-            throw new RuntimeException("Multipart POST failed: " + status);
-        }
-    }
-
     public static void delete(String path, HttpServletRequest request) throws Exception {
         URL url = new URL(BASE_URL + path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         conn.setRequestMethod("DELETE");
-
         addCookie(conn, request);
 
         int status = conn.getResponseCode();
-
         if (status != 200 && status != 204) {
             throw new RuntimeException("DELETE failed: " + status);
         }
     }
 
-    public static <T> T put(
-            String path,
-            Object body,
-            Class<T> responseType,
-            HttpServletRequest request
-    ) throws Exception {
-
+    public static <T> void put(String path, Object body, Class<T> responseType, HttpServletRequest request) throws Exception {
         URL url = new URL(BASE_URL + path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         conn.setRequestMethod("PUT");
         conn.setDoOutput(true);
-
         conn.setRequestProperty("Content-Type", "application/json");
-
         addCookie(conn, request);
 
         ObjectMapper mapper = new ObjectMapper();
@@ -165,40 +99,33 @@ public class ApiClient {
         os.flush();
 
         int status = conn.getResponseCode();
-
         if (status != 200) {
             throw new RuntimeException("PUT failed: " + status);
         }
 
         InputStream is = conn.getInputStream();
-        return mapper.readValue(is, responseType);
+        mapper.readValue(is, responseType);
     }
 
     public static byte[] getBytes(String path, HttpServletRequest request) throws Exception {
-
         URL url = new URL(BASE_URL + path);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
         conn.setRequestMethod("GET");
-
         addCookie(conn, request);
 
         int status = conn.getResponseCode();
-
         if (status == 200) {
-
             InputStream is = conn.getInputStream();
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 
             byte[] data = new byte[4096];
             int n;
-
             while ((n = is.read(data)) != -1) {
                 buffer.write(data, 0, n);
             }
 
             return buffer.toByteArray();
-
         } else {
             throw new RuntimeException("GET (bytes) failed: " + status);
         }
