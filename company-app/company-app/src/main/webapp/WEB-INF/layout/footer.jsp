@@ -5,7 +5,7 @@
     <a href="<%= request.getContextPath() %>/internships.jsp">Internships</a>
     <a href="<%= request.getContextPath() %>/applications.jsp">Applications</a>
     <a href="<%= request.getContextPath() %>/grades.jsp">Grades</a>
-    <a href="<%= request.getContextPath() %>/change-password.jsp">Profile</a>
+    <a href="<%= request.getContextPath() %>/change-password.jsp">Change password</a>
 </div>
 
 
