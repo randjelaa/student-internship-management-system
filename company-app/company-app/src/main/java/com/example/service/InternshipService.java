@@ -27,7 +27,6 @@ public class InternshipService {
     }
 
     public void update(Long internshipId, UpdateInternshipRequest dto, HttpServletRequest request) throws Exception {
-
         if (internshipId == null) {
             throw new IllegalArgumentException("ID is required for update");
         }
@@ -41,7 +40,6 @@ public class InternshipService {
     }
 
     public void delete(Long id, HttpServletRequest request) throws Exception {
-
         if (id == null) {
             throw new IllegalArgumentException("ID is required for delete");
         }

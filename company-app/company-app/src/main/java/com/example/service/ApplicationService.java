@@ -9,7 +9,6 @@ import java.util.List;
 
 public class ApplicationService {
     public List<InternshipApplicationsGroupDTO> getGrouped(HttpServletRequest request) throws Exception {
-
         InternshipApplicationsGroupDTO[] response =
                 ApiClient.get("/applications/company-grouped",
                         InternshipApplicationsGroupDTO[].class,
