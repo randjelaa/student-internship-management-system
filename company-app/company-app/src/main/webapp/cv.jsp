@@ -70,113 +70,111 @@
 
 <html>
 <head>
-    <title>CV</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CV View</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/cv.css">
 </head>
 <body>
 
-<jsp:include page="WEB-INF/layout/header.jsp"/>
+<header>
+    <jsp:include page="/WEB-INF/layout/header.jsp"/>
+</header>
 
-<h2>CV</h2>
+<main>
+    <div class="container pb-5">
 
-<%
-    if (message != null) {
-%>
-<p style="color:green;"><%= message %></p>
-<%
-    }
-%>
+        <div class="mt-2 mb-3">
+            <a href="applications.jsp" class="btn btn-sm btn-outline-secondary border-0">
+                &larr; Back to Applications
+            </a>
+        </div>
 
-<%
-    if (cv != null) {
-%>
+        <% if (message != null) { %>
+        <div class="alert alert-warning"><%= message %></div>
+        <% } %>
 
-<p><b>Summary:</b> <%= cv.getSummary() %></p>
+        <% if (cv != null) { %>
 
-<%
-    if (cv.getPhotoUrl() != null) {
-%>
-<img src="cv.jsp?action=photo&studentId=<%= studentId %>" width="150" alt="photo"/><%
-    }
-%>
+        <div class="text-center mb-4">
+            <% if (cv.getPhotoUrl() != null) { %>
+            <img src="cv.jsp?action=photo&studentId=<%= studentId %>" class="cv-photo shadow-sm" alt="Student photo"/>
+            <% } %>
+            <h2 class="h3 mb-0 fw-bold"><%= cv.getFirstName() %> <%= cv.getLastName() %></h2>
+            <p class="text-muted small"><%= cv.getEmail() %></p>
+        </div>
 
-<h3>Education</h3>
-<ul>
-    <%
-        for (EducationDTO edu : cv.getEducations()) {
-    %>
-    <li>
-        <b><%= edu.getInstitution() %>
-        </b> -
-        <%= edu.getDegree() %> (<%= edu.getFieldOfStudy() %>)
-        [<%= edu.getStartYear() %> - <%= edu.getEndYear() %>]
-    </li>
-    <%
-        }
-    %>
-</ul>
+        <h3 class="cv-section-title h5">Summary</h3>
+        <div class="cv-item">
+            <p class="mb-0 text-dark"><%= cv.getSummary() %></p>
+        </div>
 
-<h3>Experience</h3>
-<ul>
-    <%
-        for (ExperienceDTO exp : cv.getExperiences()) {
-    %>
-    <li>
-        <b><%= exp.getCompanyName() %></b> - <%= exp.getPosition() %><br/>
-        <i><%= exp.getStartDate() %> - <%= exp.getEndDate() %></i><br/>
-        <%= exp.getDescription() %>
-    </li>
-    <%
-        }
-    %>
-</ul>
+        <h3 class="cv-section-title h5">Education</h3>
+        <ul class="cv-list">
+            <% for (EducationDTO edu : cv.getEducations()) { %>
+            <li class="cv-item">
+                <div class="fw-bold"><%= edu.getInstitution() %></div>
+                <div class="small text-primary"><%= edu.getDegree() %> (<%= edu.getFieldOfStudy() %>)</div>
+                <div class="small text-muted"><%= edu.getStartYear() %> - <%= edu.getEndYear() %></div>
+            </li>
+            <% } %>
+        </ul>
 
-<h3>Skills</h3>
-<ul>
-    <%
-        for (SkillDTO skill : cv.getSkills()) {
-    %>
-    <li><%= skill.getSkillName() %> - <%= skill.getSkillLevel() %></li>
-    <%
-        }
-    %>
-</ul>
+        <h3 class="cv-section-title h5">Experience</h3>
+        <ul class="cv-list">
+            <% for (ExperienceDTO exp : cv.getExperiences()) { %>
+            <li class="cv-item">
+                <div class="fw-bold text-dark"><%= exp.getCompanyName() %></div>
+                <div class="text-primary small fw-semibold"><%= exp.getPosition() %></div>
+                <div class="small text-muted mb-2"><%= exp.getStartDate() %> - <%= exp.getEndDate() %></div>
+                <p class="small mb-0 text-muted"><%= exp.getDescription() %></p>
+            </li>
+            <% } %>
+        </ul>
 
-<h3>Languages</h3>
-<ul>
-    <%
-        for (LanguageDTO lang : cv.getLanguages()) {
-    %>
-    <li><%= lang.getLanguageName() %> - <%= lang.getLevel() %></li>
-    <%
-        }
-    %>
-</ul>
+        <h3 class="cv-section-title h5">Skills</h3>
+        <div class="mb-3 px-2">
+            <% for (SkillDTO skill : cv.getSkills()) { %>
+            <span class="skill-badge border">
+                        <span class="fw-bold"><%= skill.getSkillName() %></span>
+                        <span class="text-muted">| <%= skill.getSkillLevel() %></span>
+                    </span>
+            <% } %>
+        </div>
 
-<h3>Interests</h3>
-<ul>
-    <%
-        for (InterestDTO i : cv.getInterests()) {
-    %>
-    <li><%= i.getInterestName() %></li>
-    <%
-        }
-    %>
-</ul>
+        <h3 class="cv-section-title h5">Languages</h3>
+        <div class="mb-3 px-2">
+            <% for (LanguageDTO lang : cv.getLanguages()) { %>
+            <span class="skill-badge border">
+                <span class="fw-bold"><%= lang.getLanguageName() %></span>
+                <span class="text-muted">| <%= lang.getLevel() %></span>
+            </span>
+            <% } %>
+        </div>
 
-<a href="cv.jsp?action=download&studentId=<%= studentId %>">
-    Download CV
-</a>
+        <h3 class="cv-section-title h5">Interests</h3>
+        <div class="mb-3 px-2">
+            <% for (InterestDTO i : cv.getInterests()) { %>
+            <span class="skill-badge border">
+                <span class="fw-bold"><%= i.getInterestName() %></span>
+                    </span>
+            <% } %>
+        </div>
 
-<%
-    }
-%>
+        <div class="d-grid gap-2 pt-3">
+            <a href="cv.jsp?action=download&studentId=<%= studentId %>" class="btn btn-primary btn-lg shadow-sm">
+                Download PDF CV
+            </a>
+        </div>
 
-<br/><br/>
-<a href="applications.jsp">
-    <button type="button">Back</button>
-</a>
+        <% } %>
+    </div>
+</main>
 
-<jsp:include page="WEB-INF/layout/footer.jsp"/>
+<footer>
+    <jsp:include page="/WEB-INF/layout/footer.jsp"/>
+</footer>
 
 </body>
 </html>

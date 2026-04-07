@@ -55,90 +55,85 @@
 
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Applications</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/applications.css">
 </head>
-
-<script>
-    function confirmAction(action) {
-        return confirm("Are you sure you want to " + action + " this application?");
-    }
-</script>
 <body>
 
-<jsp:include page="/WEB-INF/layout/header.jsp"/>
+<header>
+    <jsp:include page="/WEB-INF/layout/header.jsp"/>
+</header>
 
-<h2>Applications by Internship</h2>
+<main>
+    <div class="container">
+        <h2 class="mb-4">Applications</h2>
 
-<%
-    if (message != null) {
-%>
-<p style="color:green;"><%= message %></p>
-<%
-    }
-%>
+        <% if (message != null) { %>
+        <div class="alert alert-success"><%= message %>
+        </div>
+        <% } %>
 
-<%
-    if (groups != null) {
-        for (InternshipApplicationsGroupDTO group : groups) {
-%>
+        <% if (groups != null) {
+            for (InternshipApplicationsGroupDTO group : groups) { %>
 
-<h3><%= group.getInternshipTitle() %>
-</h3>
+        <div class="app-card-container">
+            <h5 class="text-primary mt-4"><%= group.getInternshipTitle() %>
+            </h5>
 
-<table border="1" cellpadding="10">
-    <tr>
-        <th>Student</th>
-        <th>Status</th>
-        <th>Applied At</th>
-        <th>Actions</th>
-    </tr>
+            <table class="table align-middle">
+                <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Status</th>
+                    <th>Applied</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% for (CompanyApplicationViewDTO app : group.getApplications()) { %>
+                <tr>
+                    <td data-label="Student"><strong><%= app.getStudentFullName() %>
+                    </strong></td>
+                    <td data-label="Status">
+                                <span class="badge bg-<%= app.getStatus().equals("PENDING") ? "warning" : "secondary" %>">
+                                    <%= app.getStatus() %>
+                                </span>
+                    </td>
+                    <td data-label="Applied"><%= app.getAppliedAt() %>
+                    </td>
+                    <td data-label="Actions">
+                        <div class="btn-group-mobile">
+                            <% if ("PENDING".equals(app.getStatus())) { %>
+                            <form method="post" onsubmit="return confirmAction('accept')" class="m-0">
+                                <input type="hidden" name="action" value="accept"/>
+                                <input type="hidden" name="applicationId" value="<%= app.getApplicationId() %>"/>
+                                <button type="submit" class="btn btn-sm btn-success">Accept</button>
+                            </form>
+                            <form method="post" onsubmit="return confirmAction('reject')" class="m-0">
+                                <input type="hidden" name="action" value="reject"/>
+                                <input type="hidden" name="applicationId" value="<%= app.getApplicationId() %>"/>
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Reject</button>
+                            </form>
+                            <% } %>
+                            <a href="cv.jsp?studentId=<%= app.getStudentId() %>" class="btn btn-sm btn-primary">View CV</a>
+                        </div>
+                    </td>
+                </tr>
+                <% } %>
+                </tbody>
+            </table>
+        </div>
+        <% }
+        } %>
+    </div>
+</main>
 
-    <%
-        for (CompanyApplicationViewDTO app : group.getApplications()) {
-    %>
-    <tr>
-        <td><%= app.getStudentFullName() %></td>
-        <td><%= app.getStatus() %></td>
-        <td><%= app.getAppliedAt() %></td>
-
-        <td>
-            <% if (!"PENDING".equals(app.getStatus())) { %>
-            <button disabled>Accept</button>
-            <button disabled>Reject</button>
-            <% } else { %>
-            <form method="post" action="applications.jsp" style="display:inline;"
-                  onsubmit="return confirmAction('accept')">
-                <input type="hidden" name="action" value="accept"/>
-                <input type="hidden" name="applicationId" value="<%= app.getApplicationId() %>"/>
-                <button type="submit">Accept</button>
-            </form>
-
-            <form method="post" action="applications.jsp" style="display:inline;"
-                  onsubmit="return confirmAction('reject')">
-                <input type="hidden" name="action" value="reject"/>
-                <input type="hidden" name="applicationId" value="<%= app.getApplicationId() %>"/>
-                <button type="submit">Reject</button>
-            </form>
-            <% } %>
-
-            <a href="cv.jsp?studentId=<%= app.getStudentId() %>">
-                View CV
-            </a>
-        </td>
-    </tr>
-    <%
-        }
-    %>
-</table>
-
-<br/><br/>
-
-<%
-        }
-    }
-%>
-
-<jsp:include page="/WEB-INF/layout/footer.jsp"/>
+<footer>
+    <jsp:include page="/WEB-INF/layout/footer.jsp"/>
+</footer>
 
 </body>
 </html>

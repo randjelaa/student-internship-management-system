@@ -43,77 +43,100 @@
 
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My Internships</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/applications.css">
 </head>
 <body>
 
-<jsp:include page="/WEB-INF/layout/header.jsp"/>
+<header>
+    <jsp:include page="/WEB-INF/layout/header.jsp"/>
+</header>
 
-<h2>My Internships</h2>
+<main>
+    <div class="container pb-5">
+        <div class="d-flex justify-content-between align-items-center my-3">
+            <h2 class="h4 mb-0">My Internships</h2>
+            <a href="create-update-internship.jsp" class="btn btn-sm btn-primary">
+                + New
+            </a>
+        </div>
 
-<% if (message != null) { %>
-<p style="color:red;"><%= message %></p>
-<% } %>
+        <% if (message != null) { %>
+        <div class="alert alert-danger py-2 small"><%= message %>
+        </div>
+        <% } %>
 
-<table border="1" cellpadding="10">
-    <tr>
-        <th>Title</th>
-        <th>Description</th>
-        <th>Technologies</th>
-        <th>Location</th>
-        <th>Period</th>
-        <th>Requirements</th>
-        <th>Actions</th>
-    </tr>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                <tr>
+                    <th>Internship Details</th>
+                    <th>Technologies</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+                </thead>
 
-    <%
-        if (internships != null) {
-            for (InternshipResponseDTO i : internships) {
-    %>
-    <tr>
-        <td><%= i.getTitle() %></td>
-        <td><%= i.getDescription() %></td>
-        <td>
-            <%
-                if (i.getTechnologies() != null) {
-                    for (String tech : i.getTechnologies()) {
-            %>
-            <span><%= tech %></span><br/>
-            <%
-                    }
-                }
-            %>
-        </td>
-        <td><%= i.getLocation() %></td>
-        <td><%= i.getStartDate() %> - <%= i.getEndDate() %></td>
-        <td><%= i.getRequirements() %></td>
-        <td>
-            <button onclick="window.location.href='create-update-internship.jsp?id=<%= i.getId() %>'">
-                Update
-            </button>
+                <tbody>
+                <% if (internships != null) {
+                    for (InternshipResponseDTO i : internships) { %>
+                <tr>
+                    <td data-label="Internship">
+                        <div class="fw-bold text-primary h6 mb-1"><%= i.getTitle() %></div>
+                        <div class="small text-muted text-wrap">
+                            <%= i.getDescription() %>
+                        </div>
+                    </td>
 
-            <form action="internships.jsp" method="post" style="display:inline;">
-                <input type="hidden" name="id" value="<%= i.getId() %>"/>
-                <button type="submit" onclick="return confirm('Are you sure?')">
-                    Delete
-                </button>
-            </form>
-        </td>
-    </tr>
-    <%
-            }
-        }
-    %>
+                    <td>
+                        <div class="small">
+                            <span class="d-md-none fw-bold text-secondary text-uppercase" style="font-size: 0.7rem;">Location: </span>
+                            <%= i.getLocation() %>
+                        </div>
+                    </td>
 
-</table>
+                    <td>
+                        <div class="small">
+                            <span class="d-md-none fw-bold text-secondary text-uppercase" style="font-size: 0.7rem;">Duration: </span>
+                            <%= i.getStartDate() %> - <%= i.getEndDate() %>
+                        </div>
+                    </td>
 
-<br/><br/>
+                    <td data-label="Technologies">
+                        <% if (i.getTechnologies() != null) {
+                            for (String tech : i.getTechnologies()) { %>
+                        <span class="badge bg-light text-dark border"><%= tech %></span>
+                        <% } } %>
+                    </td>
 
-<button onclick="window.location.href='create-update-internship.jsp'">
-    Create Internship
-</button>
+                    <td data-label="Actions" class="text-end">
+                        <div class="btn-group-mobile mt-2">
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    onclick="window.location.href='create-update-internship.jsp?id=<%= i.getId() %>'">
+                                Edit
+                            </button>
+                            <form action="internships.jsp" method="post" class="d-inline m-0">
+                                <input type="hidden" name="id" value="<%= i.getId() %>"/>
+                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('Are you sure?')">
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <% } } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
 
-<jsp:include page="WEB-INF/layout/footer.jsp"/>
+<footer>
+    <jsp:include page="/WEB-INF/layout/footer.jsp"/>
+</footer>
 
 </body>
 </html>

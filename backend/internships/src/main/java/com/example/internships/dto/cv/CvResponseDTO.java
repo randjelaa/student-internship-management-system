@@ -9,6 +9,9 @@ import java.util.List;
 public class CvResponseDTO {
 
     private Long id;
+    private String firstName;
+    private String lastName;
+    private String email;
     private String photoUrl;
     private String summary;
     private Instant createdAt;

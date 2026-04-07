@@ -36,56 +36,77 @@
 
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Company Login</title>
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+    </style>
     <script>
         function validateLoginForm() {
             const email = document.querySelector('[name="email"]').value;
             const password = document.querySelector('[name="password"]').value;
-
-            if (!email.trim()) {
-                alert("Email is required");
-                return false;
-            }
-
-            if (!password.trim()) {
-                alert("Password is required");
-                return false;
-            }
-
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!email.trim() || !password.trim()) {
+                alert("Please fill in both fields");
+                return false;
+            }
             if (!emailRegex.test(email)) {
                 alert("Invalid email format");
                 return false;
             }
-
             return true;
         }
     </script>
 </head>
 <body>
 
-<h2>Company Login</h2>
+<div class="login-card text-center">
+    <h1 class="h3 mb-3 fw-bold text-primary">Internship System</h1>
+    <p class="text-muted mb-4">Please sign in to continue</p>
 
-<% if (message != null) { %>
-<p style="color:red;"><%= message %></p>
-<% } %>
+    <% if (message != null) { %>
+    <div class="alert alert-danger py-2 small"><%= message %></div>
+    <% } %>
 
-<form method="post" action="login.jsp" onsubmit="return validateLoginForm()">
-    <label>
-        Email:
-        <input type="email" name="email" required/>
-    </label>
-    <br/><br/>
+    <form method="post" action="login.jsp" onsubmit="return validateLoginForm()" class="text-start">
+        <div class="mb-3">
+            <label class="form-label small fw-bold text-uppercase">Email address</label>
+            <input type="email" name="email" class="form-control form-control-lg"
+                   placeholder="name@company.com" required/>
+        </div>
 
-    <label>
-        Password:
-        <input type="password" name="password" required/>
-    </label>
-    <br/><br/>
+        <div class="mb-4">
+            <label class="form-label small fw-bold text-uppercase">Password</label>
+            <input type="password" name="password" class="form-control form-control-lg"
+                   placeholder="••••••••" required/>
+        </div>
 
-    <button type="submit">Login</button>
-</form>
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">Login</button>
+        </div>
+    </form>
+
+    <div class="mt-4 small text-muted">
+        &copy; 2026 Internship Portal
+    </div>
+</div>
 
 </body>
 </html>

@@ -128,7 +128,10 @@
 
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><%= (internship != null) ? "Edit Internship" : "Create Internship" %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 
     <script>
         function validateInternshipForm() {
@@ -181,95 +184,101 @@
 </head>
 <body>
 
-<jsp:include page="/WEB-INF/layout/header.jsp"/>
+<header>
+    <jsp:include page="/WEB-INF/layout/header.jsp"/>
+</header>
 
-<h2><%= (internship != null) ? "Edit Internship" : "Create Internship" %>
-</h2>
+<main>
+    <div class="container pb-5">
+        <div class="mt-2 mb-3">
+            <a href="internships.jsp" class="text-decoration-none small text-secondary">
+                &larr; Back to Internships
+            </a>
+        </div>
 
-<%
-    if (message != null) {
-%>
-<p style="color:green;"><%= message %></p>
-<%
-    }
-%>
+        <h2 class="h4 mb-4"><%= (internship != null) ? "Edit Internship" : "Create Internship" %></h2>
 
-<form method="post" onsubmit="return validateInternshipForm()">
-    <input type="hidden" name="action" value="create-updateInternship"/>
-    <label>
-        Title:
-        <input type="text" name="title" value="<%= internship != null ? internship.getTitle() : "" %>"/>
-    </label>
-    <br/><br/>
+        <% if (message != null) { %>
+        <div class="alert alert-success py-2"><%= message %></div>
+        <% } %>
 
-    <label>
-        Description:
-        <textarea name="description"><%= internship != null ? internship.getDescription() : "" %></textarea>
-    </label>
-    <br/><br/>
+        <form method="post" onsubmit="return validateInternshipForm()" class="bg-white p-3 rounded shadow-sm">
+            <input type="hidden" name="action" value="create-updateInternship"/>
 
-    <label>
-        Location:
-        <input type="text" name="location" value="<%= internship != null ? internship.getLocation() : "" %>"/>
-    </label>
-    <br/><br/>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Title</label>
+                <input type="text" name="title" class="form-control"
+                       value="<%= internship != null ? internship.getTitle() : "" %>" placeholder="e.g. Java Backend Developer"/>
+            </div>
 
-    <label>
-        Start Date:
-        <input type="date" name="startDate" value="<%= internship != null ? internship.getStartDate() : "" %>"/>
-    </label>
-    <br/><br/>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Description</label>
+                <textarea name="description" class="form-control" rows="4"><%= internship != null ? internship.getDescription() : "" %></textarea>
+            </div>
 
-    <label>
-        End Date:
-        <input type="date" name="endDate" value="<%= internship != null ? internship.getEndDate() : "" %>"/>
-    </label>
-    <br/><br/>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Location</label>
+                <input type="text" name="location" class="form-control"
+                       value="<%= internship != null ? internship.getLocation() : "" %>" placeholder="e.g. Banja Luka / Remote"/>
+            </div>
 
-    <label>
-        Requirements:
-        <textarea name="requirements"><%= internship != null ? internship.getRequirements() : "" %></textarea>
-    </label>
-    <br/><br/>
+            <div class="row">
+                <div class="col-6 mb-3">
+                    <label class="form-label fw-bold">Start Date</label>
+                    <input type="date" name="startDate" class="form-control"
+                           value="<%= internship != null ? internship.getStartDate() : "" %>"/>
+                </div>
+                <div class="col-6 mb-3">
+                    <label class="form-label fw-bold">End Date</label>
+                    <input type="date" name="endDate" class="form-control"
+                           value="<%= internship != null ? internship.getEndDate() : "" %>"/>
+                </div>
+            </div>
 
-    <h3>Technologies</h3>
-    <%
-        for (TechnologyResponseDTO t : technologies) {
-    %>
-    <label>
-        <input type="checkbox" name="technologyIds"
-               value="<%= t.getId() %>"<%= selectedTechIds.contains(t.getId()) ? "checked" : "" %> />
-        <%= t.getName() %>
-    </label><br/>
-    <%
-        }
-    %>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Requirements</label>
+                <textarea name="requirements" class="form-control" rows="3"><%= internship != null ? internship.getRequirements() : "" %></textarea>
+            </div>
 
-    <br/>
+            <h3 class="h5 mt-4 mb-3 border-bottom pb-2">Technologies</h3>
+            <div class="row px-2">
+                <% for (TechnologyResponseDTO t : technologies) { %>
+                <div class="col-6 col-md-4 mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="technologyIds"
+                               id="tech-<%= t.getId() %>" value="<%= t.getId() %>"
+                                <%= selectedTechIds.contains(t.getId()) ? "checked" : "" %> />
+                        <label class="form-check-label small" for="tech-<%= t.getId() %>">
+                            <%= t.getName() %>
+                        </label>
+                    </div>
+                </div>
+                <% } %>
+            </div>
 
-    <button type="submit"><%= (internship != null) ? "Update Internship" : "Create Internship" %>
-    </button>
-</form>
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <%= (internship != null) ? "Update Internship" : "Create Internship" %>
+                </button>
+            </div>
+        </form>
 
-<hr/>
+        <div class="mt-5 p-3 border rounded bg-light">
+            <h3 class="h6 mb-3 text-secondary uppercase">Add New Technology</h3>
+            <form method="post" onsubmit="return validateTechForm()">
+                <input type="hidden" name="action" value="createTechnology"/>
+                <div class="input-group">
+                    <input type="text" name="name" class="form-control form-control-sm" placeholder="Technology name"/>
+                    <button class="btn btn-outline-primary btn-sm" type="submit">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
 
-<h3>Add New Technology</h3>
-
-<form method="post" onsubmit="return validateTechForm()">
-    <input type="hidden" name="action" value="createTechnology"/>
-    <label>
-        Technology name:
-        <input type="text" name="name" placeholder="Technology name"/>
-    </label>
-    <button type="submit">Add</button>
-</form>
-
-<br/><br/>
-<a href="internships.jsp">
-    <button type="button">Back</button>
-</a>
-
-<jsp:include page="WEB-INF/layout/footer.jsp"/>
+<footer>
+    <jsp:include page="/WEB-INF/layout/footer.jsp"/>
+</footer>
 
 </body>
 </html>

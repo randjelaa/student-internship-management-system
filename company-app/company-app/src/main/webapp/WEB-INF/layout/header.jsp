@@ -9,16 +9,12 @@
     }
 %>
 
-<div style="display:flex; justify-content:space-between; border-bottom:1px solid black; padding:10px;">
-    <div>
-        <b>Internship System</b>
-    </div>
-
-    <div>
+<div class="d-flex justify-content-between align-items-center p-3">
+    <span class="fw-bold">Internship System</span>
+    <div class="small">
         <%= user.getEmail() %>
-
-        <form method="post" action="<%= request.getContextPath() %>/logout.jsp" style="display:inline;">
-            <button type="submit" onclick="return confirm('Logout?')">Logout</button>
+        <form method="post" action="<%= request.getContextPath() %>/logout.jsp" class="d-inline ms-2">
+            <button class="btn btn-sm btn-outline-dark" type="submit">Logout</button>
         </form>
     </div>
 </div>

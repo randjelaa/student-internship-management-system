@@ -46,96 +46,101 @@
 
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Grading Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .worklog-item {
+            font-size: 0.85rem;
+            border-left: 3px solid #dee2e6;
+            padding-left: 10px;
+            margin-bottom: 10px;
+        }
+        .grading-card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e0e0e0;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+    </style>
 
     <script>
         function validateGradeForm(form) {
             const comment = form.querySelector('textarea[name="comment"]').value;
-
             if (!comment || comment.trim() === "") {
                 alert("Comment is required");
                 return false;
             }
-
             return true;
         }
     </script>
 </head>
 <body>
 
-<jsp:include page="WEB-INF/layout/header.jsp"/>
+<header>
+    <jsp:include page="/WEB-INF/layout/header.jsp"/>
+</header>
 
-<h2>Grading Dashboard</h2>
+<main>
+    <div class="container pb-5">
+        <h2 class="h4 my-3 fw-bold">Grading Dashboard</h2>
 
-<%
-    if (message != null) {
-%>
-<p style="color:green;"><%= message %></p>
-<%
-    }
-%>
-
-<% if (groups != null) {
-    for (InternshipGradingGroupDTO group : groups) { %>
-
-<h3><%= group.getInternshipTitle() %></h3>
-
-<% for (StudentGradingDetailDTO student : group.getStudents()) { %>
-<div style="border:1px solid black; padding:10px; margin-bottom:20px;">
-    <h4><%= student.getStudentFullName() %></h4>
-
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>Period</th>
-            <th>Description</th>
-        </tr>
-
-        <% for (WorkLogResponseDTO log : student.getWorkLogs()) { %>
-        <tr>
-            <td>
-                <%= log.getStartDate() %> - <%= log.getEndDate() %>
-            </td>
-            <td><%= log.getDescription() %>
-            </td>
-        </tr>
+        <% if (message != null) { %>
+        <div class="alert alert-success py-2 small"><%= message %></div>
         <% } %>
-    </table>
 
-    <br/>
+        <% if (groups != null) {
+            for (InternshipGradingGroupDTO group : groups) { %>
 
-    <form method="post" action="grades.jsp" onsubmit="return validateGradeForm(this)">
-        <input type="hidden" name="studentId" value="<%= student.getStudentId() %>"/>
-        <input type="hidden" name="internshipId" value="<%= group.getInternshipId() %>"/>
+        <h3 class="h5 mt-4 mb-3 text-primary border-bottom pb-2"><%= group.getInternshipTitle() %></h3>
 
-        <label>Comment:</label><br/>
+        <% for (StudentGradingDetailDTO student : group.getStudents()) { %>
+        <div class="grading-card p-3 mb-4">
+            <h4 class="h6 fw-bold mb-3"><%= student.getStudentFullName() %></h4>
 
-        <% if (student.isGraded()) { %>
-        <label>
-            <textarea rows="3" cols="50" readonly><%= student.getExistingComment() %></textarea>
-        </label>
+            <div class="mb-3">
+                <p class="small fw-bold text-muted text-uppercase mb-2" style="font-size: 0.7rem;">Work Logs:</p>
+                <% for (WorkLogResponseDTO log : student.getWorkLogs()) { %>
+                <div class="worklog-item">
+                    <div class="fw-bold" style="font-size: 0.75rem;"><%= log.getStartDate() %> - <%= log.getEndDate() %></div>
+                    <div class="text-secondary"><%= log.getDescription() %></div>
+                </div>
+                <% } %>
+            </div>
 
-        <br/><br/>
-        <button disabled>Already graded</button>
+            <form method="post" action="grades.jsp" onsubmit="return validateGradeForm(this)" class="mt-3">
+                <input type="hidden" name="studentId" value="<%= student.getStudentId() %>"/>
+                <input type="hidden" name="internshipId" value="<%= group.getInternshipId() %>"/>
 
-        <% } else { %>
-        <label>
-            <textarea name="comment" rows="3" cols="50" required></textarea>
-        </label>
-
-        <br/><br/>
-        <button type="submit">Submit Grade</button>
-
+                <div class="mb-2">
+                    <label class="small fw-bold mb-1">Final Comment:</label>
+                    <% if (student.isGraded()) { %>
+                    <div class="p-2 bg-light border rounded small text-muted">
+                        <%= student.getExistingComment() %>
+                    </div>
+                    <div class="d-grid mt-3">
+                        <button class="btn btn-sm btn-secondary" disabled>Already graded</button>
+                    </div>
+                    <% } else { %>
+                    <textarea name="comment" class="form-control form-control-sm" rows="3"
+                              placeholder="Enter student performance review..." required></textarea>
+                    <div class="d-grid mt-3">
+                        <button type="submit" class="btn btn-sm btn-success">Submit Grade</button>
+                    </div>
+                    <% } %>
+                </div>
+            </form>
+        </div>
         <% } %>
-    </form>
-</div>
-<% } %>
-<hr/>
-<%
-    }
-}
-%>
+        <% } } %>
+    </div>
+</main>
 
-<jsp:include page="WEB-INF/layout/footer.jsp"/>
+<footer>
+    <jsp:include page="/WEB-INF/layout/footer.jsp"/>
+</footer>
 
 </body>
 </html>

@@ -25,6 +25,9 @@ public interface CvMapper {
     @Mapping(target = "skills", source = "skills")
     @Mapping(target = "languages", source = "languages")
     @Mapping(target = "interests", source = "interests")
+    @Mapping(target = "firstName", source = "student.firstName")
+    @Mapping(target = "lastName", source = "student.lastName")
+    @Mapping(target = "email", source = "student.user.email")
     CvResponseDTO toDto(Cv cv);
 
     List<EducationDTO> toEducationDtos(Set<Education> educations);
