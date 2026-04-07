@@ -264,9 +264,10 @@
     <button type="submit">Add</button>
 </form>
 
-<% if (message != null) { %>
-<p style="color:red;"><%= message %></p>
-<% } %>
+<br/><br/>
+<a href="internships.jsp">
+    <button type="button">Back</button>
+</a>
 
 <jsp:include page="WEB-INF/layout/footer.jsp"/>
 

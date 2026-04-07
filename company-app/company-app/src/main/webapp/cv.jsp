@@ -171,6 +171,11 @@
     }
 %>
 
+<br/><br/>
+<a href="applications.jsp">
+    <button type="button">Back</button>
+</a>
+
 <jsp:include page="WEB-INF/layout/footer.jsp"/>
 
 </body>
