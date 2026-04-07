@@ -1,38 +1,34 @@
-<%@ page import="com.example.util.AuthUtil" %>
-<%@ page import="com.example.dto.LoginResponse" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.example.util.ApiClient" %>
 <%@ page import="com.example.dto.LoginResponse" %>
-<%@ page import="com.example.dto.ChangePasswordRequest" %>
+<%@ page import="com.example.dto.LoginResponse" %>
+<%@ page import="com.example.service.PasswordService" %>
 
 <%
-    LoginResponse user = AuthUtil.requireUser(request, response);
-    if (user == null) return;
+    LoginResponse user = (LoginResponse) request.getSession().getAttribute("user");
+    if (user == null) {
+        request.getRequestDispatcher("login.jsp").forward(request, response);
+        return;
+    }
 
     String message = null;
-    String error = null;
+    PasswordService passwordService = new PasswordService();
 
     if ("POST".equalsIgnoreCase(request.getMethod())) {
-
         String current = request.getParameter("currentPassword");
         String newPass = request.getParameter("newPassword");
         String confirm = request.getParameter("confirmPassword");
 
-        if (!newPass.equals(confirm)) {
-            error = "New passwords do not match";
+        if (newPass.length() < 6) {
+            message = "Password must be at least 6 characters";
+        } else if (!newPass.equals(confirm)) {
+            message = "New passwords do not match";
         } else {
-
             try {
-                ChangePasswordRequest body = new ChangePasswordRequest();
-                body.setCurrentPassword(current);
-                body.setNewPassword(newPass);
-
-                ApiClient.post("/auth/change-password", body, Object.class, request);
-
+                passwordService.changePassword(current, newPass, request);
                 message = "Password changed successfully";
-
             } catch (Exception e) {
-                error = "Failed to change password";
+                message = "Failed to change password";
+                e.printStackTrace();
             }
         }
     }
@@ -41,6 +37,31 @@
 <html>
 <head>
     <title>Change Password</title>
+
+    <script>
+        function validateForm() {
+            const current = document.querySelector('[name="currentPassword"]').value;
+            const newPass = document.querySelector('[name="newPassword"]').value;
+            const confirm = document.querySelector('[name="confirmPassword"]').value;
+
+            if (!current || !newPass || !confirm) {
+                alert("All fields are required");
+                return false;
+            }
+
+            if (newPass.length < 6) {
+                alert("Password must be at least 6 characters");
+                return false;
+            }
+
+            if (newPass !== confirm) {
+                alert("Passwords do not match");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </head>
 <body>
 
@@ -48,29 +69,40 @@
 
 <h2>Change Password</h2>
 
-<p><b>Email:</b> <%= user.getEmail() %></p>
+<p><b>Email:</b> <%= user.getEmail() %>
+</p>
 
-<% if (message != null) { %>
+<%
+    if (message != null) {
+%>
 <p style="color:green;"><%= message %></p>
-<% } %>
+<%
+    }
+%>
 
-<% if (error != null) { %>
-<p style="color:red;"><%= error %></p>
-<% } %>
+<form method="post" onsubmit="return validateForm()">
+    <label>
+        Current password:<br/>
+        <input type="password" name="currentPassword" required/>
+    </label>
 
-<form method="post">
+    <br/><br/>
 
-    <label>Current password:</label><br/>
-    <input type="password" name="currentPassword" required/><br/><br/>
+    <label>
+        New password:<br/>
+        <input type="password" name="newPassword" required/>
+    </label>
 
-    <label>New password:</label><br/>
-    <input type="password" name="newPassword" required/><br/><br/>
+    <br/><br/>
 
-    <label>Confirm new password:</label><br/>
-    <input type="password" name="confirmPassword" required/><br/><br/>
+    <label>
+        Confirm new password:<br/>
+        <input type="password" name="confirmPassword" required/>
+    </label>
+
+    <br/><br/>
 
     <button type="submit">Change Password</button>
-
 </form>
 
 <jsp:include page="WEB-INF/layout/footer.jsp"/>

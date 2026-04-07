@@ -1,47 +1,55 @@
-<%@ page import="com.example.util.AuthUtil" %>
-<%@ page import="com.example.dto.LoginResponse" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="com.example.dto.LoginResponse" %>
 <%@ page import="java.util.*" %>
 <%@ page import="com.example.dto.*" %>
 <%@ page import="com.example.service.ApplicationService" %>
-<%@ page import="com.example.util.AuthUtil" %>
 
 <%
-    LoginResponse user = AuthUtil.requireUser(request, response);
+    LoginResponse user = (LoginResponse) request.getSession().getAttribute("user");
     if (user == null) {
         request.getRequestDispatcher("login.jsp").forward(request, response);
         return;
     }
 
+    String message = null;
     ApplicationService service = new ApplicationService();
 
-    String action = request.getParameter("action");
-    String appId = request.getParameter("applicationId");
-
-    if (action != null && appId != null) {
-        try {
-            Long id = Long.parseLong(appId);
-
-            if ("accept".equals(action)) {
-                service.accept(id, request);
-            } else if ("reject".equals(action)) {
-                service.reject(id, request);
-            }
-
-            response.sendRedirect("applications.jsp");
-            return;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     List<InternshipApplicationsGroupDTO> groups = null;
-
     try {
         groups = service.getGrouped(request);
     } catch (Exception e) {
+        message = "Error in getting applications";
         e.printStackTrace();
+    }
+
+    if ("POST".equalsIgnoreCase(request.getMethod())) {
+        String action = request.getParameter("action");
+        String appId = request.getParameter("applicationId");
+
+        try {
+            if (action == null || appId == null) {
+                message = "Invalid action";
+            } else {
+                Long id = Long.parseLong(appId);
+
+                if ("accept".equals(action)) {
+                    service.accept(id, request);
+
+                    response.sendRedirect("applications.jsp");
+                    return;
+                } else if ("reject".equals(action)) {
+                    service.reject(id, request);
+
+                    response.sendRedirect("applications.jsp");
+                    return;
+                } else {
+                    message = "Unknown action";
+                }
+            }
+        } catch (Exception e) {
+            message = "Error in accepting/rejecting application";
+            e.printStackTrace();
+        }
     }
 %>
 
@@ -49,11 +57,25 @@
 <head>
     <title>Applications</title>
 </head>
+
+<script>
+    function confirmAction(action) {
+        return confirm("Are you sure you want to " + action + " this application?");
+    }
+</script>
 <body>
 
 <jsp:include page="/WEB-INF/layout/header.jsp"/>
 
 <h2>Applications by Internship</h2>
+
+<%
+    if (message != null) {
+%>
+<p style="color:green;"><%= message %></p>
+<%
+    }
+%>
 
 <%
     if (groups != null) {
@@ -75,25 +97,29 @@
         for (CompanyApplicationViewDTO app : group.getApplications()) {
     %>
     <tr>
-        <td><%= app.getStudentFullName() %>
-        </td>
-        <td><%= app.getStatus() %>
-        </td>
-        <td><%= app.getAppliedAt() %>
-        </td>
+        <td><%= app.getStudentFullName() %></td>
+        <td><%= app.getStatus() %></td>
+        <td><%= app.getAppliedAt() %></td>
 
         <td>
-            <a href="applications.jsp?action=accept&applicationId=<%= app.getApplicationId() %>">
-                Accept
-            </a>
+            <% if (!"PENDING".equals(app.getStatus())) { %>
+            <button disabled>Accept</button>
+            <button disabled>Reject</button>
+            <% } else { %>
+            <form method="post" action="applications.jsp" style="display:inline;"
+                  onsubmit="return confirmAction('accept')">
+                <input type="hidden" name="action" value="accept"/>
+                <input type="hidden" name="applicationId" value="<%= app.getApplicationId() %>"/>
+                <button type="submit">Accept</button>
+            </form>
 
-            |
-
-            <a href="applications.jsp?action=reject&applicationId=<%= app.getApplicationId() %>">
-                Reject
-            </a>
-
-            |
+            <form method="post" action="applications.jsp" style="display:inline;"
+                  onsubmit="return confirmAction('reject')">
+                <input type="hidden" name="action" value="reject"/>
+                <input type="hidden" name="applicationId" value="<%= app.getApplicationId() %>"/>
+                <button type="submit">Reject</button>
+            </form>
+            <% } %>
 
             <a href="cv.jsp?studentId=<%= app.getStudentId() %>">
                 View CV
@@ -103,7 +129,6 @@
     <%
         }
     %>
-
 </table>
 
 <br/><br/>

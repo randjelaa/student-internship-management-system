@@ -3,14 +3,7 @@
 <%
     if ("POST".equalsIgnoreCase(request.getMethod())) {
         request.getSession().invalidate();
-        request.getRequestDispatcher("/login.jsp").forward(request, response);
+        response.sendRedirect("login.jsp");
+        return;
     }
 %>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-
-</body>
-</html>

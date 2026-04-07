@@ -1,50 +1,70 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="com.example.util.ApiClient" %>
 <%@ page import="com.example.dto.*" %>
 <%@ page import="java.io.OutputStream" %>
-<%@ page import="com.example.util.AuthUtil" %>
+<%@ page import="com.example.service.CvService" %>
 
 <%
-    LoginResponse user = AuthUtil.requireUser(request, response);
+    LoginResponse user = (LoginResponse) request.getSession().getAttribute("user");
     if (user == null) {
         request.getRequestDispatcher("login.jsp").forward(request, response);
         return;
     }
 
+    String message = null;
+    CvService service = new CvService();
+
     String action = request.getParameter("action");
-    String studentId = request.getParameter("studentId");
-    CvResponseDTO cv = null;
+    String studentIdParam = request.getParameter("studentId");
 
     if (action == null) action = "view";
 
+    CvResponseDTO cv = null;
+    Long studentId = null;
     try {
-        cv = ApiClient.get("/cv/student/" + studentId, CvResponseDTO.class, request);
-
-        if ("download".equals(action)) {
-            byte[] pdf = ApiClient.getBytes("/cv/pdf/" + studentId, request);
-
-            response.setContentType("application/pdf");
-            response.setHeader("Content-Disposition", "attachment; filename=cv.pdf");
-
-            OutputStream os = response.getOutputStream();
-            os.write(pdf);
-            os.flush();
-            return;
+        if (studentIdParam == null) {
+            message = "Student ID is required";
+        } else {
+            studentId = Long.parseLong(studentIdParam);
         }
+    } catch (Exception e) {
+        message = "Invalid student ID";
+    }
 
-        if ("photo".equals(action)) {
-            byte[] image = ApiClient.getBytes("/cv/photo/" + studentId, request);
+    try {
+        if (message == null) {
+            if ("download".equals(action)) {
+                byte[] pdf = service.getPdf(studentId, request);
 
-            response.setContentType("image/*");
+                response.setContentType("application/pdf");
+                response.setHeader("Content-Disposition", "attachment; filename=cv.pdf");
 
-            OutputStream os = response.getOutputStream();
-            os.write(image);
-            os.flush();
-            return;
+                OutputStream os = response.getOutputStream();
+                os.write(pdf);
+                os.flush();
+                return;
+            }
+
+            if ("photo".equals(action)) {
+                byte[] image = service.getPhoto(studentId, request);
+
+                response.setContentType("image/*");
+
+                OutputStream os = response.getOutputStream();
+                os.write(image);
+                os.flush();
+                return;
+            }
+
+            cv = service.getByStudentId(studentId, request);
+
+            if (cv == null) {
+                message = "CV not found";
+            }
         }
 
     } catch (Exception e) {
         e.printStackTrace();
+        message = "Error loading CV";
     }
 %>
 
@@ -59,16 +79,23 @@
 <h2>CV</h2>
 
 <%
+    if (message != null) {
+%>
+<p style="color:green;"><%= message %></p>
+<%
+    }
+%>
+
+<%
     if (cv != null) {
 %>
 
-<p><b>Summary:</b> <%= cv.getSummary() %>
-</p>
+<p><b>Summary:</b> <%= cv.getSummary() %></p>
 
 <%
     if (cv.getPhotoUrl() != null) {
 %>
-<img src="cv.jsp?action=photo&studentId=<%= studentId %>" width="150"/><%
+<img src="cv.jsp?action=photo&studentId=<%= studentId %>" width="150" alt="photo"/><%
     }
 %>
 
@@ -94,10 +121,8 @@
         for (ExperienceDTO exp : cv.getExperiences()) {
     %>
     <li>
-        <b><%= exp.getCompanyName() %>
-        </b> - <%= exp.getPosition() %><br/>
-        <i><%= exp.getStartDate() %> - <%= exp.getEndDate() %>
-        </i><br/>
+        <b><%= exp.getCompanyName() %></b> - <%= exp.getPosition() %><br/>
+        <i><%= exp.getStartDate() %> - <%= exp.getEndDate() %></i><br/>
         <%= exp.getDescription() %>
     </li>
     <%
@@ -110,8 +135,7 @@
     <%
         for (SkillDTO skill : cv.getSkills()) {
     %>
-    <li><%= skill.getSkillName() %> - <%= skill.getSkillLevel() %>
-    </li>
+    <li><%= skill.getSkillName() %> - <%= skill.getSkillLevel() %></li>
     <%
         }
     %>
@@ -122,8 +146,7 @@
     <%
         for (LanguageDTO lang : cv.getLanguages()) {
     %>
-    <li><%= lang.getLanguageName() %> - <%= lang.getLevel() %>
-    </li>
+    <li><%= lang.getLanguageName() %> - <%= lang.getLevel() %></li>
     <%
         }
     %>
@@ -134,8 +157,7 @@
     <%
         for (InterestDTO i : cv.getInterests()) {
     %>
-    <li><%= i.getInterestName() %>
-    </li>
+    <li><%= i.getInterestName() %></li>
     <%
         }
     %>

@@ -1,23 +1,27 @@
-<%@ page import="com.example.util.AuthUtil" %>
-<%@ page import="com.example.dto.LoginResponse" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="com.example.dto.LoginResponse" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.example.dto.InternshipResponseDTO" %>
 <%@ page import="com.example.service.InternshipService" %>
-<%@ page import="com.example.util.AuthUtil" %>
 <%@ page import="com.example.dto.LoginResponse" %>
 
 <%
-    LoginResponse user = AuthUtil.requireUser(request, response);
+    LoginResponse user = (LoginResponse) request.getSession().getAttribute("user");
     if (user == null) {
         request.getRequestDispatcher("login.jsp").forward(request, response);
         return;
     }
 
-    String action = request.getParameter("action");
-    if (action == null) action = "list";
-
+    String message = null;
     InternshipService internshipService = new InternshipService();
+
+    List<InternshipResponseDTO> internships = null;
+    try {
+        internships = internshipService.getMyInternships(request);
+    } catch (Exception e) {
+        message = "Error loading internships";
+        e.printStackTrace();
+    }
 
     if ("POST".equalsIgnoreCase(request.getMethod())) {
         String idParam = request.getParameter("id");
@@ -26,23 +30,14 @@
             try {
                 Long id = Long.parseLong(idParam);
                 internshipService.delete(id, request);
+
+                response.sendRedirect("internships.jsp");
+                return;
             } catch (Exception e) {
+                message = "Error deleting internship";
                 e.printStackTrace();
             }
         }
-
-        response.sendRedirect("internships.jsp");
-        return;
-    }
-
-    List<InternshipResponseDTO> internships = null;
-    String error = null;
-
-    try {
-        internships = internshipService.getMyInternships(request);
-    } catch (Exception e) {
-        e.printStackTrace();
-        error = "Error loading internships";
     }
 %>
 
@@ -56,9 +51,8 @@
 
 <h2>My Internships</h2>
 
-<% if (error != null) { %>
-<p style="color:red;"><%= error %>
-</p>
+<% if (message != null) { %>
+<p style="color:red;"><%= message %></p>
 <% } %>
 
 <table border="1" cellpadding="10">
@@ -77,10 +71,8 @@
             for (InternshipResponseDTO i : internships) {
     %>
     <tr>
-        <td><%= i.getTitle() %>
-        </td>
-        <td><%= i.getDescription() %>
-        </td>
+        <td><%= i.getTitle() %></td>
+        <td><%= i.getDescription() %></td>
         <td>
             <%
                 if (i.getTechnologies() != null) {
@@ -92,13 +84,9 @@
                 }
             %>
         </td>
-        <td><%= i.getLocation() %>
-        </td>
-        <td>
-            <%= i.getStartDate() %> - <%= i.getEndDate() %>
-        </td>
-        <td><%= i.getRequirements() %>
-        </td>
+        <td><%= i.getLocation() %></td>
+        <td><%= i.getStartDate() %> - <%= i.getEndDate() %></td>
+        <td><%= i.getRequirements() %></td>
         <td>
             <button onclick="window.location.href='create-update-internship.jsp?id=<%= i.getId() %>'">
                 Update
