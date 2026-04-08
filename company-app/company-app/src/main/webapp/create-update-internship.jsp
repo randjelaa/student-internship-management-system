@@ -129,7 +129,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><%= (internship != null) ? "Edit Internship" : "Create Internship" %>
+    <title><%= (internship != null) ? "Edit internship" : "Create internship" %>
     </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
@@ -193,10 +193,10 @@
 <main>
     <div class="container">
         <div class="mt-2 mb-3">
-            <a href="internships.jsp" class="text-decoration-none small text-secondary">&larr; Back to Internships</a>
+            <a href="internships.jsp" class="text-decoration-none small text-secondary">&larr; Back to internships</a>
         </div>
 
-        <h2 class="page-title"><%= (internship != null) ? "Edit Internship" : "Create Internship" %></h2>
+        <h2 class="page-title"><%= (internship != null) ? "Edit internship" : "Create internship" %></h2>
 
         <% if (message != null) { %>
         <div class="alert alert-success py-2"><%= message %></div>
@@ -210,7 +210,7 @@
                     <label class="form-label small fw-bold">Title</label>
                     <input type="text" name="title" class="form-control"
                            value="<%= internship != null ? internship.getTitle() : "" %>"
-                           placeholder="e.g. Java Backend Developer"/>
+                           placeholder="e.g. Backend developer"/>
                 </div>
 
                 <div class="mb-3">
@@ -228,13 +228,13 @@
 
                 <div class="row">
                     <div class="col-6 mb-3">
-                        <label class="form-label small fw-bold">Start Date</label>
+                        <label class="form-label small fw-bold">Start date</label>
                         <input type="date" name="startDate" class="form-control"
                                value="<%= internship != null ? internship.getStartDate() : "" %>"/>
                     </div>
 
                     <div class="col-6 mb-3">
-                        <label class="form-label small fw-bold">End Date</label>
+                        <label class="form-label small fw-bold">End date</label>
                         <input type="date" name="endDate" class="form-control"
                                value="<%= internship != null ? internship.getEndDate() : "" %>"/>
                     </div>
@@ -264,13 +264,13 @@
 
                 <div class="d-grid gap-2 mt-4">
                     <button type="submit" class="btn btn-primary">
-                        <%= (internship != null) ? "Update Internship" : "Create Internship" %>
+                        <%= (internship != null) ? "Update internship" : "Create internship" %>
                     </button>
                 </div>
             </form>
         </div>
 
-        <h5 class="section-title text-primary">Add New Technology</h5>
+        <h5 class="section-title text-primary">Add new technology</h5>
         <div class="grading-card p-3 mb-4">
             <form method="post" onsubmit="return validateTechForm()">
                 <input type="hidden" name="action" value="createTechnology"/>

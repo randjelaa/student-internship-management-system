@@ -47,7 +47,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Grading Dashboard</title>
+    <title>Grading dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/grades.css">
@@ -71,7 +71,7 @@
 
 <main>
     <div class="container">
-        <h2 class="page-title">Grading Dashboard</h2>
+        <h2 class="page-title">Grading dashboard</h2>
 
         <% if (message != null) { %>
         <div class="alert alert-success"><%= message %></div>
@@ -101,7 +101,7 @@
                 <input type="hidden" name="internshipId" value="<%= group.getInternshipId() %>"/>
 
                 <div class="mb-2">
-                    <label class="small fw-bold mb-1">Final Comment:</label>
+                    <label class="small fw-bold mb-1">Final comment:</label>
                     <% if (student.isGraded()) { %>
                     <div class="p-2 bg-light border rounded small text-muted"><%= student.getExistingComment() %></div>
                     <div class="d-grid mt-3">
@@ -112,7 +112,7 @@
                     <textarea name="comment" class="form-control form-control-sm" rows="3"
                               placeholder="Enter student performance review..." required></textarea>
                     <div class="d-grid mt-3">
-                        <button type="submit" class="btn btn-primary">Submit Grade</button>
+                        <button type="submit" class="btn btn-primary">Submit grade</button>
                     </div>
                     <% } %>
                 </div>

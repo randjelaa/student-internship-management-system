@@ -37,7 +37,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Change Password</title>
+    <title>Change password</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/grades.css">
@@ -71,7 +71,7 @@
 
 <main>
     <div class="container">
-        <h2 class="page-title">Security Settings</h2>
+        <h2 class="page-title">Change password</h2>
 
         <% if (message != null) { %>
         <div class="alert alert-success"><%= message %></div>
@@ -80,22 +80,22 @@
         <div class="grading-card p-3 mb-4">
             <form method="post" onsubmit="return validateForm()">
                 <div class="mb-3">
-                    <label class="form-label small fw-bold">Current Password</label>
+                    <label class="form-label small fw-bold">Current password</label>
                     <input type="password" name="currentPassword" class="form-control" required/>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label small fw-bold">New Password</label>
+                    <label class="form-label small fw-bold">New password</label>
                     <input type="password" name="newPassword" class="form-control" placeholder="Min. 6 characters" required/>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label small fw-bold">Confirm New Password</label>
+                    <label class="form-label small fw-bold">Confirm new password</label>
                     <input type="password" name="confirmPassword" class="form-control" required/>
                 </div>
 
                 <div class="d-grid gap-2 mt-4">
-                    <button type="submit" class="btn btn-primary">Update Password</button>
+                    <button type="submit" class="btn btn-primary">Update password</button>
                 </div>
             </form>
         </div>

@@ -86,7 +86,7 @@
     <div class="container">
 
         <div class="mt-2 mb-3">
-            <a href="applications.jsp" class="text-decoration-none small text-secondary">&larr; Back to Applications</a>
+            <a href="applications.jsp" class="text-decoration-none small text-secondary">&larr; Back to applications</a>
         </div>
 
         <% if (message != null) { %>

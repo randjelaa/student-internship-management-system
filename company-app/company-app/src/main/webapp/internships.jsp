@@ -58,7 +58,7 @@
 <main>
     <div class="container">
         <div class="d-flex justify-content-between align-items-center pb-2">
-            <h2 class="page-title">My Internships</h2>
+            <h2 class="page-title">My internships</h2>
             <a href="create-update-internship.jsp" class="btn btn-sm btn-primary">+ New</a>
         </div>
 
@@ -70,7 +70,7 @@
             <table class="table align-middle">
                 <thead>
                 <tr>
-                    <th>Internship Details</th>
+                    <th>Internship details</th>
                     <th>Technologies</th>
                     <th>Actions</th>
                 </tr>
