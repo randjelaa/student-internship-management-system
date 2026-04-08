@@ -61,32 +61,35 @@
 </head>
 <body>
 
-<div class="login-card text-center">
-    <h1 class="h3 mb-3 fw-bold text-primary">Internship System</h1>
-    <p class="text-muted mb-4">Please sign in to continue</p>
+<main class="container">
+    <h2 class="page-title text-primary">Internship System</h2>
 
-    <% if (message != null) { %>
-    <div class="alert alert-danger py-2 small"><%= message %></div>
-    <% } %>
+    <div class="login-card text-center p-3">
+        <p class="text-muted mb-4">Please sign in to continue</p>
 
-    <form method="post" action="login.jsp" onsubmit="return validateLoginForm()" class="text-start">
-        <div class="mb-3">
-            <label class="form-label small fw-bold text-uppercase">Email address</label>
-            <input type="email" name="email" class="form-control form-control-lg"
-                   placeholder="name@company.com" required/>
-        </div>
+        <% if (message != null) { %>
+        <div class="alert alert-danger py-2 small"><%= message %></div>
+        <% } %>
 
-        <div class="mb-4">
-            <label class="form-label small fw-bold text-uppercase">Password</label>
-            <input type="password" name="password" class="form-control form-control-lg"
-                   placeholder="••••••••" required/>
-        </div>
+        <form method="post" action="login.jsp" onsubmit="return validateLoginForm()" class="text-start">
+            <div class="mb-3">
+                <label class="form-label small fw-bold">Email address</label>
+                <input type="email" name="email" class="form-control"
+                       placeholder="name@company.com" required/>
+            </div>
 
-        <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg">Login</button>
-        </div>
-    </form>
-</div>
+            <div class="mb-3">
+                <label class="form-label small fw-bold">Password</label>
+                <input type="password" name="password" class="form-control"
+                       placeholder="••••••••" required/>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
+    </div>
+</main>
 
 </body>
 </html>
