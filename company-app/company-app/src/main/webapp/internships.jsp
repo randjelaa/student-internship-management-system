@@ -56,14 +56,14 @@
 </header>
 
 <main>
-    <div class="container pb-5">
-        <div class="d-flex justify-content-between align-items-center my-3">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center pb-2">
             <h2 class="h4 mb-0">My Internships</h2>
             <a href="create-update-internship.jsp" class="btn btn-sm btn-primary">+ New</a>
         </div>
 
         <% if (message != null) { %>
-        <div class="alert alert-danger py-2 small"><%= message %></div>
+        <div class="alert alert-success"><%= message %></div>
         <% } %>
 
         <div class="table-responsive">
@@ -72,7 +72,7 @@
                 <tr>
                     <th>Internship Details</th>
                     <th>Technologies</th>
-                    <th class="text-end">Actions</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
 
@@ -81,7 +81,7 @@
                     for (InternshipResponseDTO i : internships) { %>
                 <tr>
                     <td data-label="Internship">
-                        <div class="fw-bold text-primary h6 mb-1"><%= i.getTitle() %></div>
+                        <div><strong><%= i.getTitle() %></strong></div>
                         <div class="small text-muted text-wrap"><%= i.getDescription() %></div>
                     </td>
 

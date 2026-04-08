@@ -75,7 +75,7 @@
 
 <main>
     <div class="container">
-        <h2 class="mb-4">Applications</h2>
+        <h2 class="page-title">Applications</h2>
 
         <% if (message != null) { %>
         <div class="alert alert-success"><%= message %></div>
@@ -85,54 +85,59 @@
             for (InternshipApplicationsGroupDTO group : groups) { %>
 
         <div class="app-card-container">
-            <h5 class="text-primary mt-4"><%= group.getInternshipTitle() %></h5>
+            <h5 class="section-title text-primary"><%= group.getInternshipTitle() %></h5>
 
-            <table class="table align-middle">
-                <thead>
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Student</th>
+                            <th>Status</th>
+                            <th>Applied</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                    <% for (CompanyApplicationViewDTO app : group.getApplications()) { %>
                     <tr>
-                        <th>Student</th>
-                        <th>Status</th>
-                        <th>Applied</th>
-                        <th>Actions</th>
+                        <td data-label="Student"><strong><%= app.getStudentFullName() %></strong></td>
+
+                        <td data-label="Status">
+                            <span class="badge bg-<%= app.getStatus().equals("PENDING") ? "warning" : "secondary" %>">
+                                <%= app.getStatus() %>
+                            </span>
+                        </td>
+
+                        <td data-label="Applied">
+                            <div class="small"><%= app.getAppliedAt() %></div>
+                        </td>
+
+                        <td data-label="Actions">
+                            <div class="btn-group-mobile">
+                                <% if ("PENDING".equals(app.getStatus())) { %>
+                                <form method="post" onsubmit="return confirmAction('accept')" class="m-0">
+                                    <input type="hidden" name="action" value="accept"/>
+                                    <input type="hidden" name="applicationId" value="<%= app.getApplicationId() %>"/>
+                                    <button type="submit" class="btn btn-sm btn-success">Accept</button>
+                                </form>
+
+                                <form method="post" onsubmit="return confirmAction('reject')" class="m-0">
+                                    <input type="hidden" name="action" value="reject"/>
+                                    <input type="hidden" name="applicationId" value="<%= app.getApplicationId() %>"/>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Reject</button>
+                                </form>
+                                <% } %>
+
+                                <a href="cv.jsp?studentId=<%= app.getStudentId() %>" class="btn btn-sm btn-primary">View CV</a>
+                            </div>
+                        </td>
                     </tr>
-                </thead>
+                    <% } %>
+                    </tbody>
+                </table>
+            </div>
 
-                <tbody>
-                <% for (CompanyApplicationViewDTO app : group.getApplications()) { %>
-                <tr>
-                    <td data-label="Student"><strong><%= app.getStudentFullName() %></strong></td>
-
-                    <td data-label="Status">
-                        <span class="badge bg-<%= app.getStatus().equals("PENDING") ? "warning" : "secondary" %>">
-                            <%= app.getStatus() %>
-                        </span>
-                    </td>
-
-                    <td data-label="Applied"><%= app.getAppliedAt() %></td>
-
-                    <td data-label="Actions">
-                        <div class="btn-group-mobile">
-                            <% if ("PENDING".equals(app.getStatus())) { %>
-                            <form method="post" onsubmit="return confirmAction('accept')" class="m-0">
-                                <input type="hidden" name="action" value="accept"/>
-                                <input type="hidden" name="applicationId" value="<%= app.getApplicationId() %>"/>
-                                <button type="submit" class="btn btn-sm btn-success">Accept</button>
-                            </form>
-
-                            <form method="post" onsubmit="return confirmAction('reject')" class="m-0">
-                                <input type="hidden" name="action" value="reject"/>
-                                <input type="hidden" name="applicationId" value="<%= app.getApplicationId() %>"/>
-                                <button type="submit" class="btn btn-sm btn-outline-danger">Reject</button>
-                            </form>
-                            <% } %>
-
-                            <a href="cv.jsp?studentId=<%= app.getStudentId() %>" class="btn btn-sm btn-primary">View CV</a>
-                        </div>
-                    </td>
-                </tr>
-                <% } %>
-                </tbody>
-            </table>
         </div>
         <% }
         } %>
