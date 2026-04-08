@@ -59,14 +59,11 @@
     <div class="container pb-5">
         <div class="d-flex justify-content-between align-items-center my-3">
             <h2 class="h4 mb-0">My Internships</h2>
-            <a href="create-update-internship.jsp" class="btn btn-sm btn-primary">
-                + New
-            </a>
+            <a href="create-update-internship.jsp" class="btn btn-sm btn-primary">+ New</a>
         </div>
 
         <% if (message != null) { %>
-        <div class="alert alert-danger py-2 small"><%= message %>
-        </div>
+        <div class="alert alert-danger py-2 small"><%= message %></div>
         <% } %>
 
         <div class="table-responsive">
@@ -85,9 +82,7 @@
                 <tr>
                     <td data-label="Internship">
                         <div class="fw-bold text-primary h6 mb-1"><%= i.getTitle() %></div>
-                        <div class="small text-muted text-wrap">
-                            <%= i.getDescription() %>
-                        </div>
+                        <div class="small text-muted text-wrap"><%= i.getDescription() %></div>
                     </td>
 
                     <td>
@@ -108,26 +103,23 @@
                         <% if (i.getTechnologies() != null) {
                             for (String tech : i.getTechnologies()) { %>
                         <span class="badge bg-light text-dark border"><%= tech %></span>
-                        <% } } %>
+                        <% }
+                        } %>
                     </td>
 
                     <td data-label="Actions" class="text-end">
                         <div class="btn-group-mobile mt-2">
-                            <button class="btn btn-sm btn-outline-secondary"
-                                    onclick="window.location.href='create-update-internship.jsp?id=<%= i.getId() %>'">
-                                Edit
-                            </button>
+                            <button class="btn btn-sm btn-outline-secondary" onclick="window.location.href='create-update-internship.jsp?id=<%= i.getId() %>'">Edit</button>
+
                             <form action="internships.jsp" method="post" class="d-inline m-0">
                                 <input type="hidden" name="id" value="<%= i.getId() %>"/>
-                                <button type="submit" class="btn btn-sm btn-outline-danger"
-                                        onclick="return confirm('Are you sure?')">
-                                    Delete
-                                </button>
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure?')">Delete</button>
                             </form>
                         </div>
                     </td>
                 </tr>
-                <% } } %>
+                <% }
+                } %>
                 </tbody>
             </table>
         </div>

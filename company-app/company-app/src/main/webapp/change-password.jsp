@@ -74,9 +74,7 @@
 
         <div class="card border-0 shadow-sm">
             <div class="card-body">
-                <p class="small text-muted mb-4">
-                    Logged in as: <strong><%= user.getEmail() %></strong>
-                </p>
+                <p class="small text-muted mb-4">Logged in as: <strong><%= user.getEmail() %></strong></p>
 
                 <% if (message != null) { %>
                 <div class="alert alert-success py-2 small"><%= message %></div>
@@ -90,8 +88,7 @@
 
                     <div class="mb-3">
                         <label class="form-label small fw-bold">New Password</label>
-                        <input type="password" name="newPassword" class="form-control"
-                               placeholder="Min. 6 characters" required/>
+                        <input type="password" name="newPassword" class="form-control" placeholder="Min. 6 characters" required/>
                     </div>
 
                     <div class="mb-3">

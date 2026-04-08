@@ -1,0 +1,14 @@
+.worklog-item {
+    font-size: 0.85rem;
+    border-left: 3px solid #dee2e6;
+    padding-left: 10px;
+    margin-bottom: 10px;
+}
+
+.grading-card {
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}

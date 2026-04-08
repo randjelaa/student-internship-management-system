@@ -50,21 +50,7 @@
     <title>Grading Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        .worklog-item {
-            font-size: 0.85rem;
-            border-left: 3px solid #dee2e6;
-            padding-left: 10px;
-            margin-bottom: 10px;
-        }
-        .grading-card {
-            background: #ffffff;
-            border-radius: 12px;
-            border: 1px solid #e0e0e0;
-            overflow: hidden;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-    </style>
+    <link rel="stylesheet" href="css/grades.css">
 
     <script>
         function validateGradeForm(form) {
@@ -117,12 +103,11 @@
                 <div class="mb-2">
                     <label class="small fw-bold mb-1">Final Comment:</label>
                     <% if (student.isGraded()) { %>
-                    <div class="p-2 bg-light border rounded small text-muted">
-                        <%= student.getExistingComment() %>
-                    </div>
+                    <div class="p-2 bg-light border rounded small text-muted"><%= student.getExistingComment() %></div>
                     <div class="d-grid mt-3">
                         <button class="btn btn-sm btn-secondary" disabled>Already graded</button>
                     </div>
+
                     <% } else { %>
                     <textarea name="comment" class="form-control form-control-sm" rows="3"
                               placeholder="Enter student performance review..." required></textarea>
@@ -134,7 +119,8 @@
             </form>
         </div>
         <% } %>
-        <% } } %>
+        <% }
+        } %>
     </div>
 </main>
 

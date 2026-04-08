@@ -86,9 +86,7 @@
     <div class="container pb-5">
 
         <div class="mt-2 mb-3">
-            <a href="applications.jsp" class="btn btn-sm btn-outline-secondary border-0">
-                &larr; Back to Applications
-            </a>
+            <a href="applications.jsp" class="btn btn-sm btn-outline-secondary border-0">&larr; Back to Applications</a>
         </div>
 
         <% if (message != null) { %>
@@ -101,6 +99,7 @@
             <% if (cv.getPhotoUrl() != null) { %>
             <img src="cv.jsp?action=photo&studentId=<%= studentId %>" class="cv-photo shadow-sm" alt="Student photo"/>
             <% } %>
+
             <h2 class="h3 mb-0 fw-bold"><%= cv.getFirstName() %> <%= cv.getLastName() %></h2>
             <p class="text-muted small"><%= cv.getEmail() %></p>
         </div>
@@ -137,9 +136,9 @@
         <div class="mb-3 px-2">
             <% for (SkillDTO skill : cv.getSkills()) { %>
             <span class="skill-badge border">
-                        <span class="fw-bold"><%= skill.getSkillName() %></span>
-                        <span class="text-muted">| <%= skill.getSkillLevel() %></span>
-                    </span>
+                <span class="fw-bold"><%= skill.getSkillName() %></span>
+                <span class="text-muted">| <%= skill.getSkillLevel() %></span>
+            </span>
             <% } %>
         </div>
 
@@ -158,14 +157,12 @@
             <% for (InterestDTO i : cv.getInterests()) { %>
             <span class="skill-badge border">
                 <span class="fw-bold"><%= i.getInterestName() %></span>
-                    </span>
+            </span>
             <% } %>
         </div>
 
         <div class="d-grid gap-2 pt-3">
-            <a href="cv.jsp?action=download&studentId=<%= studentId %>" class="btn btn-primary btn-lg shadow-sm">
-                Download PDF CV
-            </a>
+            <a href="cv.jsp?action=download&studentId=<%= studentId %>" class="btn btn-primary btn-lg shadow-sm">Download PDF CV</a>
         </div>
 
         <% } %>

@@ -13,6 +13,7 @@
     <span class="fw-bold">Internship System</span>
     <div class="small">
         <%= user.getEmail() %>
+
         <form method="post" action="<%= request.getContextPath() %>/logout.jsp" class="d-inline ms-2">
             <button class="btn btn-sm btn-outline-dark" type="submit">Logout</button>
         </form>

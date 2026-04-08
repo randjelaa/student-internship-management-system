@@ -129,7 +129,8 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><%= (internship != null) ? "Edit Internship" : "Create Internship" %></title>
+    <title><%= (internship != null) ? "Edit Internship" : "Create Internship" %>
+    </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
 
@@ -191,9 +192,7 @@
 <main>
     <div class="container pb-5">
         <div class="mt-2 mb-3">
-            <a href="internships.jsp" class="text-decoration-none small text-secondary">
-                &larr; Back to Internships
-            </a>
+            <a href="internships.jsp" class="text-decoration-none small text-secondary">&larr; Back to Internships</a>
         </div>
 
         <h2 class="h4 mb-4"><%= (internship != null) ? "Edit Internship" : "Create Internship" %></h2>
@@ -208,18 +207,21 @@
             <div class="mb-3">
                 <label class="form-label fw-bold">Title</label>
                 <input type="text" name="title" class="form-control"
-                       value="<%= internship != null ? internship.getTitle() : "" %>" placeholder="e.g. Java Backend Developer"/>
+                       value="<%= internship != null ? internship.getTitle() : "" %>"
+                       placeholder="e.g. Java Backend Developer"/>
             </div>
 
             <div class="mb-3">
                 <label class="form-label fw-bold">Description</label>
-                <textarea name="description" class="form-control" rows="4"><%= internship != null ? internship.getDescription() : "" %></textarea>
+                <textarea name="description" class="form-control"
+                          rows="4"><%= internship != null ? internship.getDescription() : "" %></textarea>
             </div>
 
             <div class="mb-3">
                 <label class="form-label fw-bold">Location</label>
                 <input type="text" name="location" class="form-control"
-                       value="<%= internship != null ? internship.getLocation() : "" %>" placeholder="e.g. Banja Luka / Remote"/>
+                       value="<%= internship != null ? internship.getLocation() : "" %>"
+                       placeholder="e.g. Banja Luka / Remote"/>
             </div>
 
             <div class="row">
@@ -228,6 +230,7 @@
                     <input type="date" name="startDate" class="form-control"
                            value="<%= internship != null ? internship.getStartDate() : "" %>"/>
                 </div>
+
                 <div class="col-6 mb-3">
                     <label class="form-label fw-bold">End Date</label>
                     <input type="date" name="endDate" class="form-control"
@@ -237,10 +240,12 @@
 
             <div class="mb-3">
                 <label class="form-label fw-bold">Requirements</label>
-                <textarea name="requirements" class="form-control" rows="3"><%= internship != null ? internship.getRequirements() : "" %></textarea>
+                <textarea name="requirements" class="form-control"
+                          rows="3"><%= internship != null ? internship.getRequirements() : "" %></textarea>
             </div>
 
             <h3 class="h5 mt-4 mb-3 border-bottom pb-2">Technologies</h3>
+
             <div class="row px-2">
                 <% for (TechnologyResponseDTO t : technologies) { %>
                 <div class="col-6 col-md-4 mb-2">
@@ -248,9 +253,8 @@
                         <input class="form-check-input" type="checkbox" name="technologyIds"
                                id="tech-<%= t.getId() %>" value="<%= t.getId() %>"
                                 <%= selectedTechIds.contains(t.getId()) ? "checked" : "" %> />
-                        <label class="form-check-label small" for="tech-<%= t.getId() %>">
-                            <%= t.getName() %>
-                        </label>
+
+                        <label class="form-check-label small" for="tech-<%= t.getId() %>"><%= t.getName() %></label>
                     </div>
                 </div>
                 <% } %>
@@ -265,6 +269,7 @@
 
         <div class="mt-5 p-3 border rounded bg-light">
             <h3 class="h6 mb-3 text-secondary uppercase">Add New Technology</h3>
+
             <form method="post" onsubmit="return validateTechForm()">
                 <input type="hidden" name="action" value="createTechnology"/>
                 <div class="input-group">

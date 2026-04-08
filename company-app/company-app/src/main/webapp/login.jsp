@@ -39,24 +39,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Company Login</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .login-card {
-            width: 100%;
-            max-width: 400px;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        }
-    </style>
+    <link rel="stylesheet" href="css/login.css">
+
     <script>
         function validateLoginForm() {
             const email = document.querySelector('[name="email"]').value;
@@ -102,10 +86,6 @@
             <button type="submit" class="btn btn-primary btn-lg">Login</button>
         </div>
     </form>
-
-    <div class="mt-4 small text-muted">
-        &copy; 2026 Internship Portal
-    </div>
 </div>
 
 </body>
