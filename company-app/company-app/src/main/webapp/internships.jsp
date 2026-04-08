@@ -58,7 +58,7 @@
 <main>
     <div class="container">
         <div class="d-flex justify-content-between align-items-center pb-2">
-            <h2 class="h4 mb-0">My Internships</h2>
+            <h2 class="page-title">My Internships</h2>
             <a href="create-update-internship.jsp" class="btn btn-sm btn-primary">+ New</a>
         </div>
 

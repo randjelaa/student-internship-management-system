@@ -70,24 +70,24 @@
 </header>
 
 <main>
-    <div class="container pb-5">
-        <h2 class="h4 my-3 fw-bold">Grading Dashboard</h2>
+    <div class="container">
+        <h2 class="page-title">Grading Dashboard</h2>
 
         <% if (message != null) { %>
-        <div class="alert alert-success py-2 small"><%= message %></div>
+        <div class="alert alert-success"><%= message %></div>
         <% } %>
 
         <% if (groups != null) {
             for (InternshipGradingGroupDTO group : groups) { %>
 
-        <h3 class="h5 mt-4 mb-3 text-primary border-bottom pb-2"><%= group.getInternshipTitle() %></h3>
+        <h5 class="section-title text-primary"><%= group.getInternshipTitle() %></h5>
 
         <% for (StudentGradingDetailDTO student : group.getStudents()) { %>
         <div class="grading-card p-3 mb-4">
-            <h4 class="h6 fw-bold mb-3"><%= student.getStudentFullName() %></h4>
+            <strong><%= student.getStudentFullName() %></strong>
 
             <div class="mb-3">
-                <p class="small fw-bold text-muted text-uppercase mb-2" style="font-size: 0.7rem;">Work Logs:</p>
+                <p class="d-md-none fw-bold text-secondary text-uppercase" style="font-size: 0.7rem;">Work Logs:</p>
                 <% for (WorkLogResponseDTO log : student.getWorkLogs()) { %>
                 <div class="worklog-item">
                     <div class="fw-bold" style="font-size: 0.75rem;"><%= log.getStartDate() %> - <%= log.getEndDate() %></div>
@@ -112,7 +112,7 @@
                     <textarea name="comment" class="form-control form-control-sm" rows="3"
                               placeholder="Enter student performance review..." required></textarea>
                     <div class="d-grid mt-3">
-                        <button type="submit" class="btn btn-sm btn-success">Submit Grade</button>
+                        <button type="submit" class="btn btn-primary">Submit Grade</button>
                     </div>
                     <% } %>
                 </div>

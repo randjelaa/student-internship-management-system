@@ -40,6 +40,7 @@
     <title>Change Password</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/grades.css">
     <script>
         function validateForm() {
             const current = document.querySelector('[name="currentPassword"]').value;
@@ -69,38 +70,34 @@
 </header>
 
 <main>
-    <div class="container pb-5">
-        <h2 class="h4 my-4 fw-bold text-center">Security Settings</h2>
+    <div class="container">
+        <h2 class="page-title">Security Settings</h2>
 
-        <div class="card border-0 shadow-sm">
-            <div class="card-body">
-                <p class="small text-muted mb-4">Logged in as: <strong><%= user.getEmail() %></strong></p>
+        <% if (message != null) { %>
+        <div class="alert alert-success"><%= message %></div>
+        <% } %>
 
-                <% if (message != null) { %>
-                <div class="alert alert-success py-2 small"><%= message %></div>
-                <% } %>
+        <div class="grading-card p-3 mb-4">
+            <form method="post" onsubmit="return validateForm()">
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Current Password</label>
+                    <input type="password" name="currentPassword" class="form-control" required/>
+                </div>
 
-                <form method="post" onsubmit="return validateForm()">
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Current Password</label>
-                        <input type="password" name="currentPassword" class="form-control" required/>
-                    </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">New Password</label>
+                    <input type="password" name="newPassword" class="form-control" placeholder="Min. 6 characters" required/>
+                </div>
 
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">New Password</label>
-                        <input type="password" name="newPassword" class="form-control" placeholder="Min. 6 characters" required/>
-                    </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Confirm New Password</label>
+                    <input type="password" name="confirmPassword" class="form-control" required/>
+                </div>
 
-                    <div class="mb-3">
-                        <label class="form-label small fw-bold">Confirm New Password</label>
-                        <input type="password" name="confirmPassword" class="form-control" required/>
-                    </div>
-
-                    <div class="d-grid gap-2 mt-4">
-                        <button type="submit" class="btn btn-primary">Update Password</button>
-                    </div>
-                </form>
-            </div>
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">Update Password</button>
+                </div>
+            </form>
         </div>
     </div>
 </main>
