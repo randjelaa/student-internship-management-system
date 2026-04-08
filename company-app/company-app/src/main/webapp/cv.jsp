@@ -83,14 +83,14 @@
 </header>
 
 <main>
-    <div class="container pb-5">
+    <div class="container">
 
         <div class="mt-2 mb-3">
             <a href="applications.jsp" class="text-decoration-none small text-secondary">&larr; Back to Applications</a>
         </div>
 
         <% if (message != null) { %>
-        <div class="alert alert-warning"><%= message %></div>
+        <div class="alert alert-success"><%= message %></div>
         <% } %>
 
         <% if (cv != null) { %>
@@ -100,16 +100,16 @@
             <img src="cv.jsp?action=photo&studentId=<%= studentId %>" class="cv-photo shadow-sm" alt="Student photo"/>
             <% } %>
 
-            <h2 class="h3 mb-0 fw-bold"><%= cv.getFirstName() %> <%= cv.getLastName() %></h2>
+            <h2 class="page-title"><%= cv.getFirstName() %> <%= cv.getLastName() %></h2>
             <p class="text-muted small"><%= cv.getEmail() %></p>
         </div>
 
-        <h3 class="cv-section-title h5">Summary</h3>
+        <h5 class="section-title">Summary</h5>
         <div class="cv-item">
             <p class="mb-0 text-dark"><%= cv.getSummary() %></p>
         </div>
 
-        <h3 class="cv-section-title h5">Education</h3>
+        <h5 class="section-title">Education</h5>
         <ul class="cv-list">
             <% for (EducationDTO edu : cv.getEducations()) { %>
             <li class="cv-item">
@@ -120,7 +120,7 @@
             <% } %>
         </ul>
 
-        <h3 class="cv-section-title h5">Experience</h3>
+        <h5 class="section-title">Experience</h5>
         <ul class="cv-list">
             <% for (ExperienceDTO exp : cv.getExperiences()) { %>
             <li class="cv-item">
@@ -132,7 +132,7 @@
             <% } %>
         </ul>
 
-        <h3 class="cv-section-title h5">Skills</h3>
+        <h5 class="section-title">Skills</h5>
         <div class="mb-3 px-2">
             <% for (SkillDTO skill : cv.getSkills()) { %>
             <span class="skill-badge border">
@@ -142,7 +142,7 @@
             <% } %>
         </div>
 
-        <h3 class="cv-section-title h5">Languages</h3>
+        <h5 class="section-title">Languages</h5>
         <div class="mb-3 px-2">
             <% for (LanguageDTO lang : cv.getLanguages()) { %>
             <span class="skill-badge border">
@@ -152,7 +152,7 @@
             <% } %>
         </div>
 
-        <h3 class="cv-section-title h5">Interests</h3>
+        <h5 class="section-title">Interests</h5>
         <div class="mb-3 px-2">
             <% for (InterestDTO i : cv.getInterests()) { %>
             <span class="skill-badge border">
@@ -162,7 +162,7 @@
         </div>
 
         <div class="d-grid gap-2 pt-3">
-            <a href="cv.jsp?action=download&studentId=<%= studentId %>" class="btn btn-primary btn-lg shadow-sm">Download PDF CV</a>
+            <a href="cv.jsp?action=download&studentId=<%= studentId %>" class="btn btn-primary">Download PDF CV</a>
         </div>
 
         <% } %>
