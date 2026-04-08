@@ -133,6 +133,7 @@
     </title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/grades.css">
 
     <script>
         function validateInternshipForm() {
@@ -190,94 +191,101 @@
 </header>
 
 <main>
-    <div class="container pb-5">
+    <div class="container">
         <div class="mt-2 mb-3">
             <a href="internships.jsp" class="text-decoration-none small text-secondary">&larr; Back to Internships</a>
         </div>
 
-        <h2 class="h4 mb-4"><%= (internship != null) ? "Edit Internship" : "Create Internship" %></h2>
+        <h2 class="page-title"><%= (internship != null) ? "Edit Internship" : "Create Internship" %></h2>
 
         <% if (message != null) { %>
         <div class="alert alert-success py-2"><%= message %></div>
         <% } %>
 
-        <form method="post" onsubmit="return validateInternshipForm()" class="bg-white p-3 rounded shadow-sm">
-            <input type="hidden" name="action" value="create-updateInternship"/>
+        <div class="grading-card p-3 mb-4">
+            <form method="post" onsubmit="return validateInternshipForm()">
+                <input type="hidden" name="action" value="create-updateInternship"/>
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Title</label>
-                <input type="text" name="title" class="form-control"
-                       value="<%= internship != null ? internship.getTitle() : "" %>"
-                       placeholder="e.g. Java Backend Developer"/>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-bold">Description</label>
-                <textarea name="description" class="form-control"
-                          rows="4"><%= internship != null ? internship.getDescription() : "" %></textarea>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label fw-bold">Location</label>
-                <input type="text" name="location" class="form-control"
-                       value="<%= internship != null ? internship.getLocation() : "" %>"
-                       placeholder="e.g. Banja Luka / Remote"/>
-            </div>
-
-            <div class="row">
-                <div class="col-6 mb-3">
-                    <label class="form-label fw-bold">Start Date</label>
-                    <input type="date" name="startDate" class="form-control"
-                           value="<%= internship != null ? internship.getStartDate() : "" %>"/>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Title</label>
+                    <input type="text" name="title" class="form-control"
+                           value="<%= internship != null ? internship.getTitle() : "" %>"
+                           placeholder="e.g. Java Backend Developer"/>
                 </div>
 
-                <div class="col-6 mb-3">
-                    <label class="form-label fw-bold">End Date</label>
-                    <input type="date" name="endDate" class="form-control"
-                           value="<%= internship != null ? internship.getEndDate() : "" %>"/>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Description</label>
+                    <textarea name="description" class="form-control"
+                              rows="4"><%= internship != null ? internship.getDescription() : "" %></textarea>
                 </div>
-            </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-bold">Requirements</label>
-                <textarea name="requirements" class="form-control"
-                          rows="3"><%= internship != null ? internship.getRequirements() : "" %></textarea>
-            </div>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Location</label>
+                    <input type="text" name="location" class="form-control"
+                           value="<%= internship != null ? internship.getLocation() : "" %>"
+                           placeholder="e.g. Banja Luka / Remote"/>
+                </div>
 
-            <h3 class="h5 mt-4 mb-3 border-bottom pb-2">Technologies</h3>
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label class="form-label small fw-bold">Start Date</label>
+                        <input type="date" name="startDate" class="form-control"
+                               value="<%= internship != null ? internship.getStartDate() : "" %>"/>
+                    </div>
 
-            <div class="row px-2">
-                <% for (TechnologyResponseDTO t : technologies) { %>
-                <div class="col-6 col-md-4 mb-2">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="technologyIds"
-                               id="tech-<%= t.getId() %>" value="<%= t.getId() %>"
-                                <%= selectedTechIds.contains(t.getId()) ? "checked" : "" %> />
-
-                        <label class="form-check-label small" for="tech-<%= t.getId() %>"><%= t.getName() %></label>
+                    <div class="col-6 mb-3">
+                        <label class="form-label small fw-bold">End Date</label>
+                        <input type="date" name="endDate" class="form-control"
+                               value="<%= internship != null ? internship.getEndDate() : "" %>"/>
                     </div>
                 </div>
-                <% } %>
-            </div>
 
-            <div class="d-grid gap-2 mt-4">
-                <button type="submit" class="btn btn-primary btn-lg">
-                    <%= (internship != null) ? "Update Internship" : "Create Internship" %>
-                </button>
-            </div>
-        </form>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Requirements</label>
+                    <textarea name="requirements" class="form-control"
+                              rows="3"><%= internship != null ? internship.getRequirements() : "" %></textarea>
+                </div>
 
-        <div class="mt-5 p-3 border rounded bg-light">
-            <h3 class="h6 mb-3 text-secondary uppercase">Add New Technology</h3>
+                <h3 class="form-label small fw-bold">Technologies</h3>
 
-            <form method="post" onsubmit="return validateTechForm()">
-                <input type="hidden" name="action" value="createTechnology"/>
-                <div class="input-group">
-                    <input type="text" name="name" class="form-control form-control-sm" placeholder="Technology name"/>
-                    <button class="btn btn-outline-primary btn-sm" type="submit">Add</button>
+                <div class="row px-2">
+                    <% for (TechnologyResponseDTO t : technologies) { %>
+                    <div class="col-6 col-md-4 mb-2">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="technologyIds"
+                                   id="tech-<%= t.getId() %>" value="<%= t.getId() %>"
+                                    <%= selectedTechIds.contains(t.getId()) ? "checked" : "" %> />
+
+                            <label class="form-check-label small" for="tech-<%= t.getId() %>"><%= t.getName() %></label>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <%= (internship != null) ? "Update Internship" : "Create Internship" %>
+                    </button>
                 </div>
             </form>
         </div>
+
+        <h5 class="section-title text-primary">Add New Technology</h5>
+        <div class="grading-card p-3 mb-4">
+            <form method="post" onsubmit="return validateTechForm()">
+                <input type="hidden" name="action" value="createTechnology"/>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Technology name</label>
+                    <input type="text" name="name" class="form-control" required/>
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-outline-primary">Add</button>
+                </div>
+            </form>
+        </div>
+
     </div>
 </main>
 
