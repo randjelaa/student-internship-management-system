@@ -66,7 +66,6 @@
                     for (CompanySummaryDTO c : companies) {
             %>
             <tr style="cursor:pointer;" onclick="window.location='companies?id=<%= c.getId() %>'">
-                <td data-label="ID"><%= c.getId() %></td>
                 <td data-label="Name"><%= c.getName() %></td>
                 <td data-label="Status"><%= c.isActive() ? "Active" : "Inactive" %></td>
                 <td data-label="Actions">
@@ -89,8 +88,8 @@
             </tbody>
         </table>
 
-        <div class="grading-card p-3 mt-4">
-            <h5 class="section-title">Add Company</h5>
+        <h5 class="section-title text-primary mt-2">Add Company</h5>
+        <div class="grading-card p-3">
 
             <% String error = (String) request.getAttribute("error");
                 if (error != null) { %>

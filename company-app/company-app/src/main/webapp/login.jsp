@@ -62,7 +62,7 @@
 <body>
 
 <main class="container">
-    <h2 class="page-title text-primary">Internship System</h2>
+    <h2 class="page-title text-primary text-center mb-4">Internship System</h2>
 
     <div class="login-card text-center p-3">
         <p class="text-muted mb-4">Please sign in to continue</p>

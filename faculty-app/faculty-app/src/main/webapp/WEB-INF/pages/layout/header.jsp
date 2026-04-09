@@ -5,16 +5,13 @@
     LoginResponse user = (LoginResponse) session.getAttribute("user");
 %>
 
-<div style="display:flex; justify-content:space-between; border-bottom:1px solid black; padding:10px;">
-    <div>
-        <b>Internship System</b>
+<div class="d-flex justify-content-between align-items-center px-2 py-2">
+    <div class="d-flex flex-column">
+        <span class="fw-bold">Internship System</span>
+        <span class="small">User: <%= user.getEmail() %></span>
     </div>
 
-    <div>
-        <%= user != null ? user.getEmail() : "" %>
-
-        <form method="post" action="logout" style="display:inline;">
-            <button type="submit">Logout</button>
-        </form>
-    </div>
+    <form method="post" action="logout" class="m-0">
+        <button class="btn btn-sm btn-outline-dark" type="submit">Logout</button>
+    </form>
 </div>
