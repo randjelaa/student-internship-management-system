@@ -19,9 +19,7 @@ public class StudentsController extends HttpServlet {
     private final StudentService service = new StudentService();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             String action = req.getParameter("action");
 
@@ -30,14 +28,9 @@ public class StudentsController extends HttpServlet {
 
                 try {
                     StudentResponseDTO student = service.getById(id, req);
-
                     req.setAttribute("student", student);
-
-                    req.getRequestDispatcher("WEB-INF/pages/update-student.jsp")
-                            .forward(req, resp);
-
+                    req.getRequestDispatcher("WEB-INF/pages/update-student.jsp").forward(req, resp);
                     return;
-
                 } catch (Exception e) {
                     throw new ServletException(e);
                 }
@@ -46,18 +39,14 @@ public class StudentsController extends HttpServlet {
             StudentResponseDTO[] students = service.getAll(req);
             req.setAttribute("students", students);
 
-            req.getRequestDispatcher("WEB-INF/pages/students.jsp")
-                    .forward(req, resp);
-
+            req.getRequestDispatcher("WEB-INF/pages/students.jsp").forward(req, resp);
         } catch (Exception e) {
             throw new ServletException(e);
         }
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
-
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String action = req.getParameter("action");
 
         try {

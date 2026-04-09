@@ -11,8 +11,7 @@ import java.io.IOException;
 public class AuthFilter implements Filter {
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
@@ -24,7 +23,6 @@ public class AuthFilter implements Filter {
         }
 
         Object user = req.getSession().getAttribute("user");
-
         if (user == null) {
             resp.sendRedirect("login.jsp");
             return;

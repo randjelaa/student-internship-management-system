@@ -26,10 +26,7 @@ public class CompanyService {
         ApiClient.post("/companies/" + id + "/deactivate", null, Object.class, request);
     }
 
-    public void create(String email, String password, String name,
-                       String description, String website,
-                       HttpServletRequest request) throws Exception {
-
+    public void create(String email, String password, String name, String description, String website, HttpServletRequest request) throws Exception {
         Map<String, String> body = new HashMap<>();
 
         body.put("email", email);

@@ -14,7 +14,6 @@ public class GradeService {
     }
 
     public void grade(Long gradeId, int facultyGrade, HttpServletRequest request) throws Exception {
-
         Map<String, Object> body = new HashMap<>();
         body.put("facultyGrade", facultyGrade);
 

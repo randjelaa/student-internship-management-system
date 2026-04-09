@@ -3,13 +3,13 @@ package com.example.util;
 import java.io.IOException;
 import java.util.Properties;
 
-public class ConfigUtil {
+public class PropertiesUtil {
 
     private static final Properties props = new Properties();
 
     static {
         try {
-            props.load(ConfigUtil.class.getClassLoader().getResourceAsStream("application.properties"));
+            props.load(PropertiesUtil.class.getClassLoader().getResourceAsStream("application.properties"));
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to load application.properties");

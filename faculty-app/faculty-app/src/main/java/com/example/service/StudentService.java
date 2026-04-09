@@ -15,7 +15,6 @@ public class StudentService {
     }
 
     public void create(HttpServletRequest request) throws Exception {
-
         Map<String, Object> body = new HashMap<>();
 
         body.put("email", request.getParameter("email"));
@@ -42,7 +41,6 @@ public class StudentService {
     }
 
     public void update(Long id, HttpServletRequest req) throws Exception {
-
         Map<String, Object> body = new HashMap<>();
 
         body.put("email", req.getParameter("email"));

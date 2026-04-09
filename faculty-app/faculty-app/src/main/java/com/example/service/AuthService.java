@@ -14,11 +14,6 @@ public class AuthService {
         body.put("email", email);
         body.put("password", password);
 
-        return ApiClient.post(
-                "/auth/login",
-                body,
-                LoginResponse.class,
-                request
-        );
+        return ApiClient.post("/auth/login", body, LoginResponse.class, request);
     }
 }

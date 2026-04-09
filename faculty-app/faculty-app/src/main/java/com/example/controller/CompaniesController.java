@@ -18,9 +18,7 @@ public class CompaniesController extends HttpServlet {
     private final CompanyService service = new CompanyService();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String idParam = req.getParameter("id");
 
         try {
@@ -30,16 +28,13 @@ public class CompaniesController extends HttpServlet {
                 CompanyResponseDTO company = service.getById(id, req);
                 req.setAttribute("company", company);
 
-                req.getRequestDispatcher("WEB-INF/pages/company-details.jsp")
-                        .forward(req, resp);
+                req.getRequestDispatcher("WEB-INF/pages/company-details.jsp").forward(req, resp);
             } else {
                 CompanySummaryDTO[] companies = service.getAll(req);
                 req.setAttribute("companies", companies);
 
-                req.getRequestDispatcher("WEB-INF/pages/companies.jsp")
-                        .forward(req, resp);
+                req.getRequestDispatcher("WEB-INF/pages/companies.jsp").forward(req, resp);
             }
-
         } catch (Exception e) {
             throw new ServletException(e);
         }
@@ -69,7 +64,6 @@ public class CompaniesController extends HttpServlet {
                 Long id = Long.parseLong(req.getParameter("id"));
                 service.deactivate(id, req);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

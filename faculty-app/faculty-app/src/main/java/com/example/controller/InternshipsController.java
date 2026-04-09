@@ -16,9 +16,7 @@ public class InternshipsController extends HttpServlet {
     private final InternshipService service = new InternshipService();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
-
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int page = 0;
 
         try {
@@ -31,9 +29,7 @@ public class InternshipsController extends HttpServlet {
             req.setAttribute("page", response);
             req.setAttribute("currentPage", page);
 
-            req.getRequestDispatcher("WEB-INF/pages/internships.jsp")
-                    .forward(req, resp);
-
+            req.getRequestDispatcher("WEB-INF/pages/internships.jsp").forward(req, resp);
         } catch (Exception e) {
             throw new ServletException(e);
         }

@@ -9,7 +9,7 @@ import java.net.URL;
 
 public class ApiClient {
 
-    private static final String BASE_URL = ConfigUtil.get("api.base.url");
+    private static final String BASE_URL = PropertiesUtil.get("api.base.url");
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public static <T> T post(String path, Object requestBody, Class<T> responseType, HttpServletRequest request) throws Exception {
