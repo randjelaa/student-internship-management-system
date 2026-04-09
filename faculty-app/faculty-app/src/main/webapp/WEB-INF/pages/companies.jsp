@@ -4,7 +4,12 @@
 
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Companies</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/cards.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/tables.css">
 
     <script>
         function validateForm() {
@@ -35,103 +40,105 @@
     </script>
 </head>
 <body>
-<jsp:include page="layout/header.jsp"/>
 
-<h2>Companies</h2>
+<header>
+    <jsp:include page="layout/header.jsp"/>
+</header>
 
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Status</th>
-        <th>Actions</th>
-    </tr>
+<main class="container my-4">
 
-    <%
-        CompanySummaryDTO[] companies = (CompanySummaryDTO[]) request.getAttribute("companies");
+    <h2 class="page-title text-primary mb-4">Companies</h2>
 
-        if (companies != null) {
-            for (CompanySummaryDTO c : companies) {
-    %>
+    <div class="app-card-container grading-card p-3">
 
-    <tr onclick="window.location='companies?id=<%= c.getId() %>'" style="cursor:pointer;">
-        <td><%= c.getId() %></td>
-        <td><%= c.getName() %></td>
-        <td><%= c.isActive() ? "Active" : "Inactive" %></td>
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%
+                CompanySummaryDTO[] companies = (CompanySummaryDTO[]) request.getAttribute("companies");
+                if (companies != null) {
+                    for (CompanySummaryDTO c : companies) {
+            %>
+            <tr style="cursor:pointer;" onclick="window.location='companies?id=<%= c.getId() %>'">
+                <td data-label="ID"><%= c.getId() %></td>
+                <td data-label="Name"><%= c.getName() %></td>
+                <td data-label="Status"><%= c.isActive() ? "Active" : "Inactive" %></td>
+                <td data-label="Actions">
+                    <form method="post" action="companies" class="d-inline">
+                        <input type="hidden" name="id" value="<%= c.getId() %>"/>
+                        <% if (c.isActive()) { %>
+                        <input type="hidden" name="action" value="deactivate"/>
+                        <button type="submit" class="btn btn-sm btn-warning">Deactivate</button>
+                        <% } else { %>
+                        <input type="hidden" name="action" value="activate"/>
+                        <button type="submit" class="btn btn-sm btn-success">Activate</button>
+                        <% } %>
+                    </form>
+                </td>
+            </tr>
+            <%
+                    }
+                }
+            %>
+            </tbody>
+        </table>
 
-        <td>
-            <form method="post" action="companies" style="display:inline;">
-                <input type="hidden" name="id" value="<%= c.getId() %>"/>
-
-                <% if (c.isActive()) { %>
-                <input type="hidden" name="action" value="deactivate"/>
-                <button type="submit">Deactivate</button>
-                <% } else { %>
-                <input type="hidden" name="action" value="activate"/>
-                <button type="submit">Activate</button>
-                <% } %>
-            </form>
-        </td>
-    </tr>
-
-    <%
-            }
-        }
-    %>
-
-</table>
-
-<br/>
-
-<h3>Add company</h3>
-
-<%
-    String error = (String) request.getAttribute("error");
-    if (error != null) { %>
-<div style="color:red; margin-bottom:10px;"><%= error %></div>
-<% } %>
-
-<form method="post" action="companies" onsubmit="return validateForm()">
-    <input type="hidden" name="action" value="create"/>
-
-    <div>
-        <label>
-            Email:
-            <input type="text" name="email"/>
-        </label>
     </div>
 
-    <div>
-        <label>
-            Password:
-            <input type="password" name="password"/>
-        </label>
+    <div class="grading-card p-3 mt-4">
+        <h3 class="section-title mb-3">Add Company</h3>
+
+        <% String error = (String) request.getAttribute("error");
+            if (error != null) { %>
+        <div class="alert alert-danger"><%= error %></div>
+        <% } %>
+
+        <form method="post" action="companies" onsubmit="return validateForm()">
+            <input type="hidden" name="action" value="create"/>
+
+            <div class="mb-3">
+                <label class="form-label small fw-bold">Email</label>
+                <input type="email" name="email" class="form-control" placeholder="company@example.com" required/>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small fw-bold">Password</label>
+                <input type="password" name="password" class="form-control" placeholder="••••••••" required/>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small fw-bold">Name</label>
+                <input type="text" name="name" class="form-control" required/>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small fw-bold">Description</label>
+                <input type="text" name="description" class="form-control"/>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small fw-bold">Website</label>
+                <input type="url" name="website" class="form-control" placeholder="https://example.com"/>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary">Add Company</button>
+            </div>
+        </form>
     </div>
 
-    <div>
-        <label>
-            Name:
-            <input type="text" name="name"/>
-        </label>
-    </div>
+</main>
 
-    <div>
-        <label>
-            Description:
-            <input type="text" name="description"/>
-        </label>
-    </div>
+<footer>
+    <jsp:include page="layout/footer.jsp"/>
+</footer>
 
-    <div>
-        <label>
-            Website:
-            <input type="text" name="website"/>
-        </label>
-    </div>
-
-    <button type="submit">Add</button>
-</form>
-
-<jsp:include page="layout/footer.jsp"/>
 </body>
 </html>
