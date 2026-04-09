@@ -1,7 +1,7 @@
 package com.example.controller;
 
+import com.example.dto.InternshipSummaryDTO;
 import com.example.service.InternshipService;
-import com.example.util.PageResponse;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,17 +17,9 @@ public class InternshipsController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int page = 0;
-
         try {
-            if (req.getParameter("page") != null) {
-                page = Integer.parseInt(req.getParameter("page"));
-            }
-
-            PageResponse<?> response = service.getAll(page, req);
-
-            req.setAttribute("page", response);
-            req.setAttribute("currentPage", page);
+            InternshipSummaryDTO[] internships = service.getAll(req);
+            req.setAttribute("internships", internships);
 
             req.getRequestDispatcher("WEB-INF/pages/internships.jsp").forward(req, resp);
         } catch (Exception e) {

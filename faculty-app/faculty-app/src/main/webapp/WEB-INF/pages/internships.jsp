@@ -1,6 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="java.util.*" %>
-<%@ page import="com.example.util.PageResponse" %>
+<%@ page import="com.example.dto.InternshipSummaryDTO" %>
 
 <html>
 <head>
@@ -20,36 +19,28 @@
     </tr>
 
     <%
-        PageResponse pageData = (PageResponse) request.getAttribute("page");
-        List content = pageData.getContent();
+        InternshipSummaryDTO[] internships =
+                (InternshipSummaryDTO[]) request.getAttribute("internships");
 
-        for (Object obj : content) {
-            Map item = (Map) obj;
+        if (internships != null) {
+            for (InternshipSummaryDTO i : internships) {
     %>
 
     <tr>
-        <td><%= item.get("id") %></td>
-        <td><%= item.get("title") %></td>
-        <td><%= item.get("companyName") %></td>
-        <td><%= item.get("location") %></td>
+        <td><%= i.getId() %></td>
+        <td><%= i.getTitle() %></td>
+        <td><%= i.getCompanyName() %></td>
+        <td><%= i.getLocation() %></td>
     </tr>
 
     <%
+            }
         }
     %>
 
 </table>
 
 <br/>
-
-<%
-    int currentPage = (Integer) request.getAttribute("currentPage");
-    if (currentPage > 0) {
-%>
-<a href="internships?page=<%= currentPage - 1 %>">Previous</a>
-<% } %>
-|
-<a href="internships?page=<%= currentPage + 1 %>">Next</a>
 
 <jsp:include page="layout/footer.jsp"/>
 </body>

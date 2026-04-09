@@ -20,8 +20,8 @@ public class InternshipController {
     private final InternshipService internshipService;
 
     @GetMapping
-    public Page<InternshipSummaryDTO> getAllInternships(Pageable pageable) {
-        return internshipService.getAllInternships(pageable);
+    public List<InternshipSummaryDTO> getAllInternships() {
+        return internshipService.getAllInternships();
     }
 
     @GetMapping("/{id}")

@@ -92,8 +92,11 @@ public class InternshipService {
                 .map(internshipMapper::toSummary);
     }
 
-    public Page<InternshipSummaryDTO> getAllInternships(Pageable pageable) {
-        return internshipRepository.findAll(pageable).map(internshipMapper::toSummary);
+    public List<InternshipSummaryDTO> getAllInternships() {
+        return internshipRepository.findAll()
+                .stream()
+                .map(internshipMapper::toSummary)
+                .toList();
     }
 
     public List<InternshipResponseDTO> getByCompanyId(Long userId) {
