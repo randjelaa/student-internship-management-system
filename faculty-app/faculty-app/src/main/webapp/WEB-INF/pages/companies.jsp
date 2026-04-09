@@ -45,11 +45,10 @@
     <jsp:include page="layout/header.jsp"/>
 </header>
 
-<main class="container my-4">
+<main>
+    <div class="container">
 
-    <h2 class="page-title text-primary mb-4">Companies</h2>
-
-    <div class="app-card-container grading-card p-3">
+        <h2 class="page-title">Companies</h2>
 
         <table class="table table-hover align-middle">
             <thead class="table-light">
@@ -90,50 +89,48 @@
             </tbody>
         </table>
 
+        <div class="grading-card p-3 mt-4">
+            <h5 class="section-title">Add Company</h5>
+
+            <% String error = (String) request.getAttribute("error");
+                if (error != null) { %>
+            <div class="alert alert-danger"><%= error %></div>
+            <% } %>
+
+            <form method="post" action="companies" onsubmit="return validateForm()">
+                <input type="hidden" name="action" value="create"/>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Email</label>
+                    <input type="email" name="email" class="form-control" placeholder="company@example.com" required/>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="••••••••" required/>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Name</label>
+                    <input type="text" name="name" class="form-control" required/>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Description</label>
+                    <input type="text" name="description" class="form-control"/>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Website</label>
+                    <input type="url" name="website" class="form-control" placeholder="https://example.com"/>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Add Company</button>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="grading-card p-3 mt-4">
-        <h3 class="section-title mb-3">Add Company</h3>
-
-        <% String error = (String) request.getAttribute("error");
-            if (error != null) { %>
-        <div class="alert alert-danger"><%= error %></div>
-        <% } %>
-
-        <form method="post" action="companies" onsubmit="return validateForm()">
-            <input type="hidden" name="action" value="create"/>
-
-            <div class="mb-3">
-                <label class="form-label small fw-bold">Email</label>
-                <input type="email" name="email" class="form-control" placeholder="company@example.com" required/>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label small fw-bold">Password</label>
-                <input type="password" name="password" class="form-control" placeholder="••••••••" required/>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label small fw-bold">Name</label>
-                <input type="text" name="name" class="form-control" required/>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label small fw-bold">Description</label>
-                <input type="text" name="description" class="form-control"/>
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label small fw-bold">Website</label>
-                <input type="url" name="website" class="form-control" placeholder="https://example.com"/>
-            </div>
-
-            <div class="d-grid">
-                <button type="submit" class="btn btn-primary">Add Company</button>
-            </div>
-        </form>
-    </div>
-
 </main>
 
 <footer>
