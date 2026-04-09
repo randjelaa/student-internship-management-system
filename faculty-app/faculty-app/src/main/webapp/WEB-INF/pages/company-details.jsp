@@ -1,15 +1,11 @@
-<%@ page import="com.example.dto.CompanyResponseDTO" %><%--
-  Created by IntelliJ IDEA.
-  User: Admin
-  Date: 3/30/2026
-  Time: 2:55 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="com.example.dto.CompanyResponseDTO" %>
+
 <html>
 <head>
-    <title>Title</title>
+    <title>Company details</title>
 </head>
+
 <body>
 <jsp:include page="layout/header.jsp"/>
 

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.*" %>
 <%@ page import="com.example.util.PageResponse" %>
+
 <html>
 <head>
     <title>Internships</title>
@@ -8,14 +9,14 @@
 <body>
 <jsp:include page="layout/header.jsp"/>
 
-<h2>Prakse</h2>
+<h2>Internships</h2>
 
 <table border="1">
     <tr>
         <th>ID</th>
-        <th>Naslov</th>
-        <th>Kompanija</th>
-        <th>Lokacija</th>
+        <th>Title</th>
+        <th>Company</th>
+        <th>Location</th>
     </tr>
 
     <%
@@ -43,9 +44,8 @@
 
 <%
     int currentPage = (Integer) request.getAttribute("currentPage");
+    if (currentPage > 0) {
 %>
-
-<% if (currentPage > 0) { %>
 <a href="internships?page=<%= currentPage - 1 %>">Previous</a>
 <% } %>
 |

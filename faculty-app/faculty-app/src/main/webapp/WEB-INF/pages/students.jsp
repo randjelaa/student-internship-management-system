@@ -1,11 +1,6 @@
-<%@ page import="com.example.dto.StudentResponseDTO" %><%--
-  Created by IntelliJ IDEA.
-  User: Admin
-  Date: 3/29/2026
-  Time: 9:15 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="com.example.dto.StudentResponseDTO" %>
+
 <html>
 <head>
     <title>Students</title>
@@ -13,39 +8,64 @@
 <body>
 <jsp:include page="layout/header.jsp"/>
 
-<h2>Studenti</h2>
+<h2>Students</h2>
 
-<!-- ➕ forma -->
-<h3>Dodaj studenta</h3>
+<h3>Add student</h3>
 
 <form method="post" action="students">
     <input type="hidden" name="action" value="create"/>
 
-    Email: <input type="text" name="email"/><br/>
-    Password: <input type="text" name="password"/><br/>
+    <label>
+        Email:
+        <input type="text" name="email"/>
+    </label>
+    <br/>
+    <label>
+        Password:
+        <input type="password" name="password"/>
+    </label>
+    <br/>
+    <label>
+        First name:
+        <input type="text" name="firstName"/>
+    </label>
+    <br/>
+    <label>
+        Last name:
+        <input type="text" name="lastName"/>
+    </label>
+    <br/>
 
-    Ime: <input type="text" name="firstName"/><br/>
-    Prezime: <input type="text" name="lastName"/><br/>
+    <label>
+        Index number:
+        <input type="text" name="indexNumber"/>
+    </label>
+    <br/>
+    <label>
+        Faculty:
+        <input type="text" name="faculty"/>
+    </label>
+    <br/>
+    <label>
+        Year of study:
+        <input type="number" name="yearOfStudy"/>
+    </label>
+    <br/>
 
-    Broj indeksa: <input type="text" name="indexNumber"/><br/>
-    Fakultet: <input type="text" name="faculty"/><br/>
-    Godina: <input type="number" name="yearOfStudy"/><br/>
-
-    <button type="submit">Dodaj</button>
+    <button type="submit">Add</button>
 </form>
 
 <br/>
 
-<!-- 📊 tabela -->
 <table border="1">
     <tr>
-        <th>Ime</th>
-        <th>Prezime</th>
-        <th>Indeks</th>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Index number</th>
         <th>Email</th>
-        <th>Fakultet</th>
-        <th>Godina studija</th>
-        <th>Akcije</th>
+        <th>Faculty</th>
+        <th>Year of study</th>
+        <th>Actions</th>
     </tr>
 
     <%
@@ -64,37 +84,28 @@
         <td><%= s.getFaculty() %></td>
         <td><%= s.getYearOfStudy() %></td>
         <td>
-
-            <!-- DELETE -->
             <form method="post" action="students" style="display:inline;">
                 <input type="hidden" name="action" value="delete"/>
                 <input type="hidden" name="id" value="<%= s.getId() %>"/>
-
-                <button type="submit">Obriši</button>
+                <button type="submit">Delete</button>
             </form>
 
-            <!-- UPDATE -->
             <a href="students?action=edit&id=<%= s.getId() %>">
-                <button type="button">Uredi</button>
+                <button type="button">Edit</button>
             </a>
-
         </td>
     </tr>
-
     <%
             }
         }
     %>
-
 </table>
 
 <h3>Upload CSV</h3>
 
 <form method="post" action="students" enctype="multipart/form-data">
     <input type="hidden" name="action" value="upload"/>
-
     <input type="file" name="file"/>
-
     <button type="submit">Upload</button>
 </form>
 

@@ -3,7 +3,7 @@
 <%@ page import="com.example.dto.CompanySummaryDTO" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>Companies</title>
 </head>
 <body>
 <jsp:include page="layout/header.jsp"/>
@@ -19,20 +19,16 @@
     </tr>
 
     <%
-        CompanySummaryDTO[] companies =
-                (CompanySummaryDTO[]) request.getAttribute("companies");
+        CompanySummaryDTO[] companies = (CompanySummaryDTO[]) request.getAttribute("companies");
 
         if (companies != null) {
             for (CompanySummaryDTO c : companies) {
     %>
 
     <tr onclick="window.location='companies?id=<%= c.getId() %>'" style="cursor:pointer;">
-        <td><%= c.getId() %>
-        </td>
-        <td><%= c.getName() %>
-        </td>
-        <td><%= c.isActive() ? "Active" : "Inactive" %>
-        </td>
+        <td><%= c.getId() %></td>
+        <td><%= c.getName() %></td>
+        <td><%= c.isActive() ? "Active" : "Inactive" %></td>
 
         <td>
             <form method="post" action="companies" style="display:inline;">
