@@ -4,6 +4,51 @@
 <html>
 <head>
     <title>Students</title>
+
+    <script>
+        function validateStudent() {
+            let email = document.getElementsByName("email")[0].value;
+            let password = document.getElementsByName("password")[0].value;
+            let firstName = document.getElementsByName("firstName")[0].value;
+            let lastName = document.getElementsByName("lastName")[0].value;
+            let index = document.getElementsByName("indexNumber")[0].value;
+            let faculty = document.getElementsByName("faculty")[0].value;
+            let year = document.getElementsByName("yearOfStudy")[0].value;
+
+            if (!email || !email.includes("@")) {
+                alert("Invalid email");
+                return false;
+            }
+
+            if (!password || password.length < 6) {
+                alert("Password must be at least 6 characters");
+                return false;
+            }
+
+            if (!firstName || !lastName) {
+                alert("First and last name are required");
+                return false;
+            }
+
+            if (!index) {
+                alert("Index number is required");
+                return false;
+            }
+
+            if (!faculty) {
+                alert("Faculty is required");
+                return false;
+            }
+
+            let y = parseInt(year);
+            if (!year || y < 1 || y > 6) {
+                alert("Year of study must be between 1 and 6");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </head>
 <body>
 <jsp:include page="layout/header.jsp"/>
@@ -12,7 +57,7 @@
 
 <h3>Add student</h3>
 
-<form method="post" action="students">
+<form method="post" action="students" onsubmit="return validateStudent()">
     <input type="hidden" name="action" value="create"/>
 
     <label>
@@ -54,6 +99,15 @@
 
     <button type="submit">Add</button>
 </form>
+
+<%
+    String error = (String) request.getAttribute("error");
+    if (error != null) {
+%>
+<div style="color:red;"><%= error %></div>
+<%
+    }
+%>
 
 <br/>
 
@@ -108,6 +162,7 @@
     <input type="file" name="file"/>
     <button type="submit">Upload</button>
 </form>
+
 
 <jsp:include page="layout/footer.jsp"/>
 </body>

@@ -20,13 +20,21 @@ public class LoginController extends HttpServlet {
         String email = req.getParameter("email");
         String password = req.getParameter("password");
 
+        if (email == null || !email.contains("@")
+                || password == null || password.length() < 6) {
+
+            req.setAttribute("error", "Invalid input data");
+            doGet(req, resp);
+            return;
+        }
+
         try {
             LoginResponse response = authService.login(email, password, req);
             req.getSession().setAttribute("user", response);
             resp.sendRedirect(req.getContextPath() + "/companies");
         } catch (Exception e) {
             req.setAttribute("error", "Incorrect email or password");
-            req.getRequestDispatcher("/login.jsp").forward(req, resp);
+            doGet(req, resp);
         }
     }
 

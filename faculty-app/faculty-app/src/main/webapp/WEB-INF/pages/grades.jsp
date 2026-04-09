@@ -5,6 +5,26 @@
 <html>
 <head>
     <title>Grades</title>
+
+    <script>
+        function validateGrade(form) {
+            let grade = form.facultyGrade.value;
+
+            if (!grade) {
+                alert("Grade is required");
+                return false;
+            }
+
+            let num = parseInt(grade);
+
+            if (num < 6 || num > 10) {
+                alert("Grade must be between 6 and 10");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </head>
 <body>
 <jsp:include page="layout/header.jsp"/>
@@ -69,21 +89,30 @@
 
 <p>
     <b>Faculty's grade:</b>
-    <%= facultyGrade %> ✅
+    <%= facultyGrade %>
 </p>
 
 <% } else { %>
 
-<form method="post" action="grades">
+<form method="post" action="grades" onsubmit="return validateGrade(this)">
     <input type="hidden" name="gradeId" value="<%= g.getId() %>"/>
 
     <label>
         Faculty's grade:
-        <input type="number" name="facultyGrade" min="6" max="10" required/>
+        <input type="number" name="facultyGrade" min="6" max="10" step="1" required/>
     </label>
 
     <button type="submit">Save</button>
 </form>
+
+<%
+    String error = (String) request.getAttribute("error");
+    if (error != null) {
+%>
+<div style="color:red;"><%= error %></div>
+<%
+    }
+%>
 
 <%
             }

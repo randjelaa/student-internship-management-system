@@ -28,16 +28,35 @@ public class GradesController extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             Long gradeId = Long.parseLong(req.getParameter("gradeId"));
-            int facultyGrade = Integer.parseInt(req.getParameter("facultyGrade"));
+            String gradeParam = req.getParameter("facultyGrade");
+
+            if (gradeParam == null || gradeParam.isEmpty()) {
+                req.setAttribute("error", "Grade is required");
+                doGet(req, resp);
+                return;
+            }
+
+            int facultyGrade = Integer.parseInt(gradeParam);
+
+            if (facultyGrade < 6 || facultyGrade > 10) {
+                req.setAttribute("error", "Grade must be between 6 and 10");
+                doGet(req, resp);
+                return;
+            }
 
             service.grade(gradeId, facultyGrade, req);
+        } catch (NumberFormatException e) {
+            req.setAttribute("error", "Invalid grade format");
+            doGet(req, resp);
         } catch (Exception e) {
             e.printStackTrace();
+            req.setAttribute("error", "Unexpected error occurred");
+            doGet(req, resp);
         }
 
-        resp.sendRedirect("grades");
+        resp.sendRedirect(req.getContextPath() + "/grades");
     }
 }

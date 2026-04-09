@@ -3,9 +3,28 @@
 <html>
 <head>
     <title>Login</title>
+
+    <script>
+        function validateLogin() {
+            let email = document.getElementsByName("email")[0].value;
+            let password = document.getElementsByName("password")[0].value;
+
+            if (!email || !email.includes("@")) {
+                alert("Invalid email.");
+                return false;
+            }
+
+            if (!password || password.length < 6) {
+                alert("Password is required and has to have minimum 6 characters.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </head>
 <body>
-<form method="post" action="login">
+<form method="post" action="login" onsubmit="return validateLogin()">
     <label>
         Email:
         <input type="text" name="email"/>

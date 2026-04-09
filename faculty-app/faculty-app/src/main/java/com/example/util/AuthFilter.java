@@ -22,9 +22,18 @@ public class AuthFilter implements Filter {
             return;
         }
 
+        if (path.endsWith("/login")) {
+            Object user = req.getSession().getAttribute("user");
+
+            if (user != null) {
+                resp.sendRedirect(req.getContextPath() + "/companies");
+                return;
+            }
+        }
+
         Object user = req.getSession().getAttribute("user");
         if (user == null) {
-            resp.sendRedirect("login.jsp");
+            resp.sendRedirect(req.getContextPath() + "/login");
             return;
         }
 
@@ -32,10 +41,10 @@ public class AuthFilter implements Filter {
     }
 
     private boolean isPublic(String path) {
-        return path.contains("login") ||
-                path.contains("logout") ||
-                path.contains("css") ||
-                path.contains("js") ||
-                path.contains("images");
+        return path.endsWith("/login") ||
+                path.endsWith("/logout") ||
+                path.contains("/css/") ||
+                path.contains("/js/") ||
+                path.contains("/images/");
     }
 }

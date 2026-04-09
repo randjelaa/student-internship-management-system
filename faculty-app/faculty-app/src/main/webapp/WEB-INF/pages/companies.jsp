@@ -1,9 +1,38 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="com.example.dto.CompanySummaryDTO" %>
+
 <html>
 <head>
     <title>Companies</title>
+
+    <script>
+        function validateForm() {
+            let email = document.getElementsByName("email")[0].value;
+            let password = document.getElementsByName("password")[0].value;
+            let name = document.getElementsByName("name")[0].value;
+            let website = document.getElementsByName("website")[0].value;
+
+            if (!email || !email.includes("@")) {
+                alert("Invalid email");
+                return false;
+            }
+            if (!password || password.length < 6) {
+                alert("Password must be at least 6 characters");
+                return false;
+            }
+            if (!name || name.trim() === "") {
+                alert("Name is required");
+                return false;
+            }
+            if (website && !website.startsWith("http")) {
+                alert("Website must start with http");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </head>
 <body>
 <jsp:include page="layout/header.jsp"/>
@@ -56,7 +85,13 @@
 
 <h3>Add company</h3>
 
-<form method="post" action="companies">
+<%
+    String error = (String) request.getAttribute("error");
+    if (error != null) { %>
+<div style="color:red; margin-bottom:10px;"><%= error %></div>
+<% } %>
+
+<form method="post" action="companies" onsubmit="return validateForm()">
     <input type="hidden" name="action" value="create"/>
 
     <div>
