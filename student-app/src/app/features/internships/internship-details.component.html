@@ -1,38 +1,39 @@
-<div class="wide-container">
-  <div class="top-bar">
-    <button mat-button (click)="goBack()">
-      <mat-icon>arrow_back</mat-icon> Back
-    </button>
-  </div>
+<div>
+  <button mat-button (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon> Back
+  </button>
 
   @if (internship) {
-    <div class="header-section">
-      <h1>{{ internship.title }}</h1>
-      <p class="meta">{{ internship.companyName }} • {{ internship.location }}</p>
+    <div class="page-header">
+      <h2>{{ internship.title }}</h2>
+      <p>{{ internship.companyName }} • {{ internship.location }}</p>
     </div>
 
     <mat-divider></mat-divider>
 
-    <div class="content-section">
-      <div class="main-info">
-        <h3>Description</h3>
-        <p class="description-text">{{ internship.description }}</p>
+    <div>
+      <h4>Description</h4>
+      <p>{{ internship.description }}</p>
 
-        <h3>Technologies</h3>
-        <div class="tags">
-          @for (tech of internship.technologies; track tech) {
-            <span class="tag">{{ tech }}</span>
-          }
-        </div>
+      <h4>Technologies</h4>
+      <div class="tags">
+        @for (tech of internship.technologies; track tech) {
+          <span class="tag">{{ tech }}</span>
+        }
       </div>
 
-      <div class="action-bar">
-        <button mat-raised-button color="primary" 
-                (click)="apply()" 
-                [disabled]="hasApplied(internship.id)">
-          {{ hasApplied(internship.id) ? "Already Applied" : "Apply for this Position" }}
-        </button>
-      </div>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="apply()"
+        [disabled]="hasApplied(internship.id)"
+      >
+        {{
+          hasApplied(internship.id)
+            ? "Already Applied"
+            : "Apply for this Position"
+        }}
+      </button>
     </div>
   }
 </div>

@@ -1,80 +1,78 @@
-<div class="wide-container">
-  <div class="top-bar">
-    <button mat-button routerLink="/worklogs">
-      <mat-icon>arrow_back</mat-icon> Back
-    </button>
+<div class="top-bar">
+  <button mat-button routerLink="/worklogs">
+    <mat-icon>arrow_back</mat-icon> Back
+  </button>
+</div>
+@if (internship) {
+  <div class="page-header">
+    <h2>Work Logs: {{ internship.title }}</h2>
+    <p class="meta">
+      Company: <b>{{ internship.companyName }}</b>
+    </p>
   </div>
-  @if (internship) {
-    <div class="page-header">
-      <h2>Work Logs: {{ internship.title }}</h2>
-      <p class="meta">
-        Company: <b>{{ internship.companyName }}</b>
-      </p>
-    </div>
-  }
+}
 
-  <app-data-table
-    [data]="logs"
-    [displayedColumns]="['week', 'description', 'actions']"
-    [totalElements]="totalElements"
-    [pageSize]="size"
-    [onAction]="handleAction"
-    (pageChange)="onPageChange($event)"
-  >
-  </app-data-table>
+<app-data-table
+  [data]="logs"
+  [displayedColumns]="['week', 'description', 'actions']"
+  [totalElements]="totalElements"
+  [pageSize]="size"
+  [onAction]="handleAction"
+  (pageChange)="onPageChange($event)"
+>
+</app-data-table>
 
-  <div class="form-section">
-    <div>
-      <h2 class="title-second">
-        {{ editingLogId ? "Edit entry" : "Add New Weekly Entry" }}
-      </h2>
-    </div>
-    <div class="filters-container form-grid">
-      <mat-form-field appearance="outline" class="filter-item">
-        <mat-label>From</mat-label>
-        <input
-          matInput
-          [matDatepicker]="startPicker"
-          [(ngModel)]="newLog.startDate"
-        />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="startPicker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #startPicker></mat-datepicker>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="filter-item">
-        <mat-label>To</mat-label>
-        <input
-          matInput
-          [matDatepicker]="endPicker"
-          [(ngModel)]="newLog.endDate"
-          [min]="newLog.startDate"
-        />
-        <mat-datepicker-toggle
-          matSuffix
-          [for]="endPicker"
-        ></mat-datepicker-toggle>
-        <mat-datepicker #endPicker></mat-datepicker>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Activities</mat-label>
-        <textarea
-          matInput
-          [(ngModel)]="newLog.description"
-          rows="3"
-          placeholder="Describe your work..."
-        ></textarea>
-      </mat-form-field>
-      <div class="form-actions">
-        @if (editingLogId) {
-          <button mat-button (click)="resetForm()">Cancel</button>
-        }
-        <button mat-raised-button color="primary" (click)="saveLog()">
-          <mat-icon>{{ editingLogId ? "edit" : "add" }}</mat-icon>
-          {{ editingLogId ? "Update Log" : "Save Weekly Log" }}
-        </button>
-      </div>
+<div class="form-section">
+  <div>
+    <h2 class="title-second">
+      {{ editingLogId ? "Edit entry" : "Add New Weekly Entry" }}
+    </h2>
+  </div>
+  <div class="filters-container form-grid">
+    <mat-form-field appearance="outline" class="filter-item">
+      <mat-label>From</mat-label>
+      <input
+        matInput
+        [matDatepicker]="startPicker"
+        [(ngModel)]="newLog.startDate"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="startPicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #startPicker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="filter-item">
+      <mat-label>To</mat-label>
+      <input
+        matInput
+        [matDatepicker]="endPicker"
+        [(ngModel)]="newLog.endDate"
+        [min]="newLog.startDate"
+      />
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="endPicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #endPicker></mat-datepicker>
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Activities</mat-label>
+      <textarea
+        matInput
+        [(ngModel)]="newLog.description"
+        rows="3"
+        placeholder="Describe your work..."
+      ></textarea>
+    </mat-form-field>
+    <div class="form-actions">
+      @if (editingLogId) {
+        <button mat-button (click)="resetForm()">Cancel</button>
+      }
+      <button mat-raised-button color="primary" (click)="saveLog()">
+        <mat-icon>{{ editingLogId ? "edit" : "add" }}</mat-icon>
+        {{ editingLogId ? "Update Log" : "Save Weekly Log" }}
+      </button>
     </div>
   </div>
 </div>
