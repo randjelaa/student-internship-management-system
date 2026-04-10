@@ -28,6 +28,7 @@
         padding-left: 50% !important;
         text-align: right;
         border-bottom: 1px solid #eee;
+        word-break: break-word;
     }
 
     td:last-child { border-bottom: 0; }
@@ -48,5 +49,9 @@
         gap: 5px;
         justify-content: flex-end;
         margin-top: 10px;
+    }
+
+    .table td {
+        max-width: 200px;
     }
 }

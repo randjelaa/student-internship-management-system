@@ -1,9 +1,20 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.example.dto.StudentResponseDTO" %>
 
+<%
+    StudentResponseDTO s = (StudentResponseDTO) request.getAttribute("student");
+    String error = (String) request.getAttribute("error");
+%>
+
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Edit student</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/cards.css">
 
     <script>
         function validateUpdateStudent() {
@@ -23,7 +34,7 @@
 
             let y = parseInt(year);
             if (!year || y < 1 || y > 6) {
-                alert("Year of study is required and has to be between 1 and 6.");
+                alert("Year of study must be between 1 and 6.");
                 return false;
             }
 
@@ -31,69 +42,98 @@
         }
     </script>
 </head>
+
 <body>
-<jsp:include page="layout/header.jsp"/>
 
-<h2>Edit student</h2>
+<header>
+    <jsp:include page="layout/header.jsp"/>
+</header>
 
-<%
-    StudentResponseDTO s = (StudentResponseDTO) request.getAttribute("student");
-    String error = (String) request.getAttribute("error");
-%>
+<main>
+    <div class="container">
 
-<% if (error != null) { %>
-<div style="color:red;"><%= error %></div>
-<% } %>
+        <div class="mt-2 mb-3">
+            <a href="students" class="text-decoration-none small text-secondary">
+                &larr; Back to students
+            </a>
+        </div>
 
-<form method="post" action="students" onsubmit="return validateUpdateStudent()">
-    <input type="hidden" name="action" value="update"/>
-    <input type="hidden" name="id" value="<%= s.getId() %>"/>
+        <h2 class="page-title">Edit student</h2>
 
-    <label>
-        Email:
-        <input type="text" name="email" value="<%= s.getEmail() %>"/>
-    </label>
-    <br/>
-    <label>
-        Password:
-        <input type="password" name="password"/>
-    </label>
-    <br/>
+        <% if (error != null) { %>
+        <div class="alert alert-danger py-2"><%= error %></div>
+        <% } %>
 
-    <label>
-        First name:
-        <input type="text" name="firstName" value="<%= s.getFirstName() %>"/>
-    </label>
-    <br/>
-    <label>
-        Last name:
-        <input type="text" name="lastName" value="<%= s.getLastName() %>"/>
-    </label>
-    <br/>
+        <div class="grading-card p-3">
 
-    <label>
-        Index number:
-        <input type="text" name="indexNumber" value="<%= s.getIndexNumber() %>"/>
-    </label>
-    <br/>
-    <label>
-        Faculty:
-        <input type="text" name="faculty" value="<%= s.getFaculty() %>"/>
-    </label>
-    <br/>
-    <label>
-        Year of study:
-        <input type="number" name="yearOfStudy" value="<%= s.getYearOfStudy() %>"/>
-    </label>
-    <br/>
+            <form method="post" action="students" onsubmit="return validateUpdateStudent()">
+                <input type="hidden" name="action" value="update"/>
+                <input type="hidden" name="id" value="<%= s.getId() %>"/>
 
-    <button type="submit">Save</button>
-</form>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Email</label>
+                    <input type="email" name="email" class="form-control"
+                           value="<%= s.getEmail() %>"
+                           placeholder="student@example.com" required/>
+                </div>
 
-<br/>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Password</label>
+                    <input type="password" name="password" class="form-control"
+                           placeholder="Leave blank to keep current password"/>
+                </div>
 
-<a href="students">Back</a>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">First name</label>
+                    <input type="text" name="firstName" class="form-control"
+                           value="<%= s.getFirstName() %>"
+                           placeholder="John" required/>
+                </div>
 
-<jsp:include page="layout/footer.jsp"/>
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Last name</label>
+                    <input type="text" name="lastName" class="form-control"
+                           value="<%= s.getLastName() %>"
+                           placeholder="Doe" required/>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Index number</label>
+                    <input type="text" name="indexNumber" class="form-control"
+                           value="<%= s.getIndexNumber() %>"
+                           placeholder="IB123/2022" required/>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Faculty</label>
+                    <input type="text" name="faculty" class="form-control"
+                           value="<%= s.getFaculty() %>"
+                           placeholder="Faculty of Electrical Engineering" required/>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label small fw-bold">Year of study</label>
+                    <input type="number" name="yearOfStudy" class="form-control"
+                           value="<%= s.getYearOfStudy() %>"
+                           min="1" max="6" required/>
+                </div>
+
+                <div class="d-grid mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        Save changes
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    <jsp:include page="layout/footer.jsp"/>
+</footer>
+
 </body>
 </html>
