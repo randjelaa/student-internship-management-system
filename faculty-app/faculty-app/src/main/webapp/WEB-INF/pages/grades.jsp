@@ -4,7 +4,13 @@
 
 <html>
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Grades</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/cards.css">
 
     <script>
         function validateGrade(form) {
@@ -27,99 +33,120 @@
     </script>
 </head>
 <body>
-<jsp:include page="layout/header.jsp"/>
 
-<h2>Grades</h2>
+<header>
+    <jsp:include page="layout/header.jsp"/>
+</header>
 
-<%
-    GradeDetails[] grades = (GradeDetails[]) request.getAttribute("grades");
+<main>
+    <div class="container">
 
-    if (grades != null) {
-        for (GradeDetails g : grades) {
+        <h2 class="page-title">Grades</h2>
 
-            if (g.getCompanyComment() == null) continue;
-%>
+        <%
+            GradeDetails[] grades = (GradeDetails[]) request.getAttribute("grades");
 
-<hr/>
+            if (grades != null) {
+                for (GradeDetails g : grades) {
 
-<h3>
-    <%= g.getStudent().getFirstName() %>
-    <%= g.getStudent().getLastName() %>
-    (<%= g.getStudent().getIndexNumber() %>)
-</h3>
+                    if (g.getCompanyComment() == null) continue;
+        %>
 
-<p>
-    Internship: <b><%= g.getInternship().getTitle() %></b> - <%= g.getInternship().getCompanyName() %>
-</p>
+        <div class="grading-card p-3 mb-4">
+            <span class="fw-bold mb-1">
+                <%= g.getStudent().getFirstName() %>
+                <%= g.getStudent().getLastName() %>
+            </span>
 
-<h4>Work logs:</h4>
+            <div class="text-muted small mb-2">
+                <%= g.getStudent().getIndexNumber() %>
+            </div>
 
-<table border="1">
-    <tr>
-        <th>Week</th>
-        <th>Description</th>
-    </tr>
+            <div class="mb-3">
+                <span class="fw-bold">Internship:</span>
+                <span class="text-primary"><%= g.getInternship().getTitle() %></span>
+                <span class="text-muted"> - <%= g.getInternship().getCompanyName() %></span>
+            </div>
 
-    <%
-        for (WorkLogResponseDTO w : g.getWorkLogs()) {
-    %>
-    <tr>
-        <td><%= w.getStartDate() %> - <%= w.getEndDate()%></td>
-        <td><%= w.getDescription() %></td>
-    </tr>
-    <%
-        }
-    %>
+            <div class="mb-3">
+                <p class="fw-bold text-secondary text-uppercase" style="font-size: 0.7rem;">
+                    Work Logs:
+                </p>
 
-</table>
+                <% for (WorkLogResponseDTO w : g.getWorkLogs()) { %>
+                <div class="worklog-item">
+                    <div class="fw-bold" style="font-size: 0.75rem;">
+                        <%= w.getStartDate() %> - <%= w.getEndDate() %>
+                    </div>
+                    <div class="text-secondary">
+                        <%= w.getDescription() %>
+                    </div>
+                </div>
+                <% } %>
+            </div>
 
-<br/>
+            <div class="mb-3">
+                <label class="small fw-bold mb-1">Company's comment:</label>
+                <div class="p-2 bg-light border rounded small text-muted">
+                    <%= g.getCompanyComment() %>
+                </div>
+            </div>
 
-<p>
-    <b>Company's comment:</b><br/>
-    <%= g.getCompanyComment() %>
-</p>
+            <%
+                Integer facultyGrade = g.getFacultyGrade();
+                if (facultyGrade != null) {
+            %>
 
-<br/>
+            <div>
+                <label class="small fw-bold mb-1">Faculty's grade:</label>
+                <div class="p-2 bg-light border rounded small">
+                    <%= facultyGrade %>
+                </div>
+            </div>
 
-<%
-    Integer facultyGrade = g.getFacultyGrade();
-        if (facultyGrade != null) {
-%>
+            <% } else { %>
 
-<p>
-    <b>Faculty's grade:</b>
-    <%= facultyGrade %>
-</p>
+            <form method="post" action="grades" onsubmit="return validateGrade(this)" class="mt-3">
+                <input type="hidden" name="gradeId" value="<%= g.getId() %>"/>
 
-<% } else { %>
+                <div class="mb-2">
+                    <label class="small fw-bold mb-1">Faculty's grade:</label>
+                    <input type="number" name="facultyGrade"
+                           class="form-control form-control-sm"
+                           min="6" max="10" step="1" required/>
+                </div>
 
-<form method="post" action="grades" onsubmit="return validateGrade(this)">
-    <input type="hidden" name="gradeId" value="<%= g.getId() %>"/>
+                <div class="d-grid mt-2">
+                    <button type="submit" class="btn btn-primary">
+                        Save grade
+                    </button>
+                </div>
+            </form>
 
-    <label>
-        Faculty's grade:
-        <input type="number" name="facultyGrade" min="6" max="10" step="1" required/>
-    </label>
+            <%
+                String error = (String) request.getAttribute("error");
+                if (error != null) {
+            %>
+            <div class="alert alert-danger mt-2"><%= error %></div>
+            <%
+                }
+            %>
 
-    <button type="submit">Save</button>
-</form>
+            <% } %>
 
-<%
-    String error = (String) request.getAttribute("error");
-    if (error != null) {
-%>
-<div style="color:red;"><%= error %></div>
-<%
-    }
-%>
+        </div>
 
-<%
+        <%
+                }
             }
-        }
-    }
-%>
+        %>
 
-<jsp:include page="layout/footer.jsp"/>
+    </div>
+</main>
+
+<footer>
+    <jsp:include page="layout/footer.jsp"/>
+</footer>
+
 </body>
 </html>
