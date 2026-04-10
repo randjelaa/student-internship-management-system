@@ -2,42 +2,11 @@
   <h2>My Active Internships</h2>
 </div>
 
-<div class="filters-container">
-  <mat-form-field appearance="outline" class="filter-item">
-    <mat-label>Search</mat-label>
-    <input
-      matInput
-      [(ngModel)]="search"
-      (input)="onSearchInput()"
-      placeholder="Search by title..."
-    />
-    <mat-icon matSuffix>search</mat-icon>
-  </mat-form-field>
-
-  <mat-form-field appearance="outline" class="filter-item">
-    <mat-label>Company</mat-label>
-    <mat-select [(ngModel)]="companyFilter" (selectionChange)="filter()">
-      <mat-option value="">All Companies</mat-option>
-      @for (c of companies; track c.id) {
-        <mat-option [value]="c.id">{{ c.name }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-
-  <mat-form-field appearance="outline" class="filter-item">
-    <mat-label>Technology</mat-label>
-    <mat-select [(ngModel)]="technologyFilter" (selectionChange)="filter()">
-      <mat-option value="">All Technologies</mat-option>
-      @for (t of technologies; track t.id) {
-        <mat-option [value]="t.id">{{ t.name }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
-
-  <button mat-stroked-button color="warn" (click)="resetFilters()">
-    <mat-icon>refresh</mat-icon> Reset
-  </button>
-</div>
+<app-filter-bar 
+  [companies]="companies" 
+  [technologies]="technologies" 
+  (filterChanged)="onFilterChanged($event)">
+</app-filter-bar>
 
 <app-data-table
   [data]="acceptedInternships"

@@ -14,6 +14,7 @@ import { MatTableModule } from '@angular/material/table';
 @Component({
   selector: 'app-data-table',
   templateUrl: './data-table.component.html',
+  styleUrl: './data-table.component.css',
   standalone: true,
   imports: [
     CommonModule,
@@ -40,7 +41,7 @@ export class DataTableComponent {
 
   @Input() onAction: (type: string, row: any) => void = () => {};
   @Input() getStatus: (id: number) => string = () => '-';
-@Input() hasApplied: (id: number) => boolean = () => false;
+  @Input() hasApplied: (id: number) => boolean = () => false;
 
   @Output() pageChange = new EventEmitter<PageEvent>();
   @Output() rowClick = new EventEmitter<any>();

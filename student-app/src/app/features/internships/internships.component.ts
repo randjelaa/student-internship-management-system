@@ -1,20 +1,12 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { forkJoin, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 
-import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
-import {
-  MatPaginator,
-  MatPaginatorModule,
-  PageEvent,
-} from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -23,6 +15,7 @@ import { InternshipsService } from './internships.service';
 import { Internship } from '../../core/models/internship.model';
 import { RecommendationResponse } from '../../core/models/recommendation.model';
 import { DataTableComponent } from '../shared/data-table/data-table.component';
+import { FilterBarComponent, FilterState } from '../shared/filter-bar/filter-bar.component';
 
 @Component({
   selector: 'app-internships',
@@ -30,40 +23,36 @@ import { DataTableComponent } from '../shared/data-table/data-table.component';
   imports: [
     CommonModule,
     FormsModule,
-    MatTableModule,
     MatButtonModule,
-    MatInputModule,
-    MatSelectModule,
     MatCardModule,
     MatPaginatorModule,
     MatIconModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
     DataTableComponent,
+    FilterBarComponent,
   ],
   templateUrl: './internships.component.html',
   styleUrl: './internships.component.css',
 })
 export class InternshipsComponent implements OnInit {
+
   internships: Internship[] = [];
   companies: any[] = [];
   technologies: any[] = [];
   recommendations: RecommendationResponse[] = [];
 
+  applicationsMap: { [key: number]: any } = {};
+
   totalElements = 0;
   pageSize = 5;
   currentPage = 0;
+
   search = '';
   companyFilter = '';
   technologyFilter = '';
 
   loadingRecommendations = false;
-  applicationsMap: { [key: number]: any } = {};
-  displayedColumns = ['title', 'company', 'status', 'actions'];
-
-  private searchSubject = new Subject<string>();
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private service: InternshipsService,
@@ -71,13 +60,6 @@ export class InternshipsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.searchSubject
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe((searchValue) => {
-        console.log('Searching for:', searchValue);
-        this.filter();
-      });
-
     this.loadInitialData();
   }
 
@@ -92,7 +74,10 @@ export class InternshipsComponent implements OnInit {
       this.technologies = technologies;
       this.recommendations = recs;
 
-      applications.forEach((a) => (this.applicationsMap[a.internshipId] = a));
+      applications.forEach(
+        (a) => (this.applicationsMap[a.internshipId] = a),
+      );
+
       this.loadData();
     });
   }
@@ -112,22 +97,16 @@ export class InternshipsComponent implements OnInit {
       .subscribe((res) => {
         this.internships = res.content;
         this.totalElements = res.totalElements;
-
-        console.log('INTERNSHIPS:', this.internships);
-        console.log('FIRST ROW:', this.internships?.[0]);
-        console.log('APPLICATIONS MAP:', this.applicationsMap);
       });
   }
 
-  onSearchInput() {
-    this.searchSubject.next(this.search);
-  }
+  //filter + pagination
+  onFilterChanged(filters: FilterState) {
+    this.search = filters.search;
+    this.companyFilter = filters.companyId;
+    this.technologyFilter = filters.techId;
 
-  filter() {
     this.currentPage = 0;
-    if (this.paginator) {
-      this.paginator.pageIndex = 0;
-    }
     this.loadData();
   }
 
@@ -137,8 +116,18 @@ export class InternshipsComponent implements OnInit {
     this.loadData();
   }
 
+  //actions
+  openDetails(id: number) {
+    this.router.navigate(['/internships', id]);
+  }
+
+  goToWorkLogs(internshipId: number) {
+    this.router.navigate(['/worklogs', internshipId]);
+  }
+
   generateAI() {
     this.loadingRecommendations = true;
+
     this.service.generateRecommendations().subscribe({
       next: (res) => {
         this.recommendations = res;
@@ -146,17 +135,6 @@ export class InternshipsComponent implements OnInit {
       },
       error: () => (this.loadingRecommendations = false),
     });
-  }
-
-  resetFilters() {
-    this.search = '';
-    this.companyFilter = '';
-    this.technologyFilter = '';
-    this.filter();
-  }
-
-  openDetails(id: number) {
-    this.router.navigate(['/internships', id]);
   }
 
   apply(id: number) {
@@ -168,6 +146,26 @@ export class InternshipsComponent implements OnInit {
     });
   }
 
+  handleAction = (type: string, row: any) => {
+    if (type === 'apply') {
+      this.apply(row.id);
+    }
+
+    if (type === 'manageLogs') {
+      this.goToWorkLogs(row.id);
+    }
+  };
+
+  //status
+  getStatus = (internshipId: number): string => {
+    return this.applicationsMap[internshipId]?.status || '-';
+  };
+
+  hasApplied = (internshipId: number): boolean => {
+    return !!this.applicationsMap[internshipId];
+  };
+
+  //ui
   getFormattedScore(score: number): string {
     return (score * 10).toFixed(1);
   }
@@ -178,22 +176,4 @@ export class InternshipsComponent implements OnInit {
     if (val >= 5) return '#f9a825';
     return '#d32f2f';
   }
-
-  goToWorkLogs(internshipId: number) {
-    this.router.navigate(['/worklogs', internshipId]);
-  }
-
-  handleAction = (type: string, row: any) => {
-    if (type === 'apply') {
-      this.apply(row.id);
-    }
-  }
-
-  getStatus = (internshipId: number): string => {
-  return this.applicationsMap[internshipId]?.status || '-';
-}
-
-hasApplied = (internshipId: number): boolean => {
-  return !!this.applicationsMap[internshipId];
-}
 }

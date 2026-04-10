@@ -1,6 +1,8 @@
 <div class="page-container">
+
   <div class="header-actions">
     <h2>Europass CV</h2>
+
     <div class="main-buttons">
       <button mat-raised-button color="primary" type="button" (click)="save()">
         <mat-icon>{{ hasCv ? "save" : "add" }}</mat-icon>
@@ -23,25 +25,24 @@
         </button>
       }
     </div>
+
   </div>
 
   <form [formGroup]="form" class="cv-form">
+
     <mat-card class="cv-card shadow-sm">
       <mat-card-content>
         <div class="profile-header-flex">
+
           <div class="photo-section">
             <div class="image-wrapper">
               @if (imagePreview || form.value.photoUrl) {
-                <img
-                  [src]="imagePreview || form.value.photoUrl"
-                  alt="Profile Preview"
-                />
+                <img [src]="imagePreview || form.value.photoUrl" alt="Profile Preview"/>
               } @else {
-                <div class="placeholder">
-                  <p>No photo</p>
-                </div>
+                <div class="placeholder"><p>No photo</p></div>
               }
             </div>
+
             <div class="photo-controls">
               <button
                 mat-mini-fab
@@ -85,14 +86,17 @@
               ></textarea>
             </mat-form-field>
           </div>
+
         </div>
       </mat-card-content>
     </mat-card>
 
     <mat-card class="cv-card">
+
       <mat-card-header>
         <mat-card-title>Education and Training</mat-card-title>
       </mat-card-header>
+
       <mat-card-content>
         <div formArrayName="educations">
           @for (edu of educations.controls; track edu; let i = $index) {
@@ -107,6 +111,7 @@
                   <input matInput formControlName="degree" />
                 </mat-form-field>
               </div>
+
               <div class="grid-row three-cols">
                 <mat-form-field appearance="outline">
                   <mat-label>Field of Study</mat-label>
@@ -121,6 +126,7 @@
                   <input matInput type="number" formControlName="endYear" />
                 </mat-form-field>
               </div>
+
               <button
                 mat-button
                 color="warn"
@@ -137,6 +143,7 @@
             <p class="empty-text">No education added yet.</p>
           }
         </div>
+
         <button
           mat-stroked-button
           color="primary"
@@ -150,9 +157,11 @@
     </mat-card>
 
     <mat-card class="cv-card">
+
       <mat-card-header>
         <mat-card-title>Work Experience</mat-card-title>
       </mat-card-header>
+
       <mat-card-content>
         <div formArrayName="experiences">
           @for (exp of experiences.controls; track exp; let i = $index) {
@@ -167,6 +176,7 @@
                   <input matInput formControlName="position" />
                 </mat-form-field>
               </div>
+
               <mat-form-field appearance="outline" class="full-width">
                 <mat-label>Description of Responsibilities</mat-label>
                 <textarea
@@ -175,6 +185,7 @@
                   rows="3"
                 ></textarea>
               </mat-form-field>
+
               <div class="grid-row">
                 <mat-form-field appearance="outline">
                   <mat-label>Start Date</mat-label>
@@ -183,12 +194,10 @@
                     [matDatepicker]="startPicker"
                     formControlName="startDate"
                   />
-                  <mat-datepicker-toggle
-                    matSuffix
-                    [for]="startPicker"
-                  ></mat-datepicker-toggle>
+                  <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
                   <mat-datepicker #startPicker></mat-datepicker>
                 </mat-form-field>
+
                 <mat-form-field appearance="outline">
                   <mat-label>End Date</mat-label>
                   <input
@@ -196,13 +205,11 @@
                     [matDatepicker]="endPicker"
                     formControlName="endDate"
                   />
-                  <mat-datepicker-toggle
-                    matSuffix
-                    [for]="endPicker"
-                  ></mat-datepicker-toggle>
+                  <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
                   <mat-datepicker #endPicker></mat-datepicker>
                 </mat-form-field>
               </div>
+
               <button
                 mat-button
                 color="warn"
@@ -219,6 +226,7 @@
             <p class="empty-text">No experience added yet.</p>
           }
         </div>
+
         <button
           mat-stroked-button
           color="primary"
@@ -233,9 +241,11 @@
 
     <div class="grid-row-responsive">
       <mat-card class="cv-card">
+
         <mat-card-header>
           <mat-card-title>Skills</mat-card-title>
         </mat-card-header>
+
         <mat-card-content>
           <div formArrayName="skills">
             @for (skill of skills.controls; track skill; let i = $index) {
@@ -259,6 +269,7 @@
               </div>
             }
           </div>
+
           <button mat-button color="primary" (click)="addSkill()" type="button">
             <mat-icon>add</mat-icon> Add Skill
           </button>
@@ -266,9 +277,11 @@
       </mat-card>
 
       <mat-card class="cv-card">
+
         <mat-card-header>
           <mat-card-title>Languages</mat-card-title>
         </mat-card-header>
+
         <mat-card-content>
           <div formArrayName="languages">
             @for (lang of languages.controls; track lang; let i = $index) {
@@ -292,6 +305,7 @@
               </div>
             }
           </div>
+
           <button
             mat-button
             color="primary"
@@ -305,9 +319,11 @@
     </div>
 
     <mat-card class="cv-card">
+
       <mat-card-header>
         <mat-card-title>Interests</mat-card-title>
       </mat-card-header>
+
       <mat-card-content>
         <div formArrayName="interests" class="interests-container">
           @for (int of interests.controls; track int; let i = $index) {
@@ -327,6 +343,7 @@
             </div>
           }
         </div>
+        
         <button
           mat-button
           color="primary"

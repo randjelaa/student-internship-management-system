@@ -1,25 +1,18 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { forkJoin, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 
-import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import {
-  MatPaginator,
-  MatPaginatorModule,
-  PageEvent,
-} from '@angular/material/paginator';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { InternshipsService } from '../internships/internships.service';
 import { Internship } from '../../core/models/internship.model';
 import { DataTableComponent } from '../shared/data-table/data-table.component';
+import { FilterBarComponent, FilterState } from '../shared/filter-bar/filter-bar.component';
 
 @Component({
   selector: 'app-work-log-list',
@@ -27,33 +20,31 @@ import { DataTableComponent } from '../shared/data-table/data-table.component';
   imports: [
     CommonModule,
     FormsModule,
-    MatTableModule,
     MatButtonModule,
     MatIconModule,
-    MatInputModule,
-    MatSelectModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
-    DataTableComponent
+    DataTableComponent,
+    FilterBarComponent,
   ],
   templateUrl: './worklogs.component.html',
   styleUrl: './worklogs.component.css',
 })
 export class WorkLogListComponent implements OnInit {
+
   acceptedInternships: Internship[] = [];
   companies: any[] = [];
   technologies: any[] = [];
-  loading = true;
 
   totalElements = 0;
   pageSize = 5;
   currentPage = 0;
+
   search = '';
   companyFilter = '';
   technologyFilter = '';
 
-  private searchSubject = new Subject<string>();
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  loading = true;
 
   constructor(
     private internshipService: InternshipsService,
@@ -61,17 +52,12 @@ export class WorkLogListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.searchSubject
-      .pipe(debounceTime(300), distinctUntilChanged())
-      .subscribe(() => {
-        this.filter();
-      });
-
     this.loadInitialData();
   }
 
   loadInitialData() {
     this.loading = true;
+
     forkJoin({
       companies: this.internshipService.getAllCompanies(),
       technologies: this.internshipService.getAllTechnologies(),
@@ -84,6 +70,7 @@ export class WorkLogListComponent implements OnInit {
 
   loadData() {
     this.loading = true;
+
     const companyId = this.companyFilter ? +this.companyFilter : undefined;
     const techId = this.technologyFilter ? +this.technologyFilter : undefined;
 
@@ -108,13 +95,13 @@ export class WorkLogListComponent implements OnInit {
       });
   }
 
-  onSearchInput() {
-    this.searchSubject.next(this.search);
-  }
+  //filter + pagination
+  onFilterChanged(filters: FilterState) {
+    this.search = filters.search;
+    this.companyFilter = filters.companyId;
+    this.technologyFilter = filters.techId;
 
-  filter() {
     this.currentPage = 0;
-    if (this.paginator) this.paginator.pageIndex = 0;
     this.loadData();
   }
 
@@ -124,13 +111,7 @@ export class WorkLogListComponent implements OnInit {
     this.loadData();
   }
 
-  resetFilters() {
-    this.search = '';
-    this.companyFilter = '';
-    this.technologyFilter = '';
-    this.filter();
-  }
-
+  //actions
   openDetails(id: number): void {
     this.router.navigate(['/internships', id]);
   }
@@ -140,8 +121,8 @@ export class WorkLogListComponent implements OnInit {
   }
 
   handleAction = (type: string, row: any) => {
-  if (type === 'manageLogs') {
-    this.goToWorkLogs(row.id);
-  }
-};
+    if (type === 'manageLogs') {
+      this.goToWorkLogs(row.id);
+    }
+  };
 }

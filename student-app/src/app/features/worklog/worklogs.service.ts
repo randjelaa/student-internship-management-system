@@ -1,10 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {
-  CreateWorkLogRequest,
-  WorkLogResponse,
-} from '../../core/models/worklog.model';
+import { CreateWorkLogRequest, WorkLogResponse } from '../../core/models/worklog.model';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
