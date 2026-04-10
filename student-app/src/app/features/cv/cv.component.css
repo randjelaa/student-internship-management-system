@@ -101,3 +101,37 @@
   font-style: italic;
   margin: 10px 0;
 }
+
+.cv-card mat-card-header {
+  padding-bottom: 16px; 
+}
+
+.skill-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.skill-row .flex-grow {
+  flex: 2; 
+}
+
+.skill-row mat-form-field[style*="width: 120px"] {
+  width: 160px !important; 
+}
+
+.skill-row mat-form-field[style*="width: 100px"] {
+  width: 140px !important; 
+}
+
+.interests-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px; 
+}
+
+.skill-row .flex-grow input {
+  font-size: 0.9rem; 
+}

@@ -1,6 +1,6 @@
 <div class="page-container">
   <div class="header-actions">
-    <h2 class="section-title">Europass Curriculum Vitae</h2>
+    <h2>Europass CV</h2>
     <div class="main-buttons">
       <button mat-raised-button color="primary" type="button" (click)="save()">
         <mat-icon>{{ hasCv ? "save" : "add" }}</mat-icon>
@@ -13,13 +13,13 @@
         </button>
 
         <button
-          mat-icon-button
+          mat-stroked-button
           color="warn"
           type="button"
           (click)="deleteCv()"
           matTooltip="Delete CV"
         >
-          <mat-icon>delete</mat-icon>
+          <mat-icon>delete</mat-icon> Delete
         </button>
       }
     </div>
@@ -38,7 +38,6 @@
                 />
               } @else {
                 <div class="placeholder">
-                  <mat-icon>person</mat-icon>
                   <p>No photo</p>
                 </div>
               }
@@ -92,7 +91,6 @@
 
     <mat-card class="cv-card">
       <mat-card-header>
-        <mat-icon mat-card-avatar color="primary">school</mat-icon>
         <mat-card-title>Education and Training</mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -153,7 +151,6 @@
 
     <mat-card class="cv-card">
       <mat-card-header>
-        <mat-icon mat-card-avatar color="primary">work</mat-icon>
         <mat-card-title>Work Experience</mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -237,7 +234,6 @@
     <div class="grid-row-responsive">
       <mat-card class="cv-card">
         <mat-card-header>
-          <mat-icon mat-card-avatar color="primary">bolt</mat-icon>
           <mat-card-title>Skills</mat-card-title>
         </mat-card-header>
         <mat-card-content>
@@ -271,7 +267,6 @@
 
       <mat-card class="cv-card">
         <mat-card-header>
-          <mat-icon mat-card-avatar color="primary">translate</mat-icon>
           <mat-card-title>Languages</mat-card-title>
         </mat-card-header>
         <mat-card-content>
@@ -311,7 +306,6 @@
 
     <mat-card class="cv-card">
       <mat-card-header>
-        <mat-icon mat-card-avatar color="primary">favorite</mat-icon>
         <mat-card-title>Interests</mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -328,7 +322,7 @@
                 (click)="removeInterest(i)"
                 type="button"
               >
-                <mat-icon>close</mat-icon>
+                <mat-icon>delete</mat-icon>
               </button>
             </div>
           }
