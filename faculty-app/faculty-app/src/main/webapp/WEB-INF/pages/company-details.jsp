@@ -1,61 +1,100 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.example.dto.CompanyResponseDTO" %>
 
-<html>
-<head>
-    <title>Company details</title>
-</head>
-
-<body>
-<jsp:include page="layout/header.jsp"/>
-
-<h2>Company details</h2>
-
 <%
     CompanyResponseDTO c = (CompanyResponseDTO) request.getAttribute("company");
 %>
 
-<div>
-    <b>ID:</b> <%= c.getId() %>
-</div>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Company details</title>
 
-<div>
-    <b>Email:</b> <%= c.getEmail() %>
-</div>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<div>
-    <b>Name:</b> <%= c.getName() %>
-</div>
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/style.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/css/cards.css">
+</head>
 
-<div>
-    <b>Description:</b> <%= c.getDescription() %>
-</div>
+<body>
 
-<div>
-    <b>Website:</b> <%= c.getWebsite() %>
-</div>
+<header>
+    <jsp:include page="layout/header.jsp"/>
+</header>
 
-<div>
-    <b>Status:</b>
-    <%= c.getActive() ? "Active" : "Inactive" %>
-</div>
+<main>
+    <div class="container">
 
-<form method="post" action="companies">
-    <input type="hidden" name="id" value="<%= c.getId() %>"/>
+        <div class="mt-2 mb-3">
+            <a href="companies" class="text-decoration-none small text-secondary">&larr; Back to companies</a>
+        </div>
 
-    <% if (c.getActive()) { %>
-    <input type="hidden" name="action" value="deactivate"/>
-    <button type="submit">Deactivate</button>
-    <% } else { %>
-    <input type="hidden" name="action" value="activate"/>
-    <button type="submit">Activate</button>
-    <% } %>
-</form>
+        <% if (c != null) { %>
 
-<br/>
+        <h2 class="page-title text-primary mb-2"><%= c.getName() %></h2>
 
-<a href="companies">Back</a>
+        <div class="text-muted mb-3">
+            <%= c.getEmail() %>
+        </div>
 
-<jsp:include page="layout/footer.jsp"/>
+        <div class="grading-card p-3 mb-4">
+            <div class="mb-3">
+                <label class="small fw-bold">Description</label>
+                <div class="text-secondary"><%= c.getDescription() %></div>
+            </div>
+
+            <div class="mb-3">
+                <label class="small fw-bold">Website</label>
+                <div>
+                    <a href="<%= c.getWebsite() %>" target="_blank" class="text-decoration-none">
+                        <%= c.getWebsite() %>
+                    </a>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="small fw-bold">Status</label>
+                <div>
+                    <% if (c.getActive()) { %>
+                    <span class="badge bg-success">Active</span>
+                    <% } else { %>
+                    <span class="badge bg-secondary">Inactive</span>
+                    <% } %>
+                </div>
+            </div>
+
+            <form method="post" action="companies" class="mt-3">
+                <input type="hidden" name="id" value="<%= c.getId() %>"/>
+
+                <% if (c.getActive()) { %>
+                <input type="hidden" name="action" value="deactivate"/>
+                <button type="submit" class="btn btn-warning w-100">
+                    Deactivate company
+                </button>
+                <% } else { %>
+                <input type="hidden" name="action" value="activate"/>
+                <button type="submit" class="btn btn-success w-100">
+                    Activate company
+                </button>
+                <% } %>
+            </form>
+
+        </div>
+
+        <% } else { %>
+
+        <div class="alert alert-danger">
+            Company not found
+        </div>
+
+        <% } %>
+
+    </div>
+</main>
+
+<footer>
+    <jsp:include page="layout/footer.jsp"/>
+</footer>
+
 </body>
 </html>
