@@ -1,6 +1,5 @@
 package com.example.service;
 
-import com.example.dto.CompanyResponseDTO;
 import com.example.dto.InternshipResponseDTO;
 import com.example.util.ApiClient;
 import jakarta.servlet.http.HttpServletRequest;
