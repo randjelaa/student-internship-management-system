@@ -16,6 +16,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { WorkLogService } from './worklogs.service';
 import { InternshipsService } from '../internships/internships.service';
+import { DataTableComponent } from '../shared/data-table/data-table.component';
 
 @Component({
   selector: 'app-worklog',
@@ -36,6 +37,7 @@ import { InternshipsService } from '../internships/internships.service';
     MatSnackBarModule,
     MatTableModule,
     MatPaginatorModule,
+    DataTableComponent
   ],
   templateUrl: './worklogs-details.component.html',
   styleUrl: './worklogs-details.component.css',
@@ -173,4 +175,13 @@ export class WorkLogComponent implements OnInit {
   private formatDate(date: any) {
     return date ? new Date(date).toISOString().split('T')[0] : '';
   }
+
+  handleAction = (type: string, row: any) => {
+  if (type === 'edit') {
+    this.prepareEdit(row);
+  }
+  if (type === 'delete') {
+    this.deleteLog(row.id);
+  }
+};
 }

@@ -53,6 +53,7 @@ th.mat-header-cell {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .recommendations-header h2 {

@@ -39,42 +39,13 @@
   </button>
 </div>
 
-<div class="table-container mat-elevation-z8">
-  @if (loading) {
-    <div class="centered-spinner">
-      <mat-spinner diameter="50"></mat-spinner>
-    </div>
-  } @else {
-    <table mat-table [dataSource]="acceptedInternships">
-      <ng-container matColumnDef="title">
-        <th mat-header-cell *matHeaderCellDef>Title</th>
-        <td mat-cell *matCellDef="let i"><strong>{{ i.title }}</strong></td>
-      </ng-container>
-
-      <ng-container matColumnDef="company">
-        <th mat-header-cell *matHeaderCellDef>Company</th>
-        <td mat-cell *matCellDef="let i">{{ i.companyName }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let i">
-          <button mat-raised-button color="primary" (click)="goToWorkLogs(i.id); $event.stopPropagation()">
-            Manage Logs
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="['title', 'company', 'actions']"></tr>
-      <tr mat-row *matRowDef="let row; columns: ['title', 'company', 'actions']" (click)="openDetails(row.id)" class="clickable-row"></tr>
-    </table>
-
-    <mat-paginator
-      [length]="totalElements"
-      [pageSize]="pageSize"
-      [pageSizeOptions]="[5, 10, 20]"
-      (page)="onPageChange($event)"
-      showFirstLastButtons
-    ></mat-paginator>
-  }
-</div>
+<app-data-table
+  [data]="acceptedInternships"
+  [displayedColumns]="['title', 'company', 'actions']"
+  [totalElements]="totalElements"
+  [pageSize]="pageSize"
+  [onAction]="handleAction"
+  (rowClick)="openDetails($event.id)"
+  (pageChange)="onPageChange($event)"
+>
+</app-data-table>

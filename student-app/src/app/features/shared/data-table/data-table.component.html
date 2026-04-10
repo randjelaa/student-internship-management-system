@@ -1,0 +1,132 @@
+<div class="table-container mat-elevation-z8">
+  @if (loading) {
+    <div class="centered-spinner">
+      <mat-spinner diameter="50"></mat-spinner>
+    </div>
+  } @else {
+    <table mat-table [dataSource]="data">
+      <!-- TITLE -->
+      @if (displayedColumns.includes("title")) {
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Title</th>
+          <td mat-cell *matCellDef="let row">
+            <strong>{{ row.title }}</strong>
+          </td>
+        </ng-container>
+      }
+
+      <!-- COMPANY -->
+      @if (displayedColumns.includes("company")) {
+        <ng-container matColumnDef="company">
+          <th mat-header-cell *matHeaderCellDef>Company</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.companyName }}
+          </td>
+        </ng-container>
+      }
+
+      <!-- STATUS -->
+      @if (displayedColumns.includes("status")) {
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let row">
+            <span
+              class="status-badge"
+              [ngClass]="getStatus(row.id)?.toLowerCase()"
+            >
+              {{ getStatus(row.id) }}
+            </span>
+          </td>
+        </ng-container>
+      }
+
+      <!-- WEEK -->
+      @if (displayedColumns.includes("week")) {
+        <ng-container matColumnDef="week">
+          <th mat-header-cell *matHeaderCellDef>Week Period</th>
+          <td mat-cell *matCellDef="let row">
+            {{ row.startDate | date: "dd.MM.yyyy" }} -
+            {{ row.endDate | date: "dd.MM.yyyy" }}
+          </td>
+        </ng-container>
+      }
+
+      <!-- DESCRIPTION -->
+      @if (displayedColumns.includes("description")) {
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef>Activities</th>
+          <td mat-cell *matCellDef="let row" class="desc-cell">
+            {{ row.description }}
+          </td>
+        </ng-container>
+      }
+
+      <!-- ACTIONS -->
+      @if (displayedColumns.includes("actions")) {
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let row">
+            <!-- APPLY -->
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="handleAction('apply', row, $event)"
+              *ngIf="displayedColumns.includes('status')"
+              [disabled]="hasApplied(row.id)"
+            >
+              {{ hasApplied(row.id) ? "Applied" : "Apply" }}
+            </button>
+
+            <!-- MANAGE LOGS -->
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="handleAction('manageLogs', row, $event)"
+              *ngIf="
+                !displayedColumns.includes('status') &&
+                !displayedColumns.includes('week')
+              "
+            >
+              Manage Logs
+            </button>
+
+            <!-- EDIT / DELETE -->
+            <ng-container *ngIf="displayedColumns.includes('week')">
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="handleAction('edit', row, $event)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="handleAction('delete', row, $event)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </ng-container>
+          </td>
+        </ng-container>
+      }
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        (click)="rowClick.emit(row)"
+        class="clickable-row"
+      ></tr>
+    </table>
+
+    <mat-paginator
+      [length]="totalElements"
+      [pageSize]="pageSize"
+      [pageSizeOptions]="[5, 10, 20]"
+      (page)="pageChange.emit($event)"
+      showFirstLastButtons
+    ></mat-paginator>
+  }
+</div>

@@ -39,64 +39,18 @@
   </button>
 </div>
 
-<div class="table-container mat-elevation-z8">
-  <table mat-table [dataSource]="internships">
-    <ng-container matColumnDef="title">
-      <th mat-header-cell *matHeaderCellDef>Title</th>
-      <td mat-cell *matCellDef="let i">
-        <strong>{{ i.title }}</strong>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="company">
-      <th mat-header-cell *matHeaderCellDef>Company</th>
-      <td mat-cell *matCellDef="let i">{{ i.companyName }}</td>
-    </ng-container>
-
-    <ng-container matColumnDef="status">
-      <th mat-header-cell *matHeaderCellDef>Status</th>
-      <td mat-cell *matCellDef="let i">
-        <span class="status-badge" [ngClass]="getStatus(i.id).toLowerCase()">
-          {{ getStatus(i.id) }}
-        </span>
-      </td>
-    </ng-container>
-
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>Actions</th>
-      <td mat-cell *matCellDef="let i">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="apply(i.id); $event.stopPropagation()"
-          [disabled]="hasApplied(i.id)"
-        >
-          {{ hasApplied(i.id) ? "Applied" : "Apply" }}
-        </button>
-      </td>
-    </ng-container>
-
-    <tr
-      mat-header-row
-      *matHeaderRowDef="['title', 'company', 'status', 'actions']"
-    ></tr>
-    <tr
-      mat-row
-      *matRowDef="let row; columns: ['title', 'company', 'status', 'actions']"
-      (click)="openDetails(row.id)"
-      class="clickable-row"
-    ></tr>
-  </table>
-
-  <mat-paginator
-    [length]="totalElements"
-    [pageSize]="pageSize"
-    [pageSizeOptions]="[5, 10, 20]"
-    (page)="onPageChange($event)"
-    showFirstLastButtons
-  >
-  </mat-paginator>
-</div>
+<app-data-table
+  [data]="internships"
+  [displayedColumns]="['title', 'company', 'status', 'actions']"
+  [totalElements]="totalElements"
+  [pageSize]="pageSize"
+  [getStatus]="getStatus"
+  [hasApplied]="hasApplied"
+  [onAction]="handleAction"
+  (rowClick)="openDetails($event.id)"
+  (pageChange)="onPageChange($event)"
+>
+</app-data-table>
 
 <div class="recommendations-header">
   <div class="title-with-icon">

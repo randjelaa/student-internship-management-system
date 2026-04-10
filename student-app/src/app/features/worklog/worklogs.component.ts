@@ -19,6 +19,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { InternshipsService } from '../internships/internships.service';
 import { Internship } from '../../core/models/internship.model';
+import { DataTableComponent } from '../shared/data-table/data-table.component';
 
 @Component({
   selector: 'app-work-log-list',
@@ -33,6 +34,7 @@ import { Internship } from '../../core/models/internship.model';
     MatSelectModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    DataTableComponent
   ],
   templateUrl: './worklogs.component.html',
   styleUrl: './worklogs.component.css',
@@ -136,4 +138,10 @@ export class WorkLogListComponent implements OnInit {
   goToWorkLogs(id: number) {
     this.router.navigate(['/worklogs', id]);
   }
+
+  handleAction = (type: string, row: any) => {
+  if (type === 'manageLogs') {
+    this.goToWorkLogs(row.id);
+  }
+};
 }

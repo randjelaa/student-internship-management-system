@@ -12,51 +12,17 @@
       </p>
     </div>
   }
-  <div class="table-container mat-elevation-z8">
-    <table mat-table [dataSource]="logs">
-      <ng-container matColumnDef="week">
-        <th mat-header-cell *matHeaderCellDef>Week Period</th>
-        <td mat-cell *matCellDef="let log">
-          {{ log.startDate | date: "dd.MM.yyyy" }} -
-          {{ log.endDate | date: "dd.MM.yyyy" }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="description">
-        <th mat-header-cell *matHeaderCellDef>Activities</th>
-        <td mat-cell *matCellDef="let log" class="desc-cell">
-          {{ log.description }}
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Actions</th>
-        <td mat-cell *matCellDef="let log">
-          <button mat-icon-button color="primary" (click)="prepareEdit(log)">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="warn" (click)="deleteLog(log.id)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-      <tr
-        mat-header-row
-        *matHeaderRowDef="['week', 'description', 'actions']"
-      ></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: ['week', 'description', 'actions']"
-      ></tr>
-    </table>
-    <mat-paginator
-      [length]="totalElements"
-      [pageSize]="size"
-      [pageSizeOptions]="[5, 10, 20]"
-      (page)="onPageChange($event)"
-      showFirstLastButtons
-      class="paginator"
-    >
-    </mat-paginator>
-  </div>
+
+  <app-data-table
+    [data]="logs"
+    [displayedColumns]="['week', 'description', 'actions']"
+    [totalElements]="totalElements"
+    [pageSize]="size"
+    [onAction]="handleAction"
+    (pageChange)="onPageChange($event)"
+  >
+  </app-data-table>
+
   <div class="form-section">
     <div>
       <h2 class="title-second">

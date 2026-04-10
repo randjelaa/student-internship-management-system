@@ -22,6 +22,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { InternshipsService } from './internships.service';
 import { Internship } from '../../core/models/internship.model';
 import { RecommendationResponse } from '../../core/models/recommendation.model';
+import { DataTableComponent } from '../shared/data-table/data-table.component';
 
 @Component({
   selector: 'app-internships',
@@ -38,6 +39,7 @@ import { RecommendationResponse } from '../../core/models/recommendation.model';
     MatIconModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
+    DataTableComponent,
   ],
   templateUrl: './internships.component.html',
   styleUrl: './internships.component.css',
@@ -110,6 +112,10 @@ export class InternshipsComponent implements OnInit {
       .subscribe((res) => {
         this.internships = res.content;
         this.totalElements = res.totalElements;
+
+        console.log('INTERNSHIPS:', this.internships);
+        console.log('FIRST ROW:', this.internships?.[0]);
+        console.log('APPLICATIONS MAP:', this.applicationsMap);
       });
   }
 
@@ -153,14 +159,6 @@ export class InternshipsComponent implements OnInit {
     this.router.navigate(['/internships', id]);
   }
 
-  hasApplied(internshipId: number): boolean {
-    return !!this.applicationsMap[internshipId];
-  }
-
-  getStatus(internshipId: number): string {
-    return this.applicationsMap[internshipId]?.status || '-';
-  }
-
   apply(id: number) {
     this.service.apply(id).subscribe({
       next: (app: any) => {
@@ -184,4 +182,18 @@ export class InternshipsComponent implements OnInit {
   goToWorkLogs(internshipId: number) {
     this.router.navigate(['/worklogs', internshipId]);
   }
+
+  handleAction = (type: string, row: any) => {
+    if (type === 'apply') {
+      this.apply(row.id);
+    }
+  }
+
+  getStatus = (internshipId: number): string => {
+  return this.applicationsMap[internshipId]?.status || '-';
+}
+
+hasApplied = (internshipId: number): boolean => {
+  return !!this.applicationsMap[internshipId];
+}
 }
