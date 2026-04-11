@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ page import="com.example.dto.CompanySummaryDTO" %>
 
 <html>
@@ -50,43 +49,44 @@
 
         <h2 class="page-title">Companies</h2>
 
-        <table class="table table-hover align-middle">
-            <thead class="table-light">
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <%
-                CompanySummaryDTO[] companies = (CompanySummaryDTO[]) request.getAttribute("companies");
-                if (companies != null) {
-                    for (CompanySummaryDTO c : companies) {
-            %>
-            <tr style="cursor:pointer;" onclick="window.location='companies?id=<%= c.getId() %>'">
-                <td data-label="Name"><%= c.getName() %></td>
-                <td data-label="Status"><%= c.isActive() ? "Active" : "Inactive" %></td>
-                <td data-label="Actions">
-                    <form method="post" action="companies" class="d-inline">
-                        <input type="hidden" name="id" value="<%= c.getId() %>"/>
-                        <% if (c.isActive()) { %>
-                        <input type="hidden" name="action" value="deactivate"/>
-                        <button type="submit" class="btn btn-sm btn-warning">Deactivate</button>
-                        <% } else { %>
-                        <input type="hidden" name="action" value="activate"/>
-                        <button type="submit" class="btn btn-sm btn-success">Activate</button>
-                        <% } %>
-                    </form>
-                </td>
-            </tr>
-            <%
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <%
+                    CompanySummaryDTO[] companies = (CompanySummaryDTO[]) request.getAttribute("companies");
+                    if (companies != null) {
+                        for (CompanySummaryDTO c : companies) {
+                %>
+                <tr style="cursor:pointer;" onclick="window.location='companies?id=<%= c.getId() %>'">
+                    <td data-label="Name"><%= c.getName() %></td>
+                    <td data-label="Status"><%= c.isActive() ? "Active" : "Inactive" %></td>
+                    <td data-label="Actions">
+                        <form method="post" action="companies" class="d-inline">
+                            <input type="hidden" name="id" value="<%= c.getId() %>"/>
+                            <% if (c.isActive()) { %>
+                            <input type="hidden" name="action" value="deactivate"/>
+                            <button type="submit" class="btn btn-sm btn-warning">Deactivate</button>
+                            <% } else { %>
+                            <input type="hidden" name="action" value="activate"/>
+                            <button type="submit" class="btn btn-sm btn-success">Activate</button>
+                            <% } %>
+                        </form>
+                    </td>
+                </tr>
+                <%
+                        }
                     }
-                }
-            %>
-            </tbody>
-        </table>
+                %>
+                </tbody>
+            </table>
+        </div>
 
         <h5 class="section-title text-primary mt-2">Add Company</h5>
         <div class="grading-card p-3">
