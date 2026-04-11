@@ -31,12 +31,6 @@ import { DataTableComponent } from '../shared/data-table/data-table.component';
     MatDatepickerModule,
     MatNativeDateModule,
     MatIconModule,
-    MatPaginatorModule,
-    MatTableModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule,
-    MatTableModule,
-    MatPaginatorModule,
     DataTableComponent
   ],
   templateUrl: './worklogs-details.component.html',
@@ -44,54 +38,77 @@ import { DataTableComponent } from '../shared/data-table/data-table.component';
 })
 export class WorkLogComponent implements OnInit {
   internshipId!: number;
+
   internship: any = null;
   logs: any[] = [];
-  loading = false;
-  editingLogId: number | null = null;
 
   totalElements = 0;
   page = 0;
   size = 5;
 
-  newLog = { startDate: null, endDate: null, description: '' };
+  editingLogId: number | null = null;
+  newLog = {
+    startDate: null,
+    endDate: null,
+    description: '',
+  };
 
   constructor(
     private route: ActivatedRoute,
     private service: WorkLogService,
     private internshipService: InternshipsService,
-    private snackBar: MatSnackBar,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit() {
     const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.internshipId = +id;
-      this.loadInitialData();
-    }
+    if (!id) return;
+
+    this.internshipId = +id;
+    this.loadInitialData();
   }
 
   private loadInitialData() {
     this.internshipService
       .getInternshipById(this.internshipId)
       .subscribe((data) => (this.internship = data));
+
     this.loadLogs();
   }
 
   loadLogs() {
-    this.loading = true;
     this.service
       .getMyWorkLogsByInternship(this.internshipId, this.page, this.size)
       .subscribe({
         next: (res) => {
           this.logs = res.content;
           this.totalElements = res.totalElements;
-          this.loading = false;
         },
-        error: () => {
-          this.showMsg('Error loading logs');
-          this.loading = false;
-        },
+        error: () => this.showMsg('Error loading logs'),
       });
+  }
+
+  saveLog() {
+    if (!this.isValid()) {
+      this.showMsg('Please fill all fields');
+      return;
+    }
+
+    const payload = this.buildPayload();
+
+    const request = this.editingLogId
+      ? this.service.updateWorkLog(this.editingLogId, payload)
+      : this.service.createWorkLog(payload);
+
+    request.subscribe({
+      next: () => {
+        this.showMsg(this.editingLogId ? 'Log updated' : 'Log saved');
+        this.resetForm();
+        this.loadLogs();
+      },
+      error: () =>
+        this.showMsg(this.editingLogId ? 'Update failed' : 'Save failed'),
+    });
   }
 
   prepareEdit(log: any) {
@@ -101,57 +118,28 @@ export class WorkLogComponent implements OnInit {
       endDate: log.endDate,
       description: log.description,
     };
+
     document
       .querySelector('.form-section')
       ?.scrollIntoView({ behavior: 'smooth' });
   }
 
-  saveLog() {
-    if (!this.isValid()) {
-      this.showMsg('Please fill all fields');
-      return;
-    }
-
-    const payload = {
-      internshipId: this.internshipId,
-      startDate: this.formatDate(this.newLog.startDate),
-      endDate: this.formatDate(this.newLog.endDate),
-      description: this.newLog.description,
-    };
-
-    if (this.editingLogId) {
-      this.service.updateWorkLog(this.editingLogId, payload).subscribe({
-        next: () => {
-          this.showMsg('Log updated');
-          this.resetForm();
-          this.loadLogs();
-        },
-        error: () => this.showMsg('Update failed'),
-      });
-    } else {
-      this.service.createWorkLog(payload).subscribe({
-        next: () => {
-          this.showMsg('Log saved');
-          this.resetForm();
-          this.loadLogs();
-        },
-        error: () => this.showMsg('Save failed'),
-      });
-    }
-  }
-
   deleteLog(id: number) {
-    if (confirm('Delete this entry?')) {
-      this.service.deleteWorkLog(id).subscribe(() => {
-        this.showMsg('Deleted');
-        this.loadLogs();
-      });
-    }
+    if (!confirm('Delete this entry?')) return;
+
+    this.service.deleteWorkLog(id).subscribe(() => {
+      this.showMsg('Deleted');
+      this.loadLogs();
+    });
   }
 
   resetForm() {
     this.editingLogId = null;
-    this.newLog = { startDate: null, endDate: null, description: '' };
+    this.newLog = {
+      startDate: null,
+      endDate: null,
+      description: '',
+    };
   }
 
   onPageChange(event: PageEvent) {
@@ -160,7 +148,7 @@ export class WorkLogComponent implements OnInit {
     this.loadLogs();
   }
 
-  private isValid() {
+  private isValid(): boolean {
     return !!(
       this.newLog.startDate &&
       this.newLog.endDate &&
@@ -168,20 +156,25 @@ export class WorkLogComponent implements OnInit {
     );
   }
 
+  private buildPayload() {
+    return {
+      internshipId: this.internshipId,
+      startDate: this.formatDate(this.newLog.startDate),
+      endDate: this.formatDate(this.newLog.endDate),
+      description: this.newLog.description,
+    };
+  }
+
+  private formatDate(date: any): string {
+    return date ? new Date(date).toISOString().split('T')[0] : '';
+  }
+
   private showMsg(msg: string) {
     this.snackBar.open(msg, 'OK', { duration: 3000 });
   }
 
-  private formatDate(date: any) {
-    return date ? new Date(date).toISOString().split('T')[0] : '';
-  }
-
   handleAction = (type: string, row: any) => {
-  if (type === 'edit') {
-    this.prepareEdit(row);
-  }
-  if (type === 'delete') {
-    this.deleteLog(row.id);
-  }
-};
+    if (type === 'edit') this.prepareEdit(row);
+    if (type === 'delete') this.deleteLog(row.id);
+  };
 }
