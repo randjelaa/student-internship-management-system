@@ -4,20 +4,13 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #3f51b5 0%, #212121 100%);
+  background-color: #f8f9fa;
 }
 
 .login-brand {
   text-align: center;
-  color: white;
+  color: darkblue;
   margin-bottom: 30px;
-}
-
-.brand-icon {
-  font-size: 64px;
-  width: 64px;
-  height: 64px;
-  margin-bottom: 10px;
 }
 
 .login-card {
@@ -34,12 +27,12 @@
   margin-top: 20px;
 }
 
-mat-card-title {
-  font-size: 24px;
-  font-weight: bold;
-  color: #333;
+.login-subtitle {
   text-align: center;
   width: 100%;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #333;
 }
 
 button[type="submit"] {

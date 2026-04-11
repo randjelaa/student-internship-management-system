@@ -1,14 +1,12 @@
 <div class="login-page">
   <div class="login-brand">
-    <mat-icon class="brand-icon">school</mat-icon>
-    <h1>Student Internship System</h1>
-    <p>Manage your career steps in one place</p>
+    <h2>Student Internship System</h2>
   </div>
 
   <mat-card class="login-card mat-elevation-z8">
-    <mat-card-header>
-      <mat-card-title>Login</mat-card-title>
-    </mat-card-header>
+    <div class="login-subtitle">
+      <p>Please sign in to continue</p>
+    </div>
 
     <mat-card-content>
       <form [formGroup]="form" (ngSubmit)="login()" class="login-form">
@@ -48,7 +46,7 @@
           type="submit"
           [disabled]="form.invalid"
         >
-          SIGN IN
+          Login
         </button>
       </form>
     </mat-card-content>
