@@ -9,10 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatTableModule } from '@angular/material/table';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { PageEvent } from '@angular/material/paginator';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { WorkLogService } from './worklogs.service';
 import { InternshipsService } from '../internships/internships.service';

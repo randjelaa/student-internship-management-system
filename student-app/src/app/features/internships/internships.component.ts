@@ -8,7 +8,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { InternshipsService } from './internships.service';
@@ -27,7 +26,6 @@ import { FilterBarComponent, FilterState } from '../shared/filter-bar/filter-bar
     MatCardModule,
     MatPaginatorModule,
     MatIconModule,
-    MatProgressSpinnerModule,
     MatProgressBarModule,
     DataTableComponent,
     FilterBarComponent,
